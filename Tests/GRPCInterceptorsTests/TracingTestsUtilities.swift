@@ -15,16 +15,17 @@
  */
 
 import GRPCCore
-import NIOConcurrencyHelpers
+import Synchronization
 import Tracing
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 final class TestTracer: Tracer {
   typealias Span = TestSpan
 
-  private let testSpans: NIOLockedValueBox<[String: TestSpan]> = .init([:])
+  private let testSpans: Mutex<[String: TestSpan]> = .init([:])
 
   func getEventsForTestSpan(ofOperationName operationName: String) -> [SpanEvent] {
-    let span = self.testSpans.withLockedValue({ $0[operationName] })
+    let span = self.testSpans.withLock({ $0[operationName] })
     return span?.events ?? []
   }
 
@@ -60,7 +61,7 @@ final class TestTracer: Tracer {
     file fileID: String,
     line: UInt
   ) -> TestSpan where Instant: TracerInstant {
-    return self.testSpans.withLockedValue { testSpans in
+    return self.testSpans.withLock { testSpans in
       let span = TestSpan(context: context(), operationName: operationName)
       testSpans[operationName] = span
       return span
@@ -68,7 +69,8 @@ final class TestTracer: Tracer {
   }
 }
 
-struct TestSpan: Span, Sendable {
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+final class TestSpan: Span, Sendable {
   private struct State {
     var context: ServiceContextModule.ServiceContext
     var operationName: String
@@ -77,25 +79,25 @@ struct TestSpan: Span, Sendable {
     var events: [Tracing.SpanEvent] = []
   }
 
-  private let state: NIOLockedValueBox<State>
+  private let state: Mutex<State>
   let isRecording: Bool
 
   var context: ServiceContextModule.ServiceContext {
-    self.state.withLockedValue { $0.context }
+    self.state.withLock { $0.context }
   }
 
   var operationName: String {
-    get { self.state.withLockedValue { $0.operationName } }
-    nonmutating set { self.state.withLockedValue { $0.operationName = newValue } }
+    get { self.state.withLock { $0.operationName } }
+    set { self.state.withLock { $0.operationName = newValue } }
   }
 
   var attributes: Tracing.SpanAttributes {
-    get { self.state.withLockedValue { $0.attributes } }
-    nonmutating set { self.state.withLockedValue { $0.attributes = newValue } }
+    get { self.state.withLock { $0.attributes } }
+    set { self.state.withLock { $0.attributes = newValue } }
   }
 
   var events: [Tracing.SpanEvent] {
-    self.state.withLockedValue { $0.events }
+    self.state.withLock { $0.events }
   }
 
   init(
@@ -105,16 +107,16 @@ struct TestSpan: Span, Sendable {
     isRecording: Bool = true
   ) {
     let state = State(context: context, operationName: operationName, attributes: attributes)
-    self.state = NIOLockedValueBox(state)
+    self.state = Mutex(state)
     self.isRecording = isRecording
   }
 
   func setStatus(_ status: Tracing.SpanStatus) {
-    self.state.withLockedValue { $0.status = status }
+    self.state.withLock { $0.status = status }
   }
 
   func addEvent(_ event: Tracing.SpanEvent) {
-    self.state.withLockedValue { $0.events.append(event) }
+    self.state.withLock { $0.events.append(event) }
   }
 
   func recordError<Instant>(
@@ -131,7 +133,7 @@ struct TestSpan: Span, Sendable {
   }
 
   func addLink(_ link: Tracing.SpanLink) {
-    self.state.withLockedValue {
+    self.state.withLock {
       $0.context.spanLinks?.append(link)
     }
   }

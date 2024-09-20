@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import GRPCHealth
+import GRPCHealthService
 import GRPCInProcessTransport
 import XCTest
 
