@@ -35,11 +35,11 @@ let products: [Product] = [
 let dependencies: [Package.Dependency] = [
   .package(
     url: "https://github.com/grpc/grpc-swift.git",
-    branch: "main"
+    exact: "2.0.0-alpha.1"
   ),
   .package(
     url: "https://github.com/grpc/grpc-swift-protobuf.git",
-    branch: "main"
+    exact: "1.0.0-alpha.1"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
