@@ -44,13 +44,13 @@ public struct ClientTracingInterceptor: ClientInterceptor {
   /// Which key-value pairs are injected will depend on the specific tracing implementation
   /// that has been configured when bootstrapping `swift-distributed-tracing` in your application.
   public func intercept<Input, Output>(
-    request: ClientRequest.Stream<Input>,
+    request: StreamingClientRequest<Input>,
     context: ClientContext,
     next: (
-      ClientRequest.Stream<Input>,
+      StreamingClientRequest<Input>,
       ClientContext
-    ) async throws -> ClientResponse.Stream<Output>
-  ) async throws -> ClientResponse.Stream<Output> where Input: Sendable, Output: Sendable {
+    ) async throws -> StreamingClientResponse<Output>
+  ) async throws -> StreamingClientResponse<Output> where Input: Sendable, Output: Sendable {
     var request = request
     let tracer = InstrumentationSystem.tracer
     let serviceContext = ServiceContext.current ?? .topLevel
@@ -92,7 +92,7 @@ public struct ClientTracingInterceptor: ClientInterceptor {
         }
       }
 
-      var response: ClientResponse.Stream<Output>
+      var response: StreamingClientResponse<Output>
       do {
         response = try await next(request, context)
       } catch {

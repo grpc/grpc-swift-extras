@@ -22,20 +22,20 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   public init() {}
 
   public func unimplementedCall(
-    request: ServerRequest.Single<Grpc_Testing_Empty>,
+    request: ServerRequest<Grpc_Testing_Empty>,
     context: ServerContext
-  ) async throws -> ServerResponse.Single<Grpc_Testing_Empty> {
+  ) async throws -> ServerResponse<Grpc_Testing_Empty> {
     throw RPCError(code: .unimplemented, message: "The RPC is not implemented.")
   }
 
   /// Server implements `emptyCall` which immediately returns the empty message.
   public func emptyCall(
-    request: ServerRequest.Single<Grpc_Testing_Empty>,
+    request: ServerRequest<Grpc_Testing_Empty>,
     context: ServerContext
-  ) async throws -> ServerResponse.Single<Grpc_Testing_Empty> {
+  ) async throws -> ServerResponse<Grpc_Testing_Empty> {
     let message = Grpc_Testing_Empty()
     let (initialMetadata, trailingMetadata) = request.metadata.makeInitialAndTrailingMetadata()
-    return ServerResponse.Single(
+    return ServerResponse(
       message: message,
       metadata: initialMetadata,
       trailingMetadata: trailingMetadata
@@ -49,9 +49,9 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   /// If the server does not support the `responseType`, then it should fail the RPC with
   /// `INVALID_ARGUMENT`.
   public func unaryCall(
-    request: ServerRequest.Single<Grpc_Testing_SimpleRequest>,
+    request: ServerRequest<Grpc_Testing_SimpleRequest>,
     context: ServerContext
-  ) async throws -> ServerResponse.Single<Grpc_Testing_SimpleResponse> {
+  ) async throws -> ServerResponse<Grpc_Testing_SimpleResponse> {
     // We can't validate messages at the wire-encoding layer (i.e. where the compression byte is
     // set), so we have to check via the encoding header. Note that it is possible for the header
     // to be set and for the message to not be compressed.
@@ -94,7 +94,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
 
     let (initialMetadata, trailingMetadata) = request.metadata.makeInitialAndTrailingMetadata()
 
-    return ServerResponse.Single(
+    return ServerResponse(
       message: responseMessage,
       metadata: initialMetadata,
       trailingMetadata: trailingMetadata
@@ -109,9 +109,9 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   /// headers such that the response can be cached by proxies in the response path. Server should
   /// be behind a caching proxy for this test to pass. Currently we set the max-age to 60 seconds.
   public func cacheableUnaryCall(
-    request: ServerRequest.Single<Grpc_Testing_SimpleRequest>,
+    request: ServerRequest<Grpc_Testing_SimpleRequest>,
     context: ServerContext
-  ) async throws -> ServerResponse.Single<Grpc_Testing_SimpleResponse> {
+  ) async throws -> ServerResponse<Grpc_Testing_SimpleResponse> {
     throw RPCError(code: .unimplemented, message: "The RPC is not implemented.")
   }
 
@@ -121,11 +121,11 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   /// bytes, as specified by its respective `ResponseParameter`. After sending all responses, it
   /// closes with OK.
   public func streamingOutputCall(
-    request: ServerRequest.Single<Grpc_Testing_StreamingOutputCallRequest>,
+    request: ServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
     context: ServerContext
-  ) async throws -> ServerResponse.Stream<Grpc_Testing_StreamingOutputCallResponse> {
+  ) async throws -> StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse> {
     let (initialMetadata, trailingMetadata) = request.metadata.makeInitialAndTrailingMetadata()
-    return ServerResponse.Stream(metadata: initialMetadata) { writer in
+    return StreamingServerResponse(metadata: initialMetadata) { writer in
       for responseParameter in request.message.responseParameters {
         let response = Grpc_Testing_StreamingOutputCallResponse.with { response in
           response.payload = Grpc_Testing_Payload.with { payload in
@@ -144,9 +144,9 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   /// `StreamingInputCallResponse` where `aggregatedPayloadSize` is the sum of all request payload
   /// bodies received.
   public func streamingInputCall(
-    request: ServerRequest.Stream<Grpc_Testing_StreamingInputCallRequest>,
+    request: StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
     context: ServerContext
-  ) async throws -> ServerResponse.Single<Grpc_Testing_StreamingInputCallResponse> {
+  ) async throws -> ServerResponse<Grpc_Testing_StreamingInputCallResponse> {
     let isRequestCompressed =
       request.metadata["grpc-encoding"].filter({ $0 != "identity" }).count > 0
     var aggregatedPayloadSize = 0
@@ -170,7 +170,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     }
 
     let (initialMetadata, trailingMetadata) = request.metadata.makeInitialAndTrailingMetadata()
-    return ServerResponse.Single(
+    return ServerResponse(
       message: responseMessage,
       metadata: initialMetadata,
       trailingMetadata: trailingMetadata
@@ -183,11 +183,11 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   /// of size `ResponseParameter.size` bytes, as specified by its respective `ResponseParameter`s.
   /// After receiving half close and sending all responses, it closes with OK.
   public func fullDuplexCall(
-    request: ServerRequest.Stream<Grpc_Testing_StreamingOutputCallRequest>,
+    request: StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
     context: ServerContext
-  ) async throws -> ServerResponse.Stream<Grpc_Testing_StreamingOutputCallResponse> {
+  ) async throws -> StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse> {
     let (initialMetadata, trailingMetadata) = request.metadata.makeInitialAndTrailingMetadata()
-    return ServerResponse.Stream(metadata: initialMetadata) { writer in
+    return StreamingServerResponse(metadata: initialMetadata) { writer in
       for try await message in request.messages {
         // If a request message has a responseStatus set, the server should return that status.
         // If the code is an error code, the server will throw an error containing that code
@@ -221,9 +221,9 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   ///
   /// See: https://github.com/grpc/grpc/blob/master/doc/interop-test-descriptions.md
   public func halfDuplexCall(
-    request: ServerRequest.Stream<Grpc_Testing_StreamingOutputCallRequest>,
+    request: StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
     context: ServerContext
-  ) async throws -> ServerResponse.Stream<Grpc_Testing_StreamingOutputCallResponse> {
+  ) async throws -> StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse> {
     throw RPCError(code: .unimplemented, message: "The RPC is not implemented.")
   }
 }

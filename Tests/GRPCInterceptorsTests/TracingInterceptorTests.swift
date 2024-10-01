@@ -56,7 +56,7 @@ final class TracingInterceptorTests: XCTestCase {
         return .init(
           metadata: [],
           bodyParts: RPCAsyncSequence(
-            wrapping: AsyncThrowingStream<ClientResponse.Stream.Contents.BodyPart, any Error> {
+            wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
               $0.yield(.message(["response"]))
               $0.finish()
             }
@@ -121,7 +121,7 @@ final class TracingInterceptorTests: XCTestCase {
         return .init(
           metadata: [],
           bodyParts: RPCAsyncSequence(
-            wrapping: AsyncThrowingStream<ClientResponse.Stream.Contents.BodyPart, any Error> {
+            wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
               $0.yield(.message(["response"]))
               $0.finish()
             }
@@ -173,12 +173,12 @@ final class TracingInterceptorTests: XCTestCase {
       method: "testServerInterceptorErrorResponse"
     )
     let interceptor = ServerTracingInterceptor(emitEventOnEachWrite: false)
-    let single = ServerRequest.Single(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
+    let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
       context: .init(descriptor: methodDescriptor)
     ) { _, _ in
-      ServerResponse.Stream<String>(error: .init(code: .unknown, message: "Test error"))
+      StreamingServerResponse<String>(error: .init(code: .unknown, message: "Test error"))
     }
     XCTAssertThrowsError(try response.accepted.get())
 
@@ -202,13 +202,13 @@ final class TracingInterceptorTests: XCTestCase {
     )
     let (stream, continuation) = AsyncStream<String>.makeStream()
     let interceptor = ServerTracingInterceptor(emitEventOnEachWrite: false)
-    let single = ServerRequest.Single(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
+    let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
       context: .init(descriptor: methodDescriptor)
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
-        return ServerResponse.Stream<String>(
+        return StreamingServerResponse<String>(
           accepted: .success(
             .init(
               metadata: [],
@@ -267,13 +267,13 @@ final class TracingInterceptorTests: XCTestCase {
     )
     let (stream, continuation) = AsyncStream<String>.makeStream()
     let interceptor = ServerTracingInterceptor(emitEventOnEachWrite: true)
-    let single = ServerRequest.Single(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
+    let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
       context: .init(descriptor: methodDescriptor)
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
-        return ServerResponse.Stream<String>(
+        return StreamingServerResponse<String>(
           accepted: .success(
             .init(
               metadata: [],

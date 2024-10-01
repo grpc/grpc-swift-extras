@@ -30,13 +30,13 @@ public enum Grpc_Testing_EmptyService {
         public static let descriptors: [GRPCCore.MethodDescriptor] = []
     }
     @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias StreamingServiceProtocol = Grpc_Testing_EmptyServiceStreamingServiceProtocol
+    public typealias StreamingServiceProtocol = Grpc_Testing_EmptyService_StreamingServiceProtocol
     @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ServiceProtocol = Grpc_Testing_EmptyServiceServiceProtocol
+    public typealias ServiceProtocol = Grpc_Testing_EmptyService_ServiceProtocol
     @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ClientProtocol = Grpc_Testing_EmptyServiceClientProtocol
+    public typealias ClientProtocol = Grpc_Testing_EmptyService_ClientProtocol
     @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias Client = Grpc_Testing_EmptyServiceClient
+    public typealias Client = Grpc_Testing_EmptyService_Client
 }
 
 extension GRPCCore.ServiceDescriptor {
@@ -49,7 +49,7 @@ extension GRPCCore.ServiceDescriptor {
 /// A service that has zero methods.
 /// See https://github.com/grpc/grpc/issues/15574
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_EmptyServiceStreamingServiceProtocol: GRPCCore.RegistrableRPCService {}
+public protocol Grpc_Testing_EmptyService_StreamingServiceProtocol: GRPCCore.RegistrableRPCService {}
 
 /// Conformance to `GRPCCore.RegistrableRPCService`.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
@@ -61,9 +61,9 @@ extension Grpc_Testing_EmptyService.StreamingServiceProtocol {
 /// A service that has zero methods.
 /// See https://github.com/grpc/grpc/issues/15574
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_EmptyServiceServiceProtocol: Grpc_Testing_EmptyService.StreamingServiceProtocol {}
+public protocol Grpc_Testing_EmptyService_ServiceProtocol: Grpc_Testing_EmptyService.StreamingServiceProtocol {}
 
-/// Partial conformance to `Grpc_Testing_EmptyServiceStreamingServiceProtocol`.
+/// Partial conformance to `Grpc_Testing_EmptyService_StreamingServiceProtocol`.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService.ServiceProtocol {
 }
@@ -71,7 +71,7 @@ extension Grpc_Testing_EmptyService.ServiceProtocol {
 /// A service that has zero methods.
 /// See https://github.com/grpc/grpc/issues/15574
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_EmptyServiceClientProtocol: Sendable {}
+public protocol Grpc_Testing_EmptyService_ClientProtocol: Sendable {}
 
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService.ClientProtocol {
@@ -84,7 +84,7 @@ extension Grpc_Testing_EmptyService.ClientProtocol {
 /// A service that has zero methods.
 /// See https://github.com/grpc/grpc/issues/15574
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public struct Grpc_Testing_EmptyServiceClient: Grpc_Testing_EmptyService.ClientProtocol {
+public struct Grpc_Testing_EmptyService_Client: Grpc_Testing_EmptyService.ClientProtocol {
     private let client: GRPCCore.GRPCClient
     
     public init(wrapping client: GRPCCore.GRPCClient) {
