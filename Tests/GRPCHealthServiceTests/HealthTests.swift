@@ -21,13 +21,13 @@ import XCTest
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 final class HealthTests: XCTestCase {
   private func withHealthClient(
-    _ body: @Sendable (Grpc_Health_V1_HealthClient, Health.Provider) async throws -> Void
+    _ body: @Sendable (Grpc_Health_V1_Health_Client, Health.Provider) async throws -> Void
   ) async throws {
     let health = Health()
-    let inProcess = InProcessTransport.makePair()
+    let inProcess = InProcessTransport()
     let server = GRPCServer(transport: inProcess.server, services: [health.service])
     let client = GRPCClient(transport: inProcess.client)
-    let healthClient = Grpc_Health_V1_HealthClient(wrapping: client)
+    let healthClient = Grpc_Health_V1_Health_Client(wrapping: client)
 
     try await withThrowingDiscardingTaskGroup { group in
       group.addTask {
@@ -58,7 +58,7 @@ final class HealthTests: XCTestCase {
         $0.service = testServiceDescriptor.fullyQualifiedService
       }
 
-      try await healthClient.check(request: ClientRequest.Single(message: message)) { response in
+      try await healthClient.check(request: ClientRequest(message: message)) { response in
         try XCTAssertEqual(response.message.status, .serving)
       }
     }
@@ -70,7 +70,7 @@ final class HealthTests: XCTestCase {
         $0.service = "does.not.Exist"
       }
 
-      try await healthClient.check(request: ClientRequest.Single(message: message)) { response in
+      try await healthClient.check(request: ClientRequest(message: message)) { response in
         try XCTAssertThrowsError(ofType: RPCError.self, response.message) { error in
           XCTAssertEqual(error.code, .notFound)
         }
@@ -85,7 +85,7 @@ final class HealthTests: XCTestCase {
 
       let message = Grpc_Health_V1_HealthCheckRequest()
 
-      try await healthClient.check(request: ClientRequest.Single(message: message)) { response in
+      try await healthClient.check(request: ClientRequest(message: message)) { response in
         try XCTAssertEqual(response.message.status, .notServing)
       }
     }
@@ -104,7 +104,7 @@ final class HealthTests: XCTestCase {
         $0.service = testServiceDescriptor.fullyQualifiedService
       }
 
-      try await healthClient.watch(request: ClientRequest.Single(message: message)) { response in
+      try await healthClient.watch(request: ClientRequest(message: message)) { response in
         var responseStreamIterator = response.messages.makeAsyncIterator()
 
         for i in 0 ..< statusesToBeSent.count {
@@ -130,7 +130,7 @@ final class HealthTests: XCTestCase {
         $0.service = testServiceDescriptor.fullyQualifiedService
       }
 
-      try await healthClient.watch(request: ClientRequest.Single(message: message)) { response in
+      try await healthClient.watch(request: ClientRequest(message: message)) { response in
         var responseStreamIterator = response.messages.makeAsyncIterator()
         var next = try await responseStreamIterator.next()
         var message = try XCTUnwrap(next)
@@ -171,7 +171,7 @@ final class HealthTests: XCTestCase {
         for _ in 0 ..< numberOfWatches {
           group.addTask {
             return try await healthClient.watch(
-              request: ClientRequest.Single(message: message)
+              request: ClientRequest(message: message)
             ) { response in
               signal.continuation.yield()  // Make signal
 
@@ -235,7 +235,7 @@ final class HealthTests: XCTestCase {
       }
 
       try await healthClient.watch(
-        request: ClientRequest.Single(message: message)
+        request: ClientRequest(message: message)
       ) { response in
         // Send all status updates.
         for status in statusesToBeSent {
@@ -263,7 +263,7 @@ final class HealthTests: XCTestCase {
 
       let message = Grpc_Health_V1_HealthCheckRequest()
 
-      try await healthClient.watch(request: ClientRequest.Single(message: message)) { response in
+      try await healthClient.watch(request: ClientRequest(message: message)) { response in
         var responseStreamIterator = response.messages.makeAsyncIterator()
 
         for i in 0 ..< statusesToBeSent.count {

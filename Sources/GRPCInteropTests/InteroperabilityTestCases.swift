@@ -36,7 +36,7 @@ struct EmptyUnary: InteroperabilityTest {
   func run(client: GRPCClient) async throws {
     let testServiceClient = Grpc_Testing_TestService.Client(wrapping: client)
     try await testServiceClient.emptyCall(
-      request: ClientRequest.Single(message: Grpc_Testing_Empty())
+      request: ClientRequest(message: Grpc_Testing_Empty())
     ) { response in
       try assertEqual(response.message, Grpc_Testing_Empty())
     }
@@ -76,7 +76,7 @@ struct LargeUnary: InteroperabilityTest {
       }
     }
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: request)
+      request: ClientRequest(message: request)
     ) { response in
       try assertEqual(
         response.message.payload,
@@ -160,7 +160,7 @@ class ClientCompressedUnary: InteroperabilityTest {
     // With compression expected but *disabled*.
     options.compression = CompressionAlgorithm.none
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: compressedRequest),
+      request: ClientRequest(message: compressedRequest),
       options: options
     ) { response in
       switch response.accepted {
@@ -175,7 +175,7 @@ class ClientCompressedUnary: InteroperabilityTest {
     options.compression = .gzip
 
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: compressedRequest),
+      request: ClientRequest(message: compressedRequest),
       options: options
     ) { response in
       switch response.accepted {
@@ -189,7 +189,7 @@ class ClientCompressedUnary: InteroperabilityTest {
     // With compression not expected and disabled.
     options.compression = CompressionAlgorithm.none
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: uncompressedRequest),
+      request: ClientRequest(message: uncompressedRequest),
       options: options
     ) { response in
       switch response.accepted {
@@ -262,7 +262,7 @@ class ServerCompressedUnary: InteroperabilityTest {
     }
 
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: compressedRequest)
+      request: ClientRequest(message: compressedRequest)
     ) { response in
       // We can't verify that the compression bit was set, instead we verify that the encoding header
       // was sent by the server. This isn't quite the same since as it can still be set but the
@@ -280,7 +280,7 @@ class ServerCompressedUnary: InteroperabilityTest {
     var uncompressedRequest = compressedRequest
     uncompressedRequest.responseCompressed.value = false
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: compressedRequest)
+      request: ClientRequest(message: compressedRequest)
     ) { response in
       // We can't even check for the 'grpc-encoding' header here since it could be set with the
       // compression bit on the message not set.
@@ -344,7 +344,7 @@ class ServerCompressedUnary: InteroperabilityTest {
 struct ClientStreaming: InteroperabilityTest {
   func run(client: GRPCClient) async throws {
     let testServiceClient = Grpc_Testing_TestService.Client(wrapping: client)
-    let request = ClientRequest.Stream { writer in
+    let request = StreamingClientRequest { writer in
       for bytes in [27182, 8, 1828, 45904] {
         let message = Grpc_Testing_StreamingInputCallRequest.with {
           $0.payload = Grpc_Testing_Payload.with {
@@ -405,7 +405,7 @@ struct ServerStreaming: InteroperabilityTest {
     }
 
     try await testServiceClient.streamingOutputCall(
-      request: ClientRequest.Single(message: request)
+      request: ClientRequest(message: request)
     ) { response in
       var responseParts = response.messages.makeAsyncIterator()
       // There are 4 response sizes, so if there isn't a message for each one,
@@ -486,7 +486,7 @@ class ServerCompressedStreaming: InteroperabilityTest {
     let responseSizes = [31415, 92653]
 
     try await testServiceClient.streamingOutputCall(
-      request: ClientRequest.Single(message: request)
+      request: ClientRequest(message: request)
     ) { response in
       var payloads = [Grpc_Testing_Payload]()
 
@@ -586,7 +586,7 @@ struct PingPong: InteroperabilityTest {
     let testServiceClient = Grpc_Testing_TestService.Client(wrapping: client)
     let ids = AsyncStream.makeStream(of: Int.self)
 
-    let request = ClientRequest.Stream { writer in
+    let request = StreamingClientRequest { writer in
       let sizes = [(31_415, 27_182), (9, 8), (2_653, 1_828), (58_979, 45_904)]
       for try await id in ids.stream {
         var message = Grpc_Testing_StreamingOutputCallRequest()
@@ -651,7 +651,7 @@ struct PingPong: InteroperabilityTest {
 struct EmptyStream: InteroperabilityTest {
   func run(client: GRPCClient) async throws {
     let testServiceClient = Grpc_Testing_TestService.Client(wrapping: client)
-    let request = ClientRequest.Stream<Grpc_Testing_StreamingOutputCallRequest> { _ in }
+    let request = StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest> { _ in }
 
     try await testServiceClient.fullDuplexCall(request: request) { response in
       var messages = response.messages.makeAsyncIterator()
@@ -736,7 +736,7 @@ struct CustomMetadata: InteroperabilityTest {
     ]
 
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: unaryRequest, metadata: metadata)
+      request: ClientRequest(message: unaryRequest, metadata: metadata)
     ) { response in
       // Check the initial metadata.
       let receivedInitialMetadata = response.metadata
@@ -749,7 +749,7 @@ struct CustomMetadata: InteroperabilityTest {
       try checkTrailingMetadata(response.trailingMetadata)
     }
 
-    let streamingRequest = ClientRequest.Stream(metadata: metadata) { writer in
+    let streamingRequest = StreamingClientRequest(metadata: metadata) { writer in
       let message = Grpc_Testing_StreamingOutputCallRequest.with {
         $0.responseParameters = [
           Grpc_Testing_ResponseParameters.with {
@@ -840,7 +840,7 @@ struct StatusCodeAndMessage: InteroperabilityTest {
     }
 
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: message)
+      request: ClientRequest(message: message)
     ) { response in
       switch response.accepted {
       case .failure(let error):
@@ -854,7 +854,7 @@ struct StatusCodeAndMessage: InteroperabilityTest {
       }
     }
 
-    let request = ClientRequest.Stream { writer in
+    let request = StreamingClientRequest { writer in
       let message = Grpc_Testing_StreamingOutputCallRequest.with {
         $0.responseStatus = Grpc_Testing_EchoStatus.with {
           $0.code = Int32(self.expectedCode)
@@ -915,7 +915,7 @@ struct SpecialStatusMessage: InteroperabilityTest {
       }
     }
     try await testServiceClient.unaryCall(
-      request: ClientRequest.Single(message: message)
+      request: ClientRequest(message: message)
     ) { response in
       switch response.accepted {
       case .success:
@@ -950,7 +950,7 @@ struct UnimplementedMethod: InteroperabilityTest {
   func run(client: GRPCClient) async throws {
     let testServiceClient = Grpc_Testing_TestService.Client(wrapping: client)
     try await testServiceClient.unimplementedCall(
-      request: ClientRequest.Single(message: Grpc_Testing_Empty())
+      request: ClientRequest(message: Grpc_Testing_Empty())
     ) { response in
       switch response.accepted {
       case .success:
@@ -983,7 +983,7 @@ struct UnimplementedService: InteroperabilityTest {
   func run(client: GRPCClient) async throws {
     let unimplementedServiceClient = Grpc_Testing_UnimplementedService.Client(wrapping: client)
     try await unimplementedServiceClient.unimplementedCall(
-      request: ClientRequest.Single(message: Grpc_Testing_Empty())
+      request: ClientRequest(message: Grpc_Testing_Empty())
     ) { response in
       switch response.accepted {
       case .success:

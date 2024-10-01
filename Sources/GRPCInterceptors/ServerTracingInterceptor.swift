@@ -43,11 +43,11 @@ public struct ServerTracingInterceptor: ServerInterceptor {
   /// Which key-value pairs are extracted and made available will depend on the specific tracing implementation
   /// that has been configured when bootstrapping `swift-distributed-tracing` in your application.
   public func intercept<Input, Output>(
-    request: ServerRequest.Stream<Input>,
+    request: StreamingServerRequest<Input>,
     context: ServerContext,
-    next: @Sendable (ServerRequest.Stream<Input>, ServerContext) async throws ->
-      ServerResponse.Stream<Output>
-  ) async throws -> ServerResponse.Stream<Output> where Input: Sendable, Output: Sendable {
+    next: @Sendable (StreamingServerRequest<Input>, ServerContext) async throws ->
+      StreamingServerResponse<Output>
+  ) async throws -> StreamingServerResponse<Output> where Input: Sendable, Output: Sendable {
     var serviceContext = ServiceContext.topLevel
     let tracer = InstrumentationSystem.tracer
 

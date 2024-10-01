@@ -18,13 +18,13 @@ internal import GRPCCore
 private import Synchronization
 
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-internal struct HealthService: Grpc_Health_V1_HealthServiceProtocol {
+internal struct HealthService: Grpc_Health_V1_Health_ServiceProtocol {
   private let state = HealthService.State()
 
   func check(
-    request: ServerRequest.Single<Grpc_Health_V1_HealthCheckRequest>,
+    request: ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
     context: ServerContext
-  ) async throws -> ServerResponse.Single<Grpc_Health_V1_HealthCheckResponse> {
+  ) async throws -> ServerResponse<Grpc_Health_V1_HealthCheckResponse> {
     let service = request.message.service
 
     guard let status = self.state.currentStatus(ofService: service) else {
@@ -34,19 +34,19 @@ internal struct HealthService: Grpc_Health_V1_HealthServiceProtocol {
     var response = Grpc_Health_V1_HealthCheckResponse()
     response.status = status
 
-    return ServerResponse.Single(message: response)
+    return ServerResponse(message: response)
   }
 
   func watch(
-    request: ServerRequest.Single<Grpc_Health_V1_HealthCheckRequest>,
+    request: ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
     context: ServerContext
-  ) async -> ServerResponse.Stream<Grpc_Health_V1_HealthCheckResponse> {
+  ) async -> StreamingServerResponse<Grpc_Health_V1_HealthCheckResponse> {
     let service = request.message.service
     let statuses = AsyncStream.makeStream(of: Grpc_Health_V1_HealthCheckResponse.ServingStatus.self)
 
     self.state.addContinuation(statuses.continuation, forService: service)
 
-    return ServerResponse.Stream(of: Grpc_Health_V1_HealthCheckResponse.self) { writer in
+    return StreamingServerResponse(of: Grpc_Health_V1_HealthCheckResponse.self) { writer in
       var response = Grpc_Health_V1_HealthCheckResponse()
 
       for await status in statuses.stream {

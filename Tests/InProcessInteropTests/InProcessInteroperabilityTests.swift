@@ -25,7 +25,7 @@ final class InProcessInteroperabilityTests: XCTestCase {
     interopTestCase: InteroperabilityTestCase
   ) async throws {
     do {
-      let inProcess = InProcessTransport.makePair()
+      let inProcess = InProcessTransport()
       try await withThrowingTaskGroup(of: Void.self) { group in
         group.addTask {
           let server = GRPCServer(transport: inProcess.server, services: [TestService()])
