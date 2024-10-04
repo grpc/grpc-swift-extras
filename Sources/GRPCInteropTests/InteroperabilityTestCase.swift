@@ -15,7 +15,6 @@
  */
 public import GRPCCore
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 public protocol InteroperabilityTest {
   /// Run a test case using the given connection.
   ///
@@ -69,7 +68,6 @@ public enum InteroperabilityTestCase: String, CaseIterable, Sendable {
   }
 }
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension InteroperabilityTestCase {
   /// Return a new instance of the test case.
   public func makeTest() -> any InteroperabilityTest {
