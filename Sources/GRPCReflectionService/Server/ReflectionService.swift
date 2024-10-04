@@ -19,7 +19,6 @@ import Foundation
 import GRPC
 import SwiftProtobuf
 
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public final class ReflectionService: CallHandlerProvider, Sendable {
   private let provider: Provider
 
@@ -314,7 +313,6 @@ extension Google_Protobuf_FileDescriptorProto {
   }
 }
 
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension ReflectionService {
   /// The version of the reflection service.
   ///
@@ -340,7 +338,6 @@ extension ReflectionService {
   }
 }
 
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension ReflectionService {
   static func readSerializedFileDescriptorProto(
     atPath path: String

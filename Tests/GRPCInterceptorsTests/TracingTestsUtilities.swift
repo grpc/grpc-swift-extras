@@ -18,7 +18,6 @@ import GRPCCore
 import Synchronization
 import Tracing
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 final class TestTracer: Tracer {
   typealias Span = TestSpan
 
@@ -69,7 +68,6 @@ final class TestTracer: Tracer {
   }
 }
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 final class TestSpan: Span, Sendable {
   private struct State {
     var context: ServiceContextModule.ServiceContext
@@ -175,7 +173,6 @@ extension ServiceContext {
   }
 }
 
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 struct TestWriter<WriterElement: Sendable>: RPCWriterProtocol {
   typealias Element = WriterElement
 

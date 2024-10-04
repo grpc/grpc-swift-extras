@@ -48,7 +48,6 @@ extension Grpc_Reflection_V1alpha_ServerReflectionProvider {
 }
 
 /// To implement a server, implement an object which conforms to this protocol.
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 internal protocol Grpc_Reflection_V1alpha_ServerReflectionAsyncProvider: CallHandlerProvider, Sendable {
   static var serviceDescriptor: GRPCServiceDescriptor { get }
   var interceptors: Grpc_Reflection_V1alpha_ServerReflectionServerInterceptorFactoryProtocol? { get }
@@ -62,7 +61,6 @@ internal protocol Grpc_Reflection_V1alpha_ServerReflectionAsyncProvider: CallHan
   ) async throws
 }
 
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension Grpc_Reflection_V1alpha_ServerReflectionAsyncProvider {
   internal static var serviceDescriptor: GRPCServiceDescriptor {
     return Grpc_Reflection_V1alpha_ServerReflectionServerMetadata.serviceDescriptor
