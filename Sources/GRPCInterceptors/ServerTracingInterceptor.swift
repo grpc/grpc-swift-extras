@@ -21,7 +21,6 @@ internal import Tracing
 ///
 /// The extracted tracing information is made available to user code via the current `ServiceContext`.
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 public struct ServerTracingInterceptor: ServerInterceptor {
   private let extractor: ServerRequestExtractor
   private let emitEventOnEachWrite: Bool
@@ -136,7 +135,6 @@ public struct ServerTracingInterceptor: ServerInterceptor {
 }
 
 /// An extractor responsible for extracting the required instrumentation keys from request metadata.
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 struct ServerRequestExtractor: Instrumentation.Extractor {
   typealias Carrier = Metadata
 

@@ -23,7 +23,6 @@ internal import Tracing
 /// metadata. It will then be picked up by the server-side ``ServerTracingInterceptor``.
 ///
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 public struct ClientTracingInterceptor: ClientInterceptor {
   private let injector: ClientRequestInjector
   private let emitEventOnEachWrite: Bool
@@ -132,7 +131,6 @@ public struct ClientTracingInterceptor: ClientInterceptor {
 
 /// An injector responsible for injecting the required instrumentation keys from the `ServiceContext` into
 /// the request metadata.
-@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 struct ClientRequestInjector: Instrumentation.Injector {
   typealias Carrier = Metadata
 

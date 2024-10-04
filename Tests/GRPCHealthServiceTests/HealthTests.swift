@@ -18,7 +18,6 @@ import GRPCHealthService
 import GRPCInProcessTransport
 import XCTest
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 final class HealthTests: XCTestCase {
   private func withHealthClient(
     _ body: @Sendable (Grpc_Health_V1_Health_Client, Health.Provider) async throws -> Void
