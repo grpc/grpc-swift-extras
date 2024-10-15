@@ -175,7 +175,7 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor)
+      context: .init(descriptor: methodDescriptor, cancellation: .init())
     ) { _, _ in
       StreamingServerResponse<String>(error: .init(code: .unknown, message: "Test error"))
     }
@@ -204,7 +204,7 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor)
+      context: .init(descriptor: methodDescriptor, cancellation: .init())
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
         return StreamingServerResponse<String>(
@@ -269,7 +269,7 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor)
+      context: .init(descriptor: methodDescriptor, cancellation: .init())
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
         return StreamingServerResponse<String>(
