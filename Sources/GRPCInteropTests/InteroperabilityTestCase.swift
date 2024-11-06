@@ -27,7 +27,7 @@ public protocol InteroperabilityTest {
 }
 
 /// Test cases as listed by the [gRPC interoperability test description specification]
-/// (https://github.com/grpc/grpc/blob/master/doc/interop-test-descriptions.md).
+/// (https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/interop-test-descriptions.md).
 ///
 /// This is not a complete list, the following tests have not been implemented:
 /// - cacheable_unary (caching not supported)

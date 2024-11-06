@@ -216,7 +216,7 @@ Note that when specifying a service, a method or a symbol, we have to use the fu
 
 [grpcurl-setup]: https://github.com/fullstorydev/grpcurl#grpcurl
 [grpcurl]: https://github.com/fullstorydev/grpcurl
-[grpc-cli]: https://github.com/grpc/grpc/blob/master/doc/command_line_tool.md
+[grpc-cli]: https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/command_line_tool.md
 [v1]: ../v1/reflection-v1.proto
 [v1alpha]: ../v1Alpha/reflection-v1alpha.proto
 [reflection-server]: ../../Examples/v1/ReflectionService/ReflectionServer.swift

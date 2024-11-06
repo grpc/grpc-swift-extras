@@ -17,7 +17,7 @@
 public import GRPCCore
 
 /// ``Health`` is gRPC’s mechanism for checking whether a server is able to handle RPCs. Its semantics are documented in
-/// https://github.com/grpc/grpc/blob/master/doc/health-checking.md.
+/// https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/health-checking.md.
 ///
 /// `Health` initializes a new ``Health/Service-swift.struct`` and ``Health/Provider-swift.struct``.
 /// - `Health.Service` implements the Health service from the `grpc.health.v1` package and can be registered with a server
