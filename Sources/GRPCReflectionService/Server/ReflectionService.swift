@@ -326,9 +326,9 @@ extension ReflectionService {
     var wrapped: Wrapped
     private init(_ wrapped: Wrapped) { self.wrapped = wrapped }
 
-    /// The v1 version of reflection service: https://github.com/grpc/grpc/blob/master/src/proto/grpc/reflection/v1/reflection.proto.
+    /// The v1 version of reflection service: https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/src/proto/grpc/reflection/v1/reflection.proto.
     public static var v1: Self { Self(.v1) }
-    /// The v1alpha version of reflection service: https://github.com/grpc/grpc/blob/master/src/proto/grpc/reflection/v1alpha/reflection.proto.
+    /// The v1alpha version of reflection service: https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/src/proto/grpc/reflection/v1alpha/reflection.proto.
     public static var v1Alpha: Self { Self(.v1Alpha) }
   }
 

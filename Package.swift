@@ -54,7 +54,7 @@ let dependencies: [Package.Dependency] = [
 let defaultSwiftSettings: [SwiftSetting] = [
   .swiftLanguageMode(.v6),
   .enableUpcomingFeature("ExistentialAny"),
-  .enableUpcomingFeature("InternalImportsByDefault")
+  .enableUpcomingFeature("InternalImportsByDefault"),
 ]
 
 let targets: [Target] = [
@@ -91,7 +91,7 @@ let targets: [Target] = [
     dependencies: [
       .target(name: "GRPCInterceptors"),
       .product(name: "GRPCCore", package: "grpc-swift"),
-      .product(name: "Tracing", package: "swift-distributed-tracing")
+      .product(name: "Tracing", package: "swift-distributed-tracing"),
     ],
     swiftSettings: defaultSwiftSettings
   ),
@@ -114,7 +114,7 @@ let targets: [Target] = [
       .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
     ],
     swiftSettings: defaultSwiftSettings
-  )
+  ),
 ]
 
 let package = Package(

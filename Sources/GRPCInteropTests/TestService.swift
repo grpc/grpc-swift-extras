@@ -218,7 +218,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
 
   /// This is not implemented as it is not described in the specification.
   ///
-  /// See: https://github.com/grpc/grpc/blob/master/doc/interop-test-descriptions.md
+  /// See: https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/interop-test-descriptions.md
   public func halfDuplexCall(
     request: StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
     context: ServerContext
