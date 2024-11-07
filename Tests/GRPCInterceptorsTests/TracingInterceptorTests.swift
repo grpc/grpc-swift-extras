@@ -32,7 +32,10 @@ final class TracingInterceptorTests: XCTestCase {
     let (stream, continuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
-    try await ServiceContext.withValue(serviceContext) {
+    // FIXME: use 'ServiceContext.withValue(serviceContext)'
+    //
+    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
+    try await ServiceContext.$current.withValue(serviceContext) {
       let methodDescriptor = MethodDescriptor(
         service: "TracingInterceptorTests",
         method: "testClientInterceptor"
@@ -101,7 +104,10 @@ final class TracingInterceptorTests: XCTestCase {
     let (stream, continuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
-    try await ServiceContext.withValue(serviceContext) {
+    // FIXME: use 'ServiceContext.withValue(serviceContext)'
+    //
+    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
+    try await ServiceContext.$current.withValue(serviceContext) {
       let response = try await interceptor.intercept(
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request1"])

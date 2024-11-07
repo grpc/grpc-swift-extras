@@ -39,7 +39,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/grpc/grpc-swift-protobuf.git",
-    exact: "1.0.0-alpha.1"
+    branch: "main"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
@@ -47,7 +47,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/apple/swift-distributed-tracing.git",
-    from: "1.0.0"
+    from: "1.1.2"
   ),
 ]
 
@@ -73,7 +73,8 @@ let targets: [Target] = [
     dependencies: [
       .target(name: "GRPCHealthService"),
       .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
-    ]
+    ],
+    swiftSettings: defaultSwiftSettings
   ),
 
   // Common interceptors for gRPC.
@@ -91,7 +92,8 @@ let targets: [Target] = [
       .target(name: "GRPCInterceptors"),
       .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "Tracing", package: "swift-distributed-tracing")
-    ]
+    ],
+    swiftSettings: defaultSwiftSettings
   ),
 
   // gRPC interop test implementation.
@@ -110,7 +112,8 @@ let targets: [Target] = [
       .target(name: "GRPCInteropTests"),
       .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
-    ]
+    ],
+    swiftSettings: defaultSwiftSettings
   )
 ]
 
