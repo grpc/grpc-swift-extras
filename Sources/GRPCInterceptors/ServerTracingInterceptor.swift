@@ -56,7 +56,10 @@ public struct ServerTracingInterceptor: ServerInterceptor {
       using: self.extractor
     )
 
-    return try await ServiceContext.withValue(serviceContext) {
+    // FIXME: use 'ServiceContext.withValue(serviceContext)'
+    //
+    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
+    return try await ServiceContext.$current.withValue(serviceContext) {
       try await tracer.withSpan(
         context.descriptor.fullyQualifiedMethod,
         context: serviceContext,
