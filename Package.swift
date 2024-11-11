@@ -72,6 +72,7 @@ let targets: [Target] = [
     name: "GRPCHealthServiceTests",
     dependencies: [
       .target(name: "GRPCHealthService"),
+      .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
     ],
     swiftSettings: defaultSwiftSettings
