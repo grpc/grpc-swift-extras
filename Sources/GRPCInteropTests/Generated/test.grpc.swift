@@ -26,115 +26,113 @@
 
 public import GRPCCore
 internal import GRPCProtobuf
+public import SwiftProtobuf
 
-public enum Grpc_Testing_ReconnectService {
-    public static let descriptor = GRPCCore.ServiceDescriptor.grpc_testing_ReconnectService
-    public enum Method {
-        public enum Start {
-            public typealias Input = Grpc_Testing_ReconnectParams
-            public typealias Output = Grpc_Testing_Empty
-            public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_ReconnectService.descriptor.fullyQualifiedService,
-                method: "Start"
-            )
-        }
-        public enum Stop {
-            public typealias Input = Grpc_Testing_Empty
-            public typealias Output = Grpc_Testing_ReconnectInfo
-            public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_ReconnectService.descriptor.fullyQualifiedService,
-                method: "Stop"
-            )
-        }
-        public static let descriptors: [GRPCCore.MethodDescriptor] = [
-            Start.descriptor,
-            Stop.descriptor
-        ]
-    }
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias StreamingServiceProtocol = Grpc_Testing_ReconnectService_StreamingServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ServiceProtocol = Grpc_Testing_ReconnectService_ServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ClientProtocol = Grpc_Testing_ReconnectService_ClientProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias Client = Grpc_Testing_ReconnectService_Client
-}
+// MARK: - grpc.testing.TestService
 
-extension GRPCCore.ServiceDescriptor {
-    public static let grpc_testing_ReconnectService = Self(
-        package: "grpc.testing",
-        service: "ReconnectService"
-    )
-}
-
+/// Namespace containing generated types for the "grpc.testing.TestService" service.
 public enum Grpc_Testing_TestService {
-    public static let descriptor = GRPCCore.ServiceDescriptor.grpc_testing_TestService
+    /// Service descriptor for the "grpc.testing.TestService" service.
+    public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService")
+    /// Namespace for method metadata.
     public enum Method {
+        /// Namespace for "EmptyCall" metadata.
         public enum EmptyCall {
+            /// Request type for "EmptyCall".
             public typealias Input = Grpc_Testing_Empty
+            /// Response type for "EmptyCall".
             public typealias Output = Grpc_Testing_Empty
+            /// Descriptor for "EmptyCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "EmptyCall"
             )
         }
+        /// Namespace for "UnaryCall" metadata.
         public enum UnaryCall {
+            /// Request type for "UnaryCall".
             public typealias Input = Grpc_Testing_SimpleRequest
+            /// Response type for "UnaryCall".
             public typealias Output = Grpc_Testing_SimpleResponse
+            /// Descriptor for "UnaryCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "UnaryCall"
             )
         }
+        /// Namespace for "CacheableUnaryCall" metadata.
         public enum CacheableUnaryCall {
+            /// Request type for "CacheableUnaryCall".
             public typealias Input = Grpc_Testing_SimpleRequest
+            /// Response type for "CacheableUnaryCall".
             public typealias Output = Grpc_Testing_SimpleResponse
+            /// Descriptor for "CacheableUnaryCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "CacheableUnaryCall"
             )
         }
+        /// Namespace for "StreamingOutputCall" metadata.
         public enum StreamingOutputCall {
+            /// Request type for "StreamingOutputCall".
             public typealias Input = Grpc_Testing_StreamingOutputCallRequest
+            /// Response type for "StreamingOutputCall".
             public typealias Output = Grpc_Testing_StreamingOutputCallResponse
+            /// Descriptor for "StreamingOutputCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "StreamingOutputCall"
             )
         }
+        /// Namespace for "StreamingInputCall" metadata.
         public enum StreamingInputCall {
+            /// Request type for "StreamingInputCall".
             public typealias Input = Grpc_Testing_StreamingInputCallRequest
+            /// Response type for "StreamingInputCall".
             public typealias Output = Grpc_Testing_StreamingInputCallResponse
+            /// Descriptor for "StreamingInputCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "StreamingInputCall"
             )
         }
+        /// Namespace for "FullDuplexCall" metadata.
         public enum FullDuplexCall {
+            /// Request type for "FullDuplexCall".
             public typealias Input = Grpc_Testing_StreamingOutputCallRequest
+            /// Response type for "FullDuplexCall".
             public typealias Output = Grpc_Testing_StreamingOutputCallResponse
+            /// Descriptor for "FullDuplexCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "FullDuplexCall"
             )
         }
+        /// Namespace for "HalfDuplexCall" metadata.
         public enum HalfDuplexCall {
+            /// Request type for "HalfDuplexCall".
             public typealias Input = Grpc_Testing_StreamingOutputCallRequest
+            /// Response type for "HalfDuplexCall".
             public typealias Output = Grpc_Testing_StreamingOutputCallResponse
+            /// Descriptor for "HalfDuplexCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "HalfDuplexCall"
             )
         }
+        /// Namespace for "UnimplementedCall" metadata.
         public enum UnimplementedCall {
+            /// Request type for "UnimplementedCall".
             public typealias Input = Grpc_Testing_Empty
+            /// Response type for "UnimplementedCall".
             public typealias Output = Grpc_Testing_Empty
+            /// Descriptor for "UnimplementedCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_TestService.descriptor.fullyQualifiedService,
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
                 method: "UnimplementedCall"
             )
         }
+        /// Descriptors for all methods in the "grpc.testing.TestService" service.
         public static let descriptors: [GRPCCore.MethodDescriptor] = [
             EmptyCall.descriptor,
             UnaryCall.descriptor,
@@ -146,122 +144,527 @@ public enum Grpc_Testing_TestService {
             UnimplementedCall.descriptor
         ]
     }
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias StreamingServiceProtocol = Grpc_Testing_TestService_StreamingServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ServiceProtocol = Grpc_Testing_TestService_ServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ClientProtocol = Grpc_Testing_TestService_ClientProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias Client = Grpc_Testing_TestService_Client
 }
 
 extension GRPCCore.ServiceDescriptor {
-    public static let grpc_testing_TestService = Self(
-        package: "grpc.testing",
-        service: "TestService"
-    )
+    /// Service descriptor for the "grpc.testing.TestService" service.
+    public static let grpc_testing_TestService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService")
 }
 
-public enum Grpc_Testing_UnimplementedService {
-    public static let descriptor = GRPCCore.ServiceDescriptor.grpc_testing_UnimplementedService
-    public enum Method {
-        public enum UnimplementedCall {
-            public typealias Input = Grpc_Testing_Empty
-            public typealias Output = Grpc_Testing_Empty
-            public static let descriptor = GRPCCore.MethodDescriptor(
-                service: Grpc_Testing_UnimplementedService.descriptor.fullyQualifiedService,
-                method: "UnimplementedCall"
-            )
-        }
-        public static let descriptors: [GRPCCore.MethodDescriptor] = [
-            UnimplementedCall.descriptor
-        ]
+// MARK: grpc.testing.TestService (server)
+
+extension Grpc_Testing_TestService {
+    /// Streaming variant of the service protocol for the "grpc.testing.TestService" service.
+    ///
+    /// This protocol is the lowest-level of the service protocols generated for this service
+    /// giving you the most flexibility over the implementation of your service. This comes at
+    /// the cost of more verbose and less strict APIs. Each RPC requires you to implement it in
+    /// terms of a request stream and response stream. Where only a single request or response
+    /// message is expected, you are responsible for enforcing this invariant is maintained.
+    ///
+    /// Where possible, prefer using the stricter, less-verbose ``ServiceProtocol``
+    /// or ``SimpleServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service to test the various types of RPCs and experiment with
+    /// > performance with various types of payload.
+    public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
+        /// Handle the "EmptyCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One empty request followed by one empty response.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_Empty` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_Empty` messages.
+        func emptyCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
+
+        /// Handle the "UnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_SimpleRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_SimpleResponse` messages.
+        func unaryCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_SimpleRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_SimpleResponse>
+
+        /// Handle the "CacheableUnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response. Response has cache control
+        /// > headers set such that a caching HTTP proxy (such as GFE) can
+        /// > satisfy subsequent requests.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_SimpleRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_SimpleResponse` messages.
+        func cacheableUnaryCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_SimpleRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_SimpleResponse>
+
+        /// Handle the "StreamingOutputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by a sequence of responses (streamed download).
+        /// > The server returns the payload with client desired type and sizes.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        func streamingOutputCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
+
+        /// Handle the "StreamingInputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by one response (streamed upload).
+        /// > The server returns the aggregated size of client payload as the result.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_StreamingInputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_StreamingInputCallResponse` messages.
+        func streamingInputCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingInputCallResponse>
+
+        /// Handle the "FullDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests with each request served by the server immediately.
+        /// > As one request could lead to multiple responses, this interface
+        /// > demonstrates the idea of full duplexing.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        func fullDuplexCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
+
+        /// Handle the "HalfDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by a sequence of responses.
+        /// > The server buffers all the client requests and then serves them in order. A
+        /// > stream of responses are returned to the client when the server starts with
+        /// > first request.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        func halfDuplexCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
+
+        /// Handle the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > The test server will not implement this method. It will be used
+        /// > to test the behavior when clients call unimplemented methods.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_Empty` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_Empty` messages.
+        func unimplementedCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
     }
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias StreamingServiceProtocol = Grpc_Testing_UnimplementedService_StreamingServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ServiceProtocol = Grpc_Testing_UnimplementedService_ServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ClientProtocol = Grpc_Testing_UnimplementedService_ClientProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias Client = Grpc_Testing_UnimplementedService_Client
+
+    /// Service protocol for the "grpc.testing.TestService" service.
+    ///
+    /// This protocol is higher level than ``StreamingServiceProtocol`` but lower level than
+    /// the ``SimpleServiceProtocol``, it provides access to request and response metadata and
+    /// trailing response metadata. If you don't need these then consider using
+    /// the ``SimpleServiceProtocol``. If you need fine grained control over your RPCs then
+    /// use ``StreamingServiceProtocol``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service to test the various types of RPCs and experiment with
+    /// > performance with various types of payload.
+    public protocol ServiceProtocol: Grpc_Testing_TestService.StreamingServiceProtocol {
+        /// Handle the "EmptyCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One empty request followed by one empty response.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_Empty` message.
+        func emptyCall(
+            request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
+
+        /// Handle the "UnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_SimpleResponse` message.
+        func unaryCall(
+            request: GRPCCore.ServerRequest<Grpc_Testing_SimpleRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse>
+
+        /// Handle the "CacheableUnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response. Response has cache control
+        /// > headers set such that a caching HTTP proxy (such as GFE) can
+        /// > satisfy subsequent requests.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_SimpleResponse` message.
+        func cacheableUnaryCall(
+            request: GRPCCore.ServerRequest<Grpc_Testing_SimpleRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse>
+
+        /// Handle the "StreamingOutputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by a sequence of responses (streamed download).
+        /// > The server returns the payload with client desired type and sizes.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_StreamingOutputCallRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        func streamingOutputCall(
+            request: GRPCCore.ServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
+
+        /// Handle the "StreamingInputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by one response (streamed upload).
+        /// > The server returns the aggregated size of client payload as the result.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_StreamingInputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_StreamingInputCallResponse` message.
+        func streamingInputCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_StreamingInputCallResponse>
+
+        /// Handle the "FullDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests with each request served by the server immediately.
+        /// > As one request could lead to multiple responses, this interface
+        /// > demonstrates the idea of full duplexing.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        func fullDuplexCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
+
+        /// Handle the "HalfDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by a sequence of responses.
+        /// > The server buffers all the client requests and then serves them in order. A
+        /// > stream of responses are returned to the client when the server starts with
+        /// > first request.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        func halfDuplexCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
+
+        /// Handle the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > The test server will not implement this method. It will be used
+        /// > to test the behavior when clients call unimplemented methods.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_Empty` message.
+        func unimplementedCall(
+            request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
+    }
+
+    /// Simple service protocol for the "grpc.testing.TestService" service.
+    ///
+    /// This is the highest level protocol for the service. The API is the easiest to use but
+    /// doesn't provide access to request or response metadata. If you need access to these
+    /// then use ``ServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service to test the various types of RPCs and experiment with
+    /// > performance with various types of payload.
+    public protocol SimpleServiceProtocol: Grpc_Testing_TestService.ServiceProtocol {
+        /// Handle the "EmptyCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One empty request followed by one empty response.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_Empty` to respond with.
+        func emptyCall(
+            request: Grpc_Testing_Empty,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_Empty
+
+        /// Handle the "UnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_SimpleRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_SimpleResponse` to respond with.
+        func unaryCall(
+            request: Grpc_Testing_SimpleRequest,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_SimpleResponse
+
+        /// Handle the "CacheableUnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response. Response has cache control
+        /// > headers set such that a caching HTTP proxy (such as GFE) can
+        /// > satisfy subsequent requests.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_SimpleRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_SimpleResponse` to respond with.
+        func cacheableUnaryCall(
+            request: Grpc_Testing_SimpleRequest,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_SimpleResponse
+
+        /// Handle the "StreamingOutputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by a sequence of responses (streamed download).
+        /// > The server returns the payload with client desired type and sizes.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_StreamingOutputCallRequest` message.
+        ///   - response: A response stream of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        func streamingOutputCall(
+            request: Grpc_Testing_StreamingOutputCallRequest,
+            response: GRPCCore.RPCWriter<Grpc_Testing_StreamingOutputCallResponse>,
+            context: GRPCCore.ServerContext
+        ) async throws
+
+        /// Handle the "StreamingInputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by one response (streamed upload).
+        /// > The server returns the aggregated size of client payload as the result.
+        ///
+        /// - Parameters:
+        ///   - request: A stream of `Grpc_Testing_StreamingInputCallRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_StreamingInputCallResponse` to respond with.
+        func streamingInputCall(
+            request: GRPCCore.RPCAsyncSequence<Grpc_Testing_StreamingInputCallRequest, any Swift.Error>,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_StreamingInputCallResponse
+
+        /// Handle the "FullDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests with each request served by the server immediately.
+        /// > As one request could lead to multiple responses, this interface
+        /// > demonstrates the idea of full duplexing.
+        ///
+        /// - Parameters:
+        ///   - request: A stream of `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - response: A response stream of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        func fullDuplexCall(
+            request: GRPCCore.RPCAsyncSequence<Grpc_Testing_StreamingOutputCallRequest, any Swift.Error>,
+            response: GRPCCore.RPCWriter<Grpc_Testing_StreamingOutputCallResponse>,
+            context: GRPCCore.ServerContext
+        ) async throws
+
+        /// Handle the "HalfDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by a sequence of responses.
+        /// > The server buffers all the client requests and then serves them in order. A
+        /// > stream of responses are returned to the client when the server starts with
+        /// > first request.
+        ///
+        /// - Parameters:
+        ///   - request: A stream of `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - response: A response stream of `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        func halfDuplexCall(
+            request: GRPCCore.RPCAsyncSequence<Grpc_Testing_StreamingOutputCallRequest, any Swift.Error>,
+            response: GRPCCore.RPCWriter<Grpc_Testing_StreamingOutputCallResponse>,
+            context: GRPCCore.ServerContext
+        ) async throws
+
+        /// Handle the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > The test server will not implement this method. It will be used
+        /// > to test the behavior when clients call unimplemented methods.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_Empty` to respond with.
+        func unimplementedCall(
+            request: Grpc_Testing_Empty,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_Empty
+    }
 }
 
-extension GRPCCore.ServiceDescriptor {
-    public static let grpc_testing_UnimplementedService = Self(
-        package: "grpc.testing",
-        service: "UnimplementedService"
-    )
-}
-
-/// A simple service to test the various types of RPCs and experiment with
-/// performance with various types of payload.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_TestService_StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
-    /// One empty request followed by one empty response.
-    func emptyCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
-    
-    /// One request followed by one response.
-    func unaryCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_SimpleRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_SimpleResponse>
-    
-    /// One request followed by one response. Response has cache control
-    /// headers set such that a caching HTTP proxy (such as GFE) can
-    /// satisfy subsequent requests.
-    func cacheableUnaryCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_SimpleRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_SimpleResponse>
-    
-    /// One request followed by a sequence of responses (streamed download).
-    /// The server returns the payload with client desired type and sizes.
-    func streamingOutputCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
-    
-    /// A sequence of requests followed by one response (streamed upload).
-    /// The server returns the aggregated size of client payload as the result.
-    func streamingInputCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingInputCallResponse>
-    
-    /// A sequence of requests with each request served by the server immediately.
-    /// As one request could lead to multiple responses, this interface
-    /// demonstrates the idea of full duplexing.
-    func fullDuplexCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
-    
-    /// A sequence of requests followed by a sequence of responses.
-    /// The server buffers all the client requests and then serves them in order. A
-    /// stream of responses are returned to the client when the server starts with
-    /// first request.
-    func halfDuplexCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
-    
-    /// The test server will not implement this method. It will be used
-    /// to test the behavior when clients call unimplemented methods.
-    func unimplementedCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
-}
-
-/// Conformance to `GRPCCore.RegistrableRPCService`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_TestService.StreamingServiceProtocol {
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
     public func registerMethods(with router: inout GRPCCore.RPCRouter) {
         router.registerHandler(
             forMethod: Grpc_Testing_TestService.Method.EmptyCall.descriptor,
@@ -354,71 +757,7 @@ extension Grpc_Testing_TestService.StreamingServiceProtocol {
     }
 }
 
-/// A simple service to test the various types of RPCs and experiment with
-/// performance with various types of payload.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_TestService_ServiceProtocol: Grpc_Testing_TestService.StreamingServiceProtocol {
-    /// One empty request followed by one empty response.
-    func emptyCall(
-        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
-    
-    /// One request followed by one response.
-    func unaryCall(
-        request: GRPCCore.ServerRequest<Grpc_Testing_SimpleRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse>
-    
-    /// One request followed by one response. Response has cache control
-    /// headers set such that a caching HTTP proxy (such as GFE) can
-    /// satisfy subsequent requests.
-    func cacheableUnaryCall(
-        request: GRPCCore.ServerRequest<Grpc_Testing_SimpleRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse>
-    
-    /// One request followed by a sequence of responses (streamed download).
-    /// The server returns the payload with client desired type and sizes.
-    func streamingOutputCall(
-        request: GRPCCore.ServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
-    
-    /// A sequence of requests followed by one response (streamed upload).
-    /// The server returns the aggregated size of client payload as the result.
-    func streamingInputCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_StreamingInputCallResponse>
-    
-    /// A sequence of requests with each request served by the server immediately.
-    /// As one request could lead to multiple responses, this interface
-    /// demonstrates the idea of full duplexing.
-    func fullDuplexCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
-    
-    /// A sequence of requests followed by a sequence of responses.
-    /// The server buffers all the client requests and then serves them in order. A
-    /// stream of responses are returned to the client when the server starts with
-    /// first request.
-    func halfDuplexCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>
-    
-    /// The test server will not implement this method. It will be used
-    /// to test the behavior when clients call unimplemented methods.
-    func unimplementedCall(
-        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
-}
-
-/// Partial conformance to `Grpc_Testing_TestService_StreamingServiceProtocol`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// Default implementation of streaming methods from 'StreamingServiceProtocol'.
 extension Grpc_Testing_TestService.ServiceProtocol {
     public func emptyCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
@@ -430,7 +769,7 @@ extension Grpc_Testing_TestService.ServiceProtocol {
         )
         return GRPCCore.StreamingServerResponse(single: response)
     }
-    
+
     public func unaryCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_SimpleRequest>,
         context: GRPCCore.ServerContext
@@ -441,7 +780,7 @@ extension Grpc_Testing_TestService.ServiceProtocol {
         )
         return GRPCCore.StreamingServerResponse(single: response)
     }
-    
+
     public func cacheableUnaryCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_SimpleRequest>,
         context: GRPCCore.ServerContext
@@ -452,7 +791,7 @@ extension Grpc_Testing_TestService.ServiceProtocol {
         )
         return GRPCCore.StreamingServerResponse(single: response)
     }
-    
+
     public func streamingOutputCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
         context: GRPCCore.ServerContext
@@ -463,7 +802,7 @@ extension Grpc_Testing_TestService.ServiceProtocol {
         )
         return response
     }
-    
+
     public func streamingInputCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
         context: GRPCCore.ServerContext
@@ -474,7 +813,7 @@ extension Grpc_Testing_TestService.ServiceProtocol {
         )
         return GRPCCore.StreamingServerResponse(single: response)
     }
-    
+
     public func unimplementedCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
         context: GRPCCore.ServerContext
@@ -487,21 +826,1280 @@ extension Grpc_Testing_TestService.ServiceProtocol {
     }
 }
 
-/// A simple service NOT implemented at servers so clients can test for
-/// that case.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_UnimplementedService_StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
-    /// A call that no server should implement
-    func unimplementedCall(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
+// Default implementation of methods from 'ServiceProtocol'.
+extension Grpc_Testing_TestService.SimpleServiceProtocol {
+    public func emptyCall(
+        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
         context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty> {
+        return GRPCCore.ServerResponse<Grpc_Testing_Empty>(
+            message: try await self.emptyCall(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
+
+    public func unaryCall(
+        request: GRPCCore.ServerRequest<Grpc_Testing_SimpleRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse> {
+        return GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse>(
+            message: try await self.unaryCall(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
+
+    public func cacheableUnaryCall(
+        request: GRPCCore.ServerRequest<Grpc_Testing_SimpleRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse> {
+        return GRPCCore.ServerResponse<Grpc_Testing_SimpleResponse>(
+            message: try await self.cacheableUnaryCall(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
+
+    public func streamingOutputCall(
+        request: GRPCCore.ServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse> {
+        return GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>(
+            metadata: [:],
+            producer: { writer in
+                try await self.streamingOutputCall(
+                    request: request.message,
+                    response: writer,
+                    context: context
+                )
+                return [:]
+            }
+        )
+    }
+
+    public func streamingInputCall(
+        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_StreamingInputCallResponse> {
+        return GRPCCore.ServerResponse<Grpc_Testing_StreamingInputCallResponse>(
+            message: try await self.streamingInputCall(
+                request: request.messages,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
+
+    public func fullDuplexCall(
+        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse> {
+        return GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>(
+            metadata: [:],
+            producer: { writer in
+                try await self.fullDuplexCall(
+                    request: request.messages,
+                    response: writer,
+                    context: context
+                )
+                return [:]
+            }
+        )
+    }
+
+    public func halfDuplexCall(
+        request: GRPCCore.StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse> {
+        return GRPCCore.StreamingServerResponse<Grpc_Testing_StreamingOutputCallResponse>(
+            metadata: [:],
+            producer: { writer in
+                try await self.halfDuplexCall(
+                    request: request.messages,
+                    response: writer,
+                    context: context
+                )
+                return [:]
+            }
+        )
+    }
+
+    public func unimplementedCall(
+        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty> {
+        return GRPCCore.ServerResponse<Grpc_Testing_Empty>(
+            message: try await self.unimplementedCall(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
 }
 
-/// Conformance to `GRPCCore.RegistrableRPCService`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// MARK: grpc.testing.TestService (client)
+
+extension Grpc_Testing_TestService {
+    /// Generated client protocol for the "grpc.testing.TestService" service.
+    ///
+    /// You don't need to implement this protocol directly, use the generated
+    /// implementation, ``Client``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service to test the various types of RPCs and experiment with
+    /// > performance with various types of payload.
+    public protocol ClientProtocol: Sendable {
+        /// Call the "EmptyCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One empty request followed by one empty response.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func emptyCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "UnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+        ///   - serializer: A serializer for `Grpc_Testing_SimpleRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_SimpleResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func unaryCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "CacheableUnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response. Response has cache control
+        /// > headers set such that a caching HTTP proxy (such as GFE) can
+        /// > satisfy subsequent requests.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+        ///   - serializer: A serializer for `Grpc_Testing_SimpleRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_SimpleResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func cacheableUnaryCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "StreamingOutputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by a sequence of responses (streamed download).
+        /// > The server returns the payload with client desired type and sizes.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_StreamingOutputCallRequest` message.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func streamingOutputCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "StreamingInputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by one response (streamed upload).
+        /// > The server returns the aggregated size of client payload as the result.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request producing `Grpc_Testing_StreamingInputCallRequest` messages.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingInputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingInputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func streamingInputCall<Result>(
+            request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingInputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingInputCallResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "FullDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests with each request served by the server immediately.
+        /// > As one request could lead to multiple responses, this interface
+        /// > demonstrates the idea of full duplexing.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request producing `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func fullDuplexCall<Result>(
+            request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "HalfDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by a sequence of responses.
+        /// > The server buffers all the client requests and then serves them in order. A
+        /// > stream of responses are returned to the client when the server starts with
+        /// > first request.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request producing `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func halfDuplexCall<Result>(
+            request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > The test server will not implement this method. It will be used
+        /// > to test the behavior when clients call unimplemented methods.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func unimplementedCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+    }
+
+    /// Generated client for the "grpc.testing.TestService" service.
+    ///
+    /// The ``Client`` provides an implementation of ``ClientProtocol`` which wraps
+    /// a `GRPCCore.GRPCCClient`. The underlying `GRPCClient` provides the long-lived
+    /// means of communication with the remote peer.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service to test the various types of RPCs and experiment with
+    /// > performance with various types of payload.
+    public struct Client: ClientProtocol {
+        private let client: GRPCCore.GRPCClient
+
+        /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
+        ///
+        /// - Parameters:
+        ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
+        public init(wrapping client: GRPCCore.GRPCClient) {
+            self.client = client
+        }
+
+        /// Call the "EmptyCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One empty request followed by one empty response.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func emptyCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.EmptyCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "UnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+        ///   - serializer: A serializer for `Grpc_Testing_SimpleRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_SimpleResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func unaryCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.UnaryCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "CacheableUnaryCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by one response. Response has cache control
+        /// > headers set such that a caching HTTP proxy (such as GFE) can
+        /// > satisfy subsequent requests.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+        ///   - serializer: A serializer for `Grpc_Testing_SimpleRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_SimpleResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func cacheableUnaryCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.CacheableUnaryCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "StreamingOutputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > One request followed by a sequence of responses (streamed download).
+        /// > The server returns the payload with client desired type and sizes.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_StreamingOutputCallRequest` message.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func streamingOutputCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.serverStreaming(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.StreamingOutputCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "StreamingInputCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by one response (streamed upload).
+        /// > The server returns the aggregated size of client payload as the result.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request producing `Grpc_Testing_StreamingInputCallRequest` messages.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingInputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingInputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func streamingInputCall<Result>(
+            request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingInputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingInputCallResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.clientStreaming(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.StreamingInputCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "FullDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests with each request served by the server immediately.
+        /// > As one request could lead to multiple responses, this interface
+        /// > demonstrates the idea of full duplexing.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request producing `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func fullDuplexCall<Result>(
+            request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.bidirectionalStreaming(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.FullDuplexCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "HalfDuplexCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A sequence of requests followed by a sequence of responses.
+        /// > The server buffers all the client requests and then serves them in order. A
+        /// > stream of responses are returned to the client when the server starts with
+        /// > first request.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request producing `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - serializer: A serializer for `Grpc_Testing_StreamingOutputCallRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_StreamingOutputCallResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func halfDuplexCall<Result>(
+            request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.bidirectionalStreaming(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.HalfDuplexCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > The test server will not implement this method. It will be used
+        /// > to test the behavior when clients call unimplemented methods.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func unimplementedCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Testing_TestService.Method.UnimplementedCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+    }
+}
+
+// Helpers providing default arguments to 'ClientProtocol' methods.
+extension Grpc_Testing_TestService.ClientProtocol {
+    /// Call the "EmptyCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One empty request followed by one empty response.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func emptyCall<Result>(
+        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.emptyCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_Empty>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "UnaryCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One request followed by one response.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func unaryCall<Result>(
+        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.unaryCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_SimpleRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_SimpleResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "CacheableUnaryCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One request followed by one response. Response has cache control
+    /// > headers set such that a caching HTTP proxy (such as GFE) can
+    /// > satisfy subsequent requests.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_SimpleRequest` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func cacheableUnaryCall<Result>(
+        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.cacheableUnaryCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_SimpleRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_SimpleResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "StreamingOutputCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One request followed by a sequence of responses (streamed download).
+    /// > The server returns the payload with client desired type and sizes.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_StreamingOutputCallRequest` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func streamingOutputCall<Result>(
+        request: GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        try await self.streamingOutputCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingOutputCallRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingOutputCallResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "StreamingInputCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A sequence of requests followed by one response (streamed upload).
+    /// > The server returns the aggregated size of client payload as the result.
+    ///
+    /// - Parameters:
+    ///   - request: A streaming request producing `Grpc_Testing_StreamingInputCallRequest` messages.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func streamingInputCall<Result>(
+        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.streamingInputCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingInputCallRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingInputCallResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "FullDuplexCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A sequence of requests with each request served by the server immediately.
+    /// > As one request could lead to multiple responses, this interface
+    /// > demonstrates the idea of full duplexing.
+    ///
+    /// - Parameters:
+    ///   - request: A streaming request producing `Grpc_Testing_StreamingOutputCallRequest` messages.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func fullDuplexCall<Result>(
+        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        try await self.fullDuplexCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingOutputCallRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingOutputCallResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "HalfDuplexCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A sequence of requests followed by a sequence of responses.
+    /// > The server buffers all the client requests and then serves them in order. A
+    /// > stream of responses are returned to the client when the server starts with
+    /// > first request.
+    ///
+    /// - Parameters:
+    ///   - request: A streaming request producing `Grpc_Testing_StreamingOutputCallRequest` messages.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func halfDuplexCall<Result>(
+        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        try await self.halfDuplexCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingOutputCallRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingOutputCallResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "UnimplementedCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > The test server will not implement this method. It will be used
+    /// > to test the behavior when clients call unimplemented methods.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func unimplementedCall<Result>(
+        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.unimplementedCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_Empty>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+}
+
+// Helpers providing sugared APIs for 'ClientProtocol' methods.
+extension Grpc_Testing_TestService.ClientProtocol {
+    /// Call the "EmptyCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One empty request followed by one empty response.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func emptyCall<Result>(
+        _ message: Grpc_Testing_Empty,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Grpc_Testing_Empty>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.emptyCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "UnaryCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One request followed by one response.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func unaryCall<Result>(
+        _ message: Grpc_Testing_SimpleRequest,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.unaryCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "CacheableUnaryCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One request followed by one response. Response has cache control
+    /// > headers set such that a caching HTTP proxy (such as GFE) can
+    /// > satisfy subsequent requests.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func cacheableUnaryCall<Result>(
+        _ message: Grpc_Testing_SimpleRequest,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.cacheableUnaryCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "StreamingOutputCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > One request followed by a sequence of responses (streamed download).
+    /// > The server returns the payload with client desired type and sizes.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func streamingOutputCall<Result>(
+        _ message: Grpc_Testing_StreamingOutputCallRequest,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.streamingOutputCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "StreamingInputCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A sequence of requests followed by one response (streamed upload).
+    /// > The server returns the aggregated size of client payload as the result.
+    ///
+    /// - Parameters:
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - producer: A closure producing request messages to send to the server. The request
+    ///       stream is closed when the closure returns.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func streamingInputCall<Result>(
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        requestProducer producer: @Sendable @escaping (GRPCCore.RPCWriter<Grpc_Testing_StreamingInputCallRequest>) async throws -> Void,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>(
+            metadata: metadata,
+            producer: producer
+        )
+        return try await self.streamingInputCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "FullDuplexCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A sequence of requests with each request served by the server immediately.
+    /// > As one request could lead to multiple responses, this interface
+    /// > demonstrates the idea of full duplexing.
+    ///
+    /// - Parameters:
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - producer: A closure producing request messages to send to the server. The request
+    ///       stream is closed when the closure returns.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func fullDuplexCall<Result>(
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        requestProducer producer: @Sendable @escaping (GRPCCore.RPCWriter<Grpc_Testing_StreamingOutputCallRequest>) async throws -> Void,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>(
+            metadata: metadata,
+            producer: producer
+        )
+        return try await self.fullDuplexCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "HalfDuplexCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A sequence of requests followed by a sequence of responses.
+    /// > The server buffers all the client requests and then serves them in order. A
+    /// > stream of responses are returned to the client when the server starts with
+    /// > first request.
+    ///
+    /// - Parameters:
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - producer: A closure producing request messages to send to the server. The request
+    ///       stream is closed when the closure returns.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func halfDuplexCall<Result>(
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        requestProducer producer: @Sendable @escaping (GRPCCore.RPCWriter<Grpc_Testing_StreamingOutputCallRequest>) async throws -> Void,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>(
+            metadata: metadata,
+            producer: producer
+        )
+        return try await self.halfDuplexCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "UnimplementedCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > The test server will not implement this method. It will be used
+    /// > to test the behavior when clients call unimplemented methods.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func unimplementedCall<Result>(
+        _ message: Grpc_Testing_Empty,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Grpc_Testing_Empty>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.unimplementedCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+}
+
+// MARK: - grpc.testing.UnimplementedService
+
+/// Namespace containing generated types for the "grpc.testing.UnimplementedService" service.
+public enum Grpc_Testing_UnimplementedService {
+    /// Service descriptor for the "grpc.testing.UnimplementedService" service.
+    public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.UnimplementedService")
+    /// Namespace for method metadata.
+    public enum Method {
+        /// Namespace for "UnimplementedCall" metadata.
+        public enum UnimplementedCall {
+            /// Request type for "UnimplementedCall".
+            public typealias Input = Grpc_Testing_Empty
+            /// Response type for "UnimplementedCall".
+            public typealias Output = Grpc_Testing_Empty
+            /// Descriptor for "UnimplementedCall".
+            public static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.UnimplementedService"),
+                method: "UnimplementedCall"
+            )
+        }
+        /// Descriptors for all methods in the "grpc.testing.UnimplementedService" service.
+        public static let descriptors: [GRPCCore.MethodDescriptor] = [
+            UnimplementedCall.descriptor
+        ]
+    }
+}
+
+extension GRPCCore.ServiceDescriptor {
+    /// Service descriptor for the "grpc.testing.UnimplementedService" service.
+    public static let grpc_testing_UnimplementedService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.UnimplementedService")
+}
+
+// MARK: grpc.testing.UnimplementedService (server)
+
+extension Grpc_Testing_UnimplementedService {
+    /// Streaming variant of the service protocol for the "grpc.testing.UnimplementedService" service.
+    ///
+    /// This protocol is the lowest-level of the service protocols generated for this service
+    /// giving you the most flexibility over the implementation of your service. This comes at
+    /// the cost of more verbose and less strict APIs. Each RPC requires you to implement it in
+    /// terms of a request stream and response stream. Where only a single request or response
+    /// message is expected, you are responsible for enforcing this invariant is maintained.
+    ///
+    /// Where possible, prefer using the stricter, less-verbose ``ServiceProtocol``
+    /// or ``SimpleServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service NOT implemented at servers so clients can test for
+    /// > that case.
+    public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
+        /// Handle the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A call that no server should implement
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_Empty` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_Empty` messages.
+        func unimplementedCall(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
+    }
+
+    /// Service protocol for the "grpc.testing.UnimplementedService" service.
+    ///
+    /// This protocol is higher level than ``StreamingServiceProtocol`` but lower level than
+    /// the ``SimpleServiceProtocol``, it provides access to request and response metadata and
+    /// trailing response metadata. If you don't need these then consider using
+    /// the ``SimpleServiceProtocol``. If you need fine grained control over your RPCs then
+    /// use ``StreamingServiceProtocol``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service NOT implemented at servers so clients can test for
+    /// > that case.
+    public protocol ServiceProtocol: Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
+        /// Handle the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A call that no server should implement
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_Empty` message.
+        func unimplementedCall(
+            request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
+    }
+
+    /// Simple service protocol for the "grpc.testing.UnimplementedService" service.
+    ///
+    /// This is the highest level protocol for the service. The API is the easiest to use but
+    /// doesn't provide access to request or response metadata. If you need access to these
+    /// then use ``ServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service NOT implemented at servers so clients can test for
+    /// > that case.
+    public protocol SimpleServiceProtocol: Grpc_Testing_UnimplementedService.ServiceProtocol {
+        /// Handle the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A call that no server should implement
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_Empty` to respond with.
+        func unimplementedCall(
+            request: Grpc_Testing_Empty,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_Empty
+    }
+}
+
+// Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
     public func registerMethods(with router: inout GRPCCore.RPCRouter) {
         router.registerHandler(
             forMethod: Grpc_Testing_UnimplementedService.Method.UnimplementedCall.descriptor,
@@ -517,19 +2115,7 @@ extension Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
     }
 }
 
-/// A simple service NOT implemented at servers so clients can test for
-/// that case.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_UnimplementedService_ServiceProtocol: Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
-    /// A call that no server should implement
-    func unimplementedCall(
-        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
-}
-
-/// Partial conformance to `Grpc_Testing_UnimplementedService_StreamingServiceProtocol`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// Default implementation of streaming methods from 'StreamingServiceProtocol'.
 extension Grpc_Testing_UnimplementedService.ServiceProtocol {
     public func unimplementedCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
@@ -543,24 +2129,359 @@ extension Grpc_Testing_UnimplementedService.ServiceProtocol {
     }
 }
 
-/// A service used to control reconnect server.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_ReconnectService_StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
-    func start(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_ReconnectParams>,
+// Default implementation of methods from 'ServiceProtocol'.
+extension Grpc_Testing_UnimplementedService.SimpleServiceProtocol {
+    public func unimplementedCall(
+        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
         context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
-    
-    func stop(
-        request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_ReconnectInfo>
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty> {
+        return GRPCCore.ServerResponse<Grpc_Testing_Empty>(
+            message: try await self.unimplementedCall(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
 }
 
-/// Conformance to `GRPCCore.RegistrableRPCService`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// MARK: grpc.testing.UnimplementedService (client)
+
+extension Grpc_Testing_UnimplementedService {
+    /// Generated client protocol for the "grpc.testing.UnimplementedService" service.
+    ///
+    /// You don't need to implement this protocol directly, use the generated
+    /// implementation, ``Client``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service NOT implemented at servers so clients can test for
+    /// > that case.
+    public protocol ClientProtocol: Sendable {
+        /// Call the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A call that no server should implement
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func unimplementedCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+    }
+
+    /// Generated client for the "grpc.testing.UnimplementedService" service.
+    ///
+    /// The ``Client`` provides an implementation of ``ClientProtocol`` which wraps
+    /// a `GRPCCore.GRPCCClient`. The underlying `GRPCClient` provides the long-lived
+    /// means of communication with the remote peer.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A simple service NOT implemented at servers so clients can test for
+    /// > that case.
+    public struct Client: ClientProtocol {
+        private let client: GRPCCore.GRPCClient
+
+        /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
+        ///
+        /// - Parameters:
+        ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
+        public init(wrapping client: GRPCCore.GRPCClient) {
+            self.client = client
+        }
+
+        /// Call the "UnimplementedCall" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > A call that no server should implement
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func unimplementedCall<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Testing_UnimplementedService.Method.UnimplementedCall.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+    }
+}
+
+// Helpers providing default arguments to 'ClientProtocol' methods.
+extension Grpc_Testing_UnimplementedService.ClientProtocol {
+    /// Call the "UnimplementedCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A call that no server should implement
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func unimplementedCall<Result>(
+        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.unimplementedCall(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_Empty>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+}
+
+// Helpers providing sugared APIs for 'ClientProtocol' methods.
+extension Grpc_Testing_UnimplementedService.ClientProtocol {
+    /// Call the "UnimplementedCall" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A call that no server should implement
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func unimplementedCall<Result>(
+        _ message: Grpc_Testing_Empty,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Grpc_Testing_Empty>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.unimplementedCall(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+}
+
+// MARK: - grpc.testing.ReconnectService
+
+/// Namespace containing generated types for the "grpc.testing.ReconnectService" service.
+public enum Grpc_Testing_ReconnectService {
+    /// Service descriptor for the "grpc.testing.ReconnectService" service.
+    public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService")
+    /// Namespace for method metadata.
+    public enum Method {
+        /// Namespace for "Start" metadata.
+        public enum Start {
+            /// Request type for "Start".
+            public typealias Input = Grpc_Testing_ReconnectParams
+            /// Response type for "Start".
+            public typealias Output = Grpc_Testing_Empty
+            /// Descriptor for "Start".
+            public static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService"),
+                method: "Start"
+            )
+        }
+        /// Namespace for "Stop" metadata.
+        public enum Stop {
+            /// Request type for "Stop".
+            public typealias Input = Grpc_Testing_Empty
+            /// Response type for "Stop".
+            public typealias Output = Grpc_Testing_ReconnectInfo
+            /// Descriptor for "Stop".
+            public static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService"),
+                method: "Stop"
+            )
+        }
+        /// Descriptors for all methods in the "grpc.testing.ReconnectService" service.
+        public static let descriptors: [GRPCCore.MethodDescriptor] = [
+            Start.descriptor,
+            Stop.descriptor
+        ]
+    }
+}
+
+extension GRPCCore.ServiceDescriptor {
+    /// Service descriptor for the "grpc.testing.ReconnectService" service.
+    public static let grpc_testing_ReconnectService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService")
+}
+
+// MARK: grpc.testing.ReconnectService (server)
+
+extension Grpc_Testing_ReconnectService {
+    /// Streaming variant of the service protocol for the "grpc.testing.ReconnectService" service.
+    ///
+    /// This protocol is the lowest-level of the service protocols generated for this service
+    /// giving you the most flexibility over the implementation of your service. This comes at
+    /// the cost of more verbose and less strict APIs. Each RPC requires you to implement it in
+    /// terms of a request stream and response stream. Where only a single request or response
+    /// message is expected, you are responsible for enforcing this invariant is maintained.
+    ///
+    /// Where possible, prefer using the stricter, less-verbose ``ServiceProtocol``
+    /// or ``SimpleServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service used to control reconnect server.
+    public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
+        /// Handle the "Start" method.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_ReconnectParams` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_Empty` messages.
+        func start(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_ReconnectParams>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_Empty>
+
+        /// Handle the "Stop" method.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Testing_Empty` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Testing_ReconnectInfo` messages.
+        func stop(
+            request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Testing_ReconnectInfo>
+    }
+
+    /// Service protocol for the "grpc.testing.ReconnectService" service.
+    ///
+    /// This protocol is higher level than ``StreamingServiceProtocol`` but lower level than
+    /// the ``SimpleServiceProtocol``, it provides access to request and response metadata and
+    /// trailing response metadata. If you don't need these then consider using
+    /// the ``SimpleServiceProtocol``. If you need fine grained control over your RPCs then
+    /// use ``StreamingServiceProtocol``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service used to control reconnect server.
+    public protocol ServiceProtocol: Grpc_Testing_ReconnectService.StreamingServiceProtocol {
+        /// Handle the "Start" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_ReconnectParams` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_Empty` message.
+        func start(
+            request: GRPCCore.ServerRequest<Grpc_Testing_ReconnectParams>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
+
+        /// Handle the "Stop" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Testing_ReconnectInfo` message.
+        func stop(
+            request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_ReconnectInfo>
+    }
+
+    /// Simple service protocol for the "grpc.testing.ReconnectService" service.
+    ///
+    /// This is the highest level protocol for the service. The API is the easiest to use but
+    /// doesn't provide access to request or response metadata. If you need access to these
+    /// then use ``ServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service used to control reconnect server.
+    public protocol SimpleServiceProtocol: Grpc_Testing_ReconnectService.ServiceProtocol {
+        /// Handle the "Start" method.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_ReconnectParams` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_Empty` to respond with.
+        func start(
+            request: Grpc_Testing_ReconnectParams,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_Empty
+
+        /// Handle the "Stop" method.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Testing_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Testing_ReconnectInfo` to respond with.
+        func stop(
+            request: Grpc_Testing_Empty,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Testing_ReconnectInfo
+    }
+}
+
+// Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_ReconnectService.StreamingServiceProtocol {
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
     public func registerMethods(with router: inout GRPCCore.RPCRouter) {
         router.registerHandler(
             forMethod: Grpc_Testing_ReconnectService.Method.Start.descriptor,
@@ -587,22 +2508,7 @@ extension Grpc_Testing_ReconnectService.StreamingServiceProtocol {
     }
 }
 
-/// A service used to control reconnect server.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_ReconnectService_ServiceProtocol: Grpc_Testing_ReconnectService.StreamingServiceProtocol {
-    func start(
-        request: GRPCCore.ServerRequest<Grpc_Testing_ReconnectParams>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty>
-    
-    func stop(
-        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
-        context: GRPCCore.ServerContext
-    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_ReconnectInfo>
-}
-
-/// Partial conformance to `Grpc_Testing_ReconnectService_StreamingServiceProtocol`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// Default implementation of streaming methods from 'StreamingServiceProtocol'.
 extension Grpc_Testing_ReconnectService.ServiceProtocol {
     public func start(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_ReconnectParams>,
@@ -614,7 +2520,7 @@ extension Grpc_Testing_ReconnectService.ServiceProtocol {
         )
         return GRPCCore.StreamingServerResponse(single: response)
     }
-    
+
     public func stop(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
         context: GRPCCore.ServerContext
@@ -627,710 +2533,239 @@ extension Grpc_Testing_ReconnectService.ServiceProtocol {
     }
 }
 
-/// A simple service to test the various types of RPCs and experiment with
-/// performance with various types of payload.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_TestService_ClientProtocol: Sendable {
-    /// One empty request followed by one empty response.
-    func emptyCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    /// One request followed by one response.
-    func unaryCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    /// One request followed by one response. Response has cache control
-    /// headers set such that a caching HTTP proxy (such as GFE) can
-    /// satisfy subsequent requests.
-    func cacheableUnaryCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    /// One request followed by a sequence of responses (streamed download).
-    /// The server returns the payload with client desired type and sizes.
-    func streamingOutputCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    /// A sequence of requests followed by one response (streamed upload).
-    /// The server returns the aggregated size of client payload as the result.
-    func streamingInputCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingInputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingInputCallResponse>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    /// A sequence of requests with each request served by the server immediately.
-    /// As one request could lead to multiple responses, this interface
-    /// demonstrates the idea of full duplexing.
-    func fullDuplexCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    /// A sequence of requests followed by a sequence of responses.
-    /// The server buffers all the client requests and then serves them in order. A
-    /// stream of responses are returned to the client when the server starts with
-    /// first request.
-    func halfDuplexCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    /// The test server will not implement this method. It will be used
-    /// to test the behavior when clients call unimplemented methods.
-    func unimplementedCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R
-    ) async throws -> R where R: Sendable
-}
+// Default implementation of methods from 'ServiceProtocol'.
+extension Grpc_Testing_ReconnectService.SimpleServiceProtocol {
+    public func start(
+        request: GRPCCore.ServerRequest<Grpc_Testing_ReconnectParams>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_Empty> {
+        return GRPCCore.ServerResponse<Grpc_Testing_Empty>(
+            message: try await self.start(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-extension Grpc_Testing_TestService.ClientProtocol {
-    public func emptyCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.emptyCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_Empty>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
-            options: options,
-            body
-        )
-    }
-    
-    public func unaryCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.unaryCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_SimpleRequest>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_SimpleResponse>(),
-            options: options,
-            body
-        )
-    }
-    
-    public func cacheableUnaryCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.cacheableUnaryCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_SimpleRequest>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_SimpleResponse>(),
-            options: options,
-            body
-        )
-    }
-    
-    public func streamingOutputCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable {
-        try await self.streamingOutputCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingOutputCallRequest>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingOutputCallResponse>(),
-            options: options,
-            body
-        )
-    }
-    
-    public func streamingInputCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.streamingInputCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingInputCallRequest>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingInputCallResponse>(),
-            options: options,
-            body
-        )
-    }
-    
-    public func fullDuplexCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable {
-        try await self.fullDuplexCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingOutputCallRequest>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingOutputCallResponse>(),
-            options: options,
-            body
-        )
-    }
-    
-    public func halfDuplexCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable {
-        try await self.halfDuplexCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_StreamingOutputCallRequest>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_StreamingOutputCallResponse>(),
-            options: options,
-            body
-        )
-    }
-    
-    public func unimplementedCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.unimplementedCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_Empty>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
-            options: options,
-            body
+    public func stop(
+        request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Testing_ReconnectInfo> {
+        return GRPCCore.ServerResponse<Grpc_Testing_ReconnectInfo>(
+            message: try await self.stop(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
         )
     }
 }
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-extension Grpc_Testing_TestService.ClientProtocol {
-    /// One empty request followed by one empty response.
-    public func emptyCall<Result>(
-        _ message: Grpc_Testing_Empty,
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = {
-            try $0.message
+// MARK: grpc.testing.ReconnectService (client)
+
+extension Grpc_Testing_ReconnectService {
+    /// Generated client protocol for the "grpc.testing.ReconnectService" service.
+    ///
+    /// You don't need to implement this protocol directly, use the generated
+    /// implementation, ``Client``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service used to control reconnect server.
+    public protocol ClientProtocol: Sendable {
+        /// Call the "Start" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_ReconnectParams` message.
+        ///   - serializer: A serializer for `Grpc_Testing_ReconnectParams` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func start<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_ReconnectParams>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_ReconnectParams>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "Stop" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_ReconnectInfo` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func stop<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_ReconnectInfo>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+    }
+
+    /// Generated client for the "grpc.testing.ReconnectService" service.
+    ///
+    /// The ``Client`` provides an implementation of ``ClientProtocol`` which wraps
+    /// a `GRPCCore.GRPCCClient`. The underlying `GRPCClient` provides the long-lived
+    /// means of communication with the remote peer.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service used to control reconnect server.
+    public struct Client: ClientProtocol {
+        private let client: GRPCCore.GRPCClient
+
+        /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
+        ///
+        /// - Parameters:
+        ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
+        public init(wrapping client: GRPCCore.GRPCClient) {
+            self.client = client
         }
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Grpc_Testing_Empty>(
-            message: message,
-            metadata: metadata
-        )
-        return try await self.emptyCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-    
-    /// One request followed by one response.
-    public func unaryCall<Result>(
-        _ message: Grpc_Testing_SimpleRequest,
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = {
-            try $0.message
+
+        /// Call the "Start" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_ReconnectParams` message.
+        ///   - serializer: A serializer for `Grpc_Testing_ReconnectParams` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_Empty` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func start<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_ReconnectParams>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_ReconnectParams>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Testing_ReconnectService.Method.Start.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
         }
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>(
-            message: message,
-            metadata: metadata
-        )
-        return try await self.unaryCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-    
-    /// One request followed by one response. Response has cache control
-    /// headers set such that a caching HTTP proxy (such as GFE) can
-    /// satisfy subsequent requests.
-    public func cacheableUnaryCall<Result>(
-        _ message: Grpc_Testing_SimpleRequest,
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> Result = {
-            try $0.message
+
+        /// Call the "Stop" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+        ///   - serializer: A serializer for `Grpc_Testing_Empty` messages.
+        ///   - deserializer: A deserializer for `Grpc_Testing_ReconnectInfo` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        public func stop<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_ReconnectInfo>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Testing_ReconnectService.Method.Stop.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
         }
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>(
-            message: message,
-            metadata: metadata
-        )
-        return try await self.cacheableUnaryCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-    
-    /// One request followed by a sequence of responses (streamed download).
-    /// The server returns the payload with client desired type and sizes.
-    public func streamingOutputCall<Result>(
-        _ message: Grpc_Testing_StreamingOutputCallRequest,
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>(
-            message: message,
-            metadata: metadata
-        )
-        return try await self.streamingOutputCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-    
-    /// A sequence of requests followed by one response (streamed upload).
-    /// The server returns the aggregated size of client payload as the result.
-    public func streamingInputCall<Result>(
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        requestProducer: @Sendable @escaping (GRPCCore.RPCWriter<Grpc_Testing_StreamingInputCallRequest>) async throws -> Void,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> Result = {
-            try $0.message
-        }
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>(
-            metadata: metadata,
-            producer: requestProducer
-        )
-        return try await self.streamingInputCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-    
-    /// A sequence of requests with each request served by the server immediately.
-    /// As one request could lead to multiple responses, this interface
-    /// demonstrates the idea of full duplexing.
-    public func fullDuplexCall<Result>(
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        requestProducer: @Sendable @escaping (GRPCCore.RPCWriter<Grpc_Testing_StreamingOutputCallRequest>) async throws -> Void,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>(
-            metadata: metadata,
-            producer: requestProducer
-        )
-        return try await self.fullDuplexCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-    
-    /// A sequence of requests followed by a sequence of responses.
-    /// The server buffers all the client requests and then serves them in order. A
-    /// stream of responses are returned to the client when the server starts with
-    /// first request.
-    public func halfDuplexCall<Result>(
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        requestProducer: @Sendable @escaping (GRPCCore.RPCWriter<Grpc_Testing_StreamingOutputCallRequest>) async throws -> Void,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> Result
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>(
-            metadata: metadata,
-            producer: requestProducer
-        )
-        return try await self.halfDuplexCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-    
-    /// The test server will not implement this method. It will be used
-    /// to test the behavior when clients call unimplemented methods.
-    public func unimplementedCall<Result>(
-        _ message: Grpc_Testing_Empty,
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = {
-            try $0.message
-        }
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Grpc_Testing_Empty>(
-            message: message,
-            metadata: metadata
-        )
-        return try await self.unimplementedCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
     }
 }
 
-/// A simple service to test the various types of RPCs and experiment with
-/// performance with various types of payload.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public struct Grpc_Testing_TestService_Client: Grpc_Testing_TestService.ClientProtocol {
-    private let client: GRPCCore.GRPCClient
-    
-    public init(wrapping client: GRPCCore.GRPCClient) {
-        self.client = client
-    }
-    
-    /// One empty request followed by one empty response.
-    public func emptyCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.unary(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.EmptyCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    /// One request followed by one response.
-    public func unaryCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.unary(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.UnaryCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    /// One request followed by one response. Response has cache control
-    /// headers set such that a caching HTTP proxy (such as GFE) can
-    /// satisfy subsequent requests.
-    public func cacheableUnaryCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_SimpleRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_SimpleRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_SimpleResponse>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_SimpleResponse>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.unary(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.CacheableUnaryCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    /// One request followed by a sequence of responses (streamed download).
-    /// The server returns the payload with client desired type and sizes.
-    public func streamingOutputCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable {
-        try await self.client.serverStreaming(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.StreamingOutputCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    /// A sequence of requests followed by one response (streamed upload).
-    /// The server returns the aggregated size of client payload as the result.
-    public func streamingInputCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingInputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingInputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingInputCallResponse>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_StreamingInputCallResponse>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.clientStreaming(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.StreamingInputCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    /// A sequence of requests with each request served by the server immediately.
-    /// As one request could lead to multiple responses, this interface
-    /// demonstrates the idea of full duplexing.
-    public func fullDuplexCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable {
-        try await self.client.bidirectionalStreaming(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.FullDuplexCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    /// A sequence of requests followed by a sequence of responses.
-    /// The server buffers all the client requests and then serves them in order. A
-    /// stream of responses are returned to the client when the server starts with
-    /// first request.
-    public func halfDuplexCall<R>(
-        request: GRPCCore.StreamingClientRequest<Grpc_Testing_StreamingOutputCallRequest>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_StreamingOutputCallRequest>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_StreamingOutputCallResponse>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.StreamingClientResponse<Grpc_Testing_StreamingOutputCallResponse>) async throws -> R
-    ) async throws -> R where R: Sendable {
-        try await self.client.bidirectionalStreaming(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.HalfDuplexCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    /// The test server will not implement this method. It will be used
-    /// to test the behavior when clients call unimplemented methods.
-    public func unimplementedCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.unary(
-            request: request,
-            descriptor: Grpc_Testing_TestService.Method.UnimplementedCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-}
-
-/// A simple service NOT implemented at servers so clients can test for
-/// that case.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_UnimplementedService_ClientProtocol: Sendable {
-    /// A call that no server should implement
-    func unimplementedCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R
-    ) async throws -> R where R: Sendable
-}
-
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-extension Grpc_Testing_UnimplementedService.ClientProtocol {
-    public func unimplementedCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.unimplementedCall(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_Empty>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
-            options: options,
-            body
-        )
-    }
-}
-
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-extension Grpc_Testing_UnimplementedService.ClientProtocol {
-    /// A call that no server should implement
-    public func unimplementedCall<Result>(
-        _ message: Grpc_Testing_Empty,
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = {
-            try $0.message
-        }
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Grpc_Testing_Empty>(
-            message: message,
-            metadata: metadata
-        )
-        return try await self.unimplementedCall(
-            request: request,
-            options: options,
-            handleResponse
-        )
-    }
-}
-
-/// A simple service NOT implemented at servers so clients can test for
-/// that case.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public struct Grpc_Testing_UnimplementedService_Client: Grpc_Testing_UnimplementedService.ClientProtocol {
-    private let client: GRPCCore.GRPCClient
-    
-    public init(wrapping client: GRPCCore.GRPCClient) {
-        self.client = client
-    }
-    
-    /// A call that no server should implement
-    public func unimplementedCall<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.unary(
-            request: request,
-            descriptor: Grpc_Testing_UnimplementedService.Method.UnimplementedCall.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-}
-
-/// A service used to control reconnect server.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_ReconnectService_ClientProtocol: Sendable {
-    func start<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_ReconnectParams>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_ReconnectParams>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R
-    ) async throws -> R where R: Sendable
-    
-    func stop<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_ReconnectInfo>,
-        options: GRPCCore.CallOptions,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> R
-    ) async throws -> R where R: Sendable
-}
-
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// Helpers providing default arguments to 'ClientProtocol' methods.
 extension Grpc_Testing_ReconnectService.ClientProtocol {
-    public func start<R>(
+    /// Call the "Start" method.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_ReconnectParams` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func start<Result>(
         request: GRPCCore.ClientRequest<Grpc_Testing_ReconnectParams>,
         options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
         }
-    ) async throws -> R where R: Sendable {
+    ) async throws -> Result where Result: Sendable {
         try await self.start(
             request: request,
             serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_ReconnectParams>(),
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
             options: options,
-            body
+            onResponse: handleResponse
         )
     }
-    
-    public func stop<R>(
+
+    /// Call the "Stop" method.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Testing_Empty` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    public func stop<Result>(
         request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
         options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> R = {
-            try $0.message
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> Result = { response in
+            try response.message
         }
-    ) async throws -> R where R: Sendable {
+    ) async throws -> Result where Result: Sendable {
         try await self.stop(
             request: request,
             serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Testing_Empty>(),
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_ReconnectInfo>(),
             options: options,
-            body
+            onResponse: handleResponse
         )
     }
 }
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// Helpers providing sugared APIs for 'ClientProtocol' methods.
 extension Grpc_Testing_ReconnectService.ClientProtocol {
+    /// Call the "Start" method.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
     public func start<Result>(
         _ message: Grpc_Testing_ReconnectParams,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = {
-            try $0.message
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> Result = { response in
+            try response.message
         }
     ) async throws -> Result where Result: Sendable {
         let request = GRPCCore.ClientRequest<Grpc_Testing_ReconnectParams>(
@@ -1340,16 +2775,26 @@ extension Grpc_Testing_ReconnectService.ClientProtocol {
         return try await self.start(
             request: request,
             options: options,
-            handleResponse
+            onResponse: handleResponse
         )
     }
-    
+
+    /// Call the "Stop" method.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
     public func stop<Result>(
         _ message: Grpc_Testing_Empty,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> Result = {
-            try $0.message
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> Result = { response in
+            try response.message
         }
     ) async throws -> Result where Result: Sendable {
         let request = GRPCCore.ClientRequest<Grpc_Testing_Empty>(
@@ -1359,55 +2804,7 @@ extension Grpc_Testing_ReconnectService.ClientProtocol {
         return try await self.stop(
             request: request,
             options: options,
-            handleResponse
-        )
-    }
-}
-
-/// A service used to control reconnect server.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public struct Grpc_Testing_ReconnectService_Client: Grpc_Testing_ReconnectService.ClientProtocol {
-    private let client: GRPCCore.GRPCClient
-    
-    public init(wrapping client: GRPCCore.GRPCClient) {
-        self.client = client
-    }
-    
-    public func start<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_ReconnectParams>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_ReconnectParams>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_Empty>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_Empty>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.unary(
-            request: request,
-            descriptor: Grpc_Testing_ReconnectService.Method.Start.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
-        )
-    }
-    
-    public func stop<R>(
-        request: GRPCCore.ClientRequest<Grpc_Testing_Empty>,
-        serializer: some GRPCCore.MessageSerializer<Grpc_Testing_Empty>,
-        deserializer: some GRPCCore.MessageDeserializer<Grpc_Testing_ReconnectInfo>,
-        options: GRPCCore.CallOptions = .defaults,
-        _ body: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Testing_ReconnectInfo>) async throws -> R = {
-            try $0.message
-        }
-    ) async throws -> R where R: Sendable {
-        try await self.client.unary(
-            request: request,
-            descriptor: Grpc_Testing_ReconnectService.Method.Stop.descriptor,
-            serializer: serializer,
-            deserializer: deserializer,
-            options: options,
-            handler: body
+            onResponse: handleResponse
         )
     }
 }

@@ -23,71 +23,127 @@
 
 public import GRPCCore
 internal import GRPCProtobuf
+public import SwiftProtobuf
 
+// MARK: - grpc.testing.EmptyService
+
+/// Namespace containing generated types for the "grpc.testing.EmptyService" service.
 public enum Grpc_Testing_EmptyService {
-    public static let descriptor = GRPCCore.ServiceDescriptor.grpc_testing_EmptyService
+    /// Service descriptor for the "grpc.testing.EmptyService" service.
+    public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.EmptyService")
+    /// Namespace for method metadata.
     public enum Method {
+        /// Descriptors for all methods in the "grpc.testing.EmptyService" service.
         public static let descriptors: [GRPCCore.MethodDescriptor] = []
     }
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias StreamingServiceProtocol = Grpc_Testing_EmptyService_StreamingServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ServiceProtocol = Grpc_Testing_EmptyService_ServiceProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias ClientProtocol = Grpc_Testing_EmptyService_ClientProtocol
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-    public typealias Client = Grpc_Testing_EmptyService_Client
 }
 
 extension GRPCCore.ServiceDescriptor {
-    public static let grpc_testing_EmptyService = Self(
-        package: "grpc.testing",
-        service: "EmptyService"
-    )
+    /// Service descriptor for the "grpc.testing.EmptyService" service.
+    public static let grpc_testing_EmptyService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.EmptyService")
 }
 
-/// A service that has zero methods.
-/// See https://github.com/grpc/grpc/issues/15574
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_EmptyService_StreamingServiceProtocol: GRPCCore.RegistrableRPCService {}
+// MARK: grpc.testing.EmptyService (server)
 
-/// Conformance to `GRPCCore.RegistrableRPCService`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+extension Grpc_Testing_EmptyService {
+    /// Streaming variant of the service protocol for the "grpc.testing.EmptyService" service.
+    ///
+    /// This protocol is the lowest-level of the service protocols generated for this service
+    /// giving you the most flexibility over the implementation of your service. This comes at
+    /// the cost of more verbose and less strict APIs. Each RPC requires you to implement it in
+    /// terms of a request stream and response stream. Where only a single request or response
+    /// message is expected, you are responsible for enforcing this invariant is maintained.
+    ///
+    /// Where possible, prefer using the stricter, less-verbose ``ServiceProtocol``
+    /// or ``SimpleServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service that has zero methods.
+    /// > See https://github.com/grpc/grpc/issues/15574
+    public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {}
+
+    /// Service protocol for the "grpc.testing.EmptyService" service.
+    ///
+    /// This protocol is higher level than ``StreamingServiceProtocol`` but lower level than
+    /// the ``SimpleServiceProtocol``, it provides access to request and response metadata and
+    /// trailing response metadata. If you don't need these then consider using
+    /// the ``SimpleServiceProtocol``. If you need fine grained control over your RPCs then
+    /// use ``StreamingServiceProtocol``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service that has zero methods.
+    /// > See https://github.com/grpc/grpc/issues/15574
+    public protocol ServiceProtocol: Grpc_Testing_EmptyService.StreamingServiceProtocol {}
+
+    /// Simple service protocol for the "grpc.testing.EmptyService" service.
+    ///
+    /// This is the highest level protocol for the service. The API is the easiest to use but
+    /// doesn't provide access to request or response metadata. If you need access to these
+    /// then use ``ServiceProtocol`` instead.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service that has zero methods.
+    /// > See https://github.com/grpc/grpc/issues/15574
+    public protocol SimpleServiceProtocol: Grpc_Testing_EmptyService.ServiceProtocol {}
+}
+
+// Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_EmptyService.StreamingServiceProtocol {
-    @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
     public func registerMethods(with router: inout GRPCCore.RPCRouter) {}
 }
 
-/// A service that has zero methods.
-/// See https://github.com/grpc/grpc/issues/15574
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_EmptyService_ServiceProtocol: Grpc_Testing_EmptyService.StreamingServiceProtocol {}
-
-/// Partial conformance to `Grpc_Testing_EmptyService_StreamingServiceProtocol`.
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+// Default implementation of streaming methods from 'StreamingServiceProtocol'.
 extension Grpc_Testing_EmptyService.ServiceProtocol {
 }
 
-/// A service that has zero methods.
-/// See https://github.com/grpc/grpc/issues/15574
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public protocol Grpc_Testing_EmptyService_ClientProtocol: Sendable {}
-
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-extension Grpc_Testing_EmptyService.ClientProtocol {
+// Default implementation of methods from 'ServiceProtocol'.
+extension Grpc_Testing_EmptyService.SimpleServiceProtocol {
 }
 
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-extension Grpc_Testing_EmptyService.ClientProtocol {
-}
+// MARK: grpc.testing.EmptyService (client)
 
-/// A service that has zero methods.
-/// See https://github.com/grpc/grpc/issues/15574
-@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public struct Grpc_Testing_EmptyService_Client: Grpc_Testing_EmptyService.ClientProtocol {
-    private let client: GRPCCore.GRPCClient
-    
-    public init(wrapping client: GRPCCore.GRPCClient) {
-        self.client = client
+extension Grpc_Testing_EmptyService {
+    /// Generated client protocol for the "grpc.testing.EmptyService" service.
+    ///
+    /// You don't need to implement this protocol directly, use the generated
+    /// implementation, ``Client``.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service that has zero methods.
+    /// > See https://github.com/grpc/grpc/issues/15574
+    public protocol ClientProtocol: Sendable {}
+
+    /// Generated client for the "grpc.testing.EmptyService" service.
+    ///
+    /// The ``Client`` provides an implementation of ``ClientProtocol`` which wraps
+    /// a `GRPCCore.GRPCCClient`. The underlying `GRPCClient` provides the long-lived
+    /// means of communication with the remote peer.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > A service that has zero methods.
+    /// > See https://github.com/grpc/grpc/issues/15574
+    public struct Client: ClientProtocol {
+        private let client: GRPCCore.GRPCClient
+
+        /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
+        ///
+        /// - Parameters:
+        ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
+        public init(wrapping client: GRPCCore.GRPCClient) {
+            self.client = client
+        }
     }
+}
+
+// Helpers providing default arguments to 'ClientProtocol' methods.
+extension Grpc_Testing_EmptyService.ClientProtocol {
+}
+
+// Helpers providing sugared APIs for 'ClientProtocol' methods.
+extension Grpc_Testing_EmptyService.ClientProtocol {
 }

@@ -17,7 +17,7 @@
 internal import GRPCCore
 private import Synchronization
 
-internal struct HealthService: Grpc_Health_V1_Health_ServiceProtocol {
+internal struct HealthService: Grpc_Health_V1_Health.ServiceProtocol {
   private let state = HealthService.State()
 
   func check(
