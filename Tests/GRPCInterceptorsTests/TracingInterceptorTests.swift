@@ -37,7 +37,7 @@ final class TracingInterceptorTests: XCTestCase {
     // This is blocked on: https://github.com/apple/swift-service-context/pull/46
     try await ServiceContext.$current.withValue(serviceContext) {
       let methodDescriptor = MethodDescriptor(
-        service: "TracingInterceptorTests",
+        fullyQualifiedService: "TracingInterceptorTests",
         method: "testClientInterceptor"
       )
       let response = try await interceptor.intercept(
@@ -95,7 +95,7 @@ final class TracingInterceptorTests: XCTestCase {
 
   func testClientInterceptorAllEventsRecorded() async throws {
     let methodDescriptor = MethodDescriptor(
-      service: "TracingInterceptorTests",
+      fullyQualifiedService: "TracingInterceptorTests",
       method: "testClientInterceptorAllEventsRecorded"
     )
     var serviceContext = ServiceContext.topLevel
@@ -174,14 +174,14 @@ final class TracingInterceptorTests: XCTestCase {
 
   func testServerInterceptorErrorResponse() async throws {
     let methodDescriptor = MethodDescriptor(
-      service: "TracingInterceptorTests",
+      fullyQualifiedService: "TracingInterceptorTests",
       method: "testServerInterceptorErrorResponse"
     )
     let interceptor = ServerTracingInterceptor(emitEventOnEachWrite: false)
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor, cancellation: .init())
+      context: .init(descriptor: methodDescriptor, peer: "", cancellation: .init())
     ) { _, _ in
       StreamingServerResponse<String>(error: .init(code: .unknown, message: "Test error"))
     }
@@ -202,7 +202,7 @@ final class TracingInterceptorTests: XCTestCase {
 
   func testServerInterceptor() async throws {
     let methodDescriptor = MethodDescriptor(
-      service: "TracingInterceptorTests",
+      fullyQualifiedService: "TracingInterceptorTests",
       method: "testServerInterceptor"
     )
     let (stream, continuation) = AsyncStream<String>.makeStream()
@@ -210,7 +210,7 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor, cancellation: .init())
+      context: .init(descriptor: methodDescriptor, peer: "", cancellation: .init())
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
         return StreamingServerResponse<String>(
@@ -267,7 +267,7 @@ final class TracingInterceptorTests: XCTestCase {
 
   func testServerInterceptorAllEventsRecorded() async throws {
     let methodDescriptor = MethodDescriptor(
-      service: "TracingInterceptorTests",
+      fullyQualifiedService: "TracingInterceptorTests",
       method: "testServerInterceptorAllEventsRecorded"
     )
     let (stream, continuation) = AsyncStream<String>.makeStream()
@@ -275,7 +275,7 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor, cancellation: .init())
+      context: .init(descriptor: methodDescriptor, peer: "", cancellation: .init())
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
         return StreamingServerResponse<String>(
