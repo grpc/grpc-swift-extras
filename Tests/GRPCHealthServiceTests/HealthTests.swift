@@ -21,13 +21,13 @@ import XCTest
 
 final class HealthTests: XCTestCase {
   private func withHealthClient(
-    _ body: @Sendable (Grpc_Health_V1_Health_Client, Health.Provider) async throws -> Void
+    _ body: @Sendable (Grpc_Health_V1_Health.Client, Health.Provider) async throws -> Void
   ) async throws {
     let health = Health()
     let inProcess = InProcessTransport()
     let server = GRPCServer(transport: inProcess.server, services: [health.service])
     let client = GRPCClient(transport: inProcess.client)
-    let healthClient = Grpc_Health_V1_Health_Client(wrapping: client)
+    let healthClient = Grpc_Health_V1_Health.Client(wrapping: client)
 
     try await withThrowingDiscardingTaskGroup { group in
       group.addTask {
