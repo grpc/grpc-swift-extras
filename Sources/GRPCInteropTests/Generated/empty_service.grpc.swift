@@ -23,7 +23,6 @@
 
 public import GRPCCore
 internal import GRPCProtobuf
-public import SwiftProtobuf
 
 // MARK: - grpc.testing.EmptyService
 

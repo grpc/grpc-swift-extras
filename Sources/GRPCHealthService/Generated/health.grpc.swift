@@ -26,7 +26,6 @@
 
 package import GRPCCore
 internal import GRPCProtobuf
-package import SwiftProtobuf
 
 // MARK: - grpc.health.v1.Health
 
