@@ -17,6 +17,7 @@
 import GRPCCore
 import GRPCHealthService
 import GRPCInProcessTransport
+import SwiftProtobuf
 import XCTest
 
 final class HealthTests: XCTestCase {

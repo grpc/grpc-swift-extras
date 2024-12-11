@@ -16,6 +16,7 @@
 
 private import Foundation
 public import GRPCCore
+private import SwiftProtobuf
 
 public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   public init() {}

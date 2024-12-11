@@ -15,6 +15,7 @@
  */
 
 internal import GRPCCore
+private import SwiftProtobuf
 
 private import struct Foundation.Data
 
