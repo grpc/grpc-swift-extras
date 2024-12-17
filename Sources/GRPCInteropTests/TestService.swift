@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-private import Foundation
 public import GRPCCore
 private import SwiftProtobuf
+
+#if canImport(FoundationEssentials)
+private import struct FoundationEssentials.Data
+#else
+private import struct Foundation.Data
+#endif
 
 public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   public init() {}
