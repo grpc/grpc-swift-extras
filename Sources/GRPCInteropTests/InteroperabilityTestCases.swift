@@ -17,7 +17,11 @@
 internal import GRPCCore
 private import SwiftProtobuf
 
+#if canImport(FoundationEssentials)
+private import struct FoundationEssentials.Data
+#else
 private import struct Foundation.Data
+#endif
 
 /// This test verifies that implementations support zero-size messages. Ideally, client
 /// implementations would verify that the request and response were zero bytes serialized, but
