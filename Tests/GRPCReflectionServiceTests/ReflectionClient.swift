@@ -28,7 +28,7 @@ struct ReflectionClient: Sendable {
 
   func listServices() async throws -> [String] {
     try await self.stub.serverReflectionInfo { requestStream in
-      // 'listServices' must be set, but its contents is ignored.
+      // 'listServices' must be set, but its contents are ignored.
       let request = Self.Request.with { $0.listServices = "" }
       try await requestStream.write(request)
     } onResponse: { response in
