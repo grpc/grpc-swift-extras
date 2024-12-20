@@ -18,6 +18,7 @@ import Foundation
 import GRPCCore
 import GRPCInProcessTransport
 import GRPCReflectionService
+import SwiftProtobuf
 import Testing
 
 @Suite("gRPC Reflection Service Tests")
