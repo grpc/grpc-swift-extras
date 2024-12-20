@@ -23,6 +23,10 @@ let products: [Product] = [
     targets: ["GRPCHealthService"]
   ),
   .library(
+    name: "GRPCReflectionService",
+    targets: ["GRPCReflectionService"]
+  ),
+  .library(
     name: "GRPCInterceptors",
     targets: ["GRPCInterceptors"]
   ),
@@ -75,6 +79,30 @@ let targets: [Target] = [
       .target(name: "GRPCHealthService"),
       .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+
+  // An implementation of the gRPC Reflection service.
+  .target(
+    name: "GRPCReflectionService",
+    dependencies: [
+      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
+      .product(name: "SwiftProtobuf", package: "swift-protobuf"),
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+  .testTarget(
+    name: "GRPCReflectionServiceTests",
+    dependencies: [
+      .target(name: "GRPCReflectionService"),
+      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
+      .product(name: "SwiftProtobuf", package: "swift-protobuf"),
+    ],
+    resources: [
+      .copy("Generated/DescriptorSets")
     ],
     swiftSettings: defaultSwiftSettings
   ),
