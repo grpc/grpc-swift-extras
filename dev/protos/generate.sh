@@ -94,10 +94,63 @@ function generate_health_service {
   generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Package" "Client=true" "Server=true" "UseAccessLevelOnImports=true"
 }
 
+function generate_reflection_service {
+  local proto="$here/upstream/grpc/reflection/v1/reflection.proto"
+  local output="$root/Sources/GRPCReflectionService/Generated"
+
+  generate_message "$proto" "$(dirname "$proto")" "$output" "Visibility=Package" "UseAccessLevelOnImports=true"
+  generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Package" "UseAccessLevelOnImports=true"
+}
+
+#- TEST DATA ------------------------------------------------------------------
+
+function generate_reflection_service_descriptor_set {
+  local proto="$here/upstream/grpc/reflection/v1/reflection.proto"
+  local proto_path="$here/upstream"
+  local output="$root/Tests/GRPCReflectionServiceTests/Generated/DescriptorSets/reflection.pb"
+
+  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
+    --include_source_info \
+    --include_imports
+}
+
+function generate_health_service_descriptor_set {
+  local proto="$here/upstream/grpc/health/v1/health.proto"
+  local proto_path="$here/upstream"
+  local output="$root/Tests/GRPCReflectionServiceTests/Generated/DescriptorSets/health.pb"
+
+  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
+    --include_source_info \
+    --include_imports
+}
+
+function generate_base_message_descriptor_set {
+  local proto="$here/tests/reflection/base_message.proto"
+  local proto_path="$here/tests/reflection"
+  local output="$root/Tests/GRPCReflectionServiceTests/Generated/DescriptorSets/base_message.pb"
+
+  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
+    --include_source_info \
+    --include_imports
+}
+
+function generate_message_with_dependency_descriptor_set {
+  local proto="$here/tests/reflection/message_with_dependency.proto"
+  local proto_path="$here/tests/reflection"
+  local output="$root/Tests/GRPCReflectionServiceTests/Generated/DescriptorSets/message_with_dependency.pb"
+
+  invoke_protoc --descriptor_set_out="$output" "$proto" -I "$proto_path" \
+    --include_source_info \
+    --include_imports
+}
+
 #------------------------------------------------------------------------------
 
-# Interoperability tests
 generate_interop_test_service
-
-# Health service
 generate_health_service
+generate_reflection_service
+
+generate_reflection_service_descriptor_set
+generate_health_service_descriptor_set
+generate_base_message_descriptor_set
+generate_message_with_dependency_descriptor_set

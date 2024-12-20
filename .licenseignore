@@ -39,3 +39,4 @@ dev/version-bump.commit.template
 LICENSE
 **/*.swift
 dev/protos/**/*.proto
+**/*.pb
