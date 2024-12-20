@@ -98,8 +98,6 @@ function generate_reflection_service {
   local proto="$here/upstream/grpc/reflection/v1/reflection.proto"
   local output="$root/Sources/GRPCReflectionService/Generated"
 
-  # Messages were accidentally leaked into public API, they shouldn't be but we
-  # can't undo that change until the next major version.
   generate_message "$proto" "$(dirname "$proto")" "$output" "Visibility=Package" "UseAccessLevelOnImports=true"
   generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Package" "UseAccessLevelOnImports=true"
 }
@@ -126,7 +124,7 @@ function generate_health_service_descriptor_set {
     --include_imports
 }
 
-function generate_extended_message_descriptor_set {
+function generate_base_message_descriptor_set {
   local proto="$here/tests/reflection/base_message.proto"
   local proto_path="$here/tests/reflection"
   local output="$root/Tests/GRPCReflectionServiceTests/Generated/DescriptorSets/base_message.pb"
@@ -154,5 +152,5 @@ generate_reflection_service
 
 generate_reflection_service_descriptor_set
 generate_health_service_descriptor_set
-generate_extended_message_descriptor_set
+generate_base_message_descriptor_set
 generate_message_with_dependency_descriptor_set
