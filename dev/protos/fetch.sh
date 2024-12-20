@@ -30,6 +30,8 @@ rm -rf "$upstream"
 # Create new directories to poulate. These are based on proto package name
 # rather than source repository name.
 mkdir -p "$upstream/grpc/health/v1"
+mkdir -p "$upstream/grpc/reflection/v1"
 
 # Copy over the grpc-proto protos.
 cp -rp "$checkouts/grpc-proto/grpc/health/v1/health.proto" "$upstream/grpc/health/v1/health.proto"
+cp -rp "$checkouts/grpc-proto/grpc/reflection/v1/reflection.proto" "$upstream/grpc/reflection/v1/reflection.proto"

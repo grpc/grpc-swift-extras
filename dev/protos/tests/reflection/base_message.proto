@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+message BaseMessage {
+  required string id = 1;
+
+  extensions 100 to 101;
+}
+
+extend BaseMessage {
+  optional int32 extended_field = 100;
+}
