@@ -15,6 +15,7 @@
  */
 
 internal import GRPCCore
+internal import SwiftProtobuf
 
 extension ReflectionService {
   struct V1: Grpc_Reflection_V1_ServerReflection.SimpleServiceProtocol {
