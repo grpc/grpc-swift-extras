@@ -17,9 +17,13 @@
 internal import GRPCCore
 private import Synchronization
 
-internal struct HealthService: Grpc_Health_V1_Health.ServiceProtocol {
-  private let state = HealthService.State()
+extension HealthService {
+  internal struct Service: Grpc_Health_V1_Health.ServiceProtocol {
+    private let state = Self.State()
+  }
+}
 
+extension HealthService.Service {
   func check(
     request: ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
     context: ServerContext
@@ -65,7 +69,7 @@ internal struct HealthService: Grpc_Health_V1_Health.ServiceProtocol {
   }
 }
 
-extension HealthService {
+extension HealthService.Service {
   private final class State: Sendable {
     // The state of each service keyed by the fully qualified service name.
     private let lockedStorage = Mutex([String: ServiceState]())

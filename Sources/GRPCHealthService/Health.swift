@@ -16,64 +16,54 @@
 
 public import GRPCCore
 
-/// ``Health`` is gRPC’s mechanism for checking whether a server is able to handle RPCs. Its semantics are documented in
-/// https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/health-checking.md.
+/// ``HealthService`` is gRPC's mechanism for checking whether a server is able to handle RPCs.
+/// Its semantics are documented in the [gRPC repository]( https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/health-checking.md).
 ///
-/// `Health` initializes a new ``Health/Service-swift.struct`` and ``Health/Provider-swift.struct``.
-/// - `Health.Service` implements the Health service from the `grpc.health.v1` package and can be registered with a server
-/// like any other service.
-/// - `Health.Provider` provides status updates to `Health.Service`. `Health.Service` doesn't know about the other
-/// services running on a server so it must be provided with status updates via `Health.Provider`. To make specifying the service
-/// being updated easier, the generated code for services includes an extension to `ServiceDescriptor`.
+/// `HealthService` implements the `grpc.health.v1` service and can be registered with a server
+/// like any other service. It holds a ``HealthService/Provider-swift.struct`` which provides
+/// status updates to the service. The service doesn't know about the other services running on the
+/// server so it must be provided with status updates via the ``Provider-swift.struct``. To make
+/// specifying the service being updated easier, the generated code for services includes an
+/// extension to `ServiceDescriptor`.
 ///
-/// The following shows an example of initializing a Health service and updating the status of the `Foo` service in the `bar` package.
+/// The following shows an example of initializing a Health service and updating the status of
+/// the `Foo` service in the `bar` package.
 ///
 /// ```swift
-/// let health = Health()
-/// let server = GRPCServer(
+/// let health = HealthService()
+/// try await withGRPCServer(
 ///   transport: transport,
-///   services: [health.service, FooService()]
-/// )
+///   services: [health, FooService()]
+/// ) { server in
+///   // Update the status of the 'bar.Foo' service.
+///   health.provider.updateStatus(.serving, forService: .bar_Foo)
 ///
-/// health.provider.updateStatus(
-///   .serving,
-///   forService: .bar_Foo
-/// )
+///   // ...
+/// }
 /// ```
-public struct Health: Sendable {
+public struct HealthService: Sendable, RegistrableRPCService {
   /// An implementation of the `grpc.health.v1.Health` service.
-  public let service: Health.Service
+  private let service: Service
 
   /// Provides status updates to the Health service.
-  public let provider: Health.Provider
+  public let provider: HealthService.Provider
 
-  /// Constructs a new ``Health``, initializing a ``Health/Service-swift.struct`` and a
-  /// ``Health/Provider-swift.struct``.
+  /// Constructs a new ``HealthService``.
   public init() {
-    let healthService = HealthService()
+    let healthService = Service()
+    self.service = healthService
+    self.provider = HealthService.Provider(healthService: healthService)
+  }
 
-    self.service = Health.Service(healthService: healthService)
-    self.provider = Health.Provider(healthService: healthService)
+  public func registerMethods(with router: inout RPCRouter) {
+    self.service.registerMethods(with: &router)
   }
 }
 
-extension Health {
-  /// An implementation of the `grpc.health.v1.Health` service.
-  public struct Service: RegistrableRPCService, Sendable {
-    private let healthService: HealthService
-
-    public func registerMethods(with router: inout RPCRouter) {
-      self.healthService.registerMethods(with: &router)
-    }
-
-    fileprivate init(healthService: HealthService) {
-      self.healthService = healthService
-    }
-  }
-
-  /// Provides status updates to ``Health/Service-swift.struct``.
+extension HealthService {
+  /// Provides status updates to ``HealthService``.
   public struct Provider: Sendable {
-    private let healthService: HealthService
+    private let healthService: Service
 
     /// Updates the status of a service.
     ///
@@ -107,7 +97,7 @@ extension Health {
       )
     }
 
-    fileprivate init(healthService: HealthService) {
+    fileprivate init(healthService: Service) {
       self.healthService = healthService
     }
   }
