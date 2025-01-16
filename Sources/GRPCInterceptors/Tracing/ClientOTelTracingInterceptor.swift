@@ -15,8 +15,8 @@
  */
 
 public import GRPCCore
-internal import Tracing
 internal import Synchronization
+internal import Tracing
 
 /// A client interceptor that injects tracing information into the request.
 ///
@@ -96,7 +96,8 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
             afterEachWrite: {
               var event = SpanEvent(name: "rpc.message")
               event.attributes.rpc.messageType = "SENT"
-              event.attributes.rpc.messageID = messageSentCounter
+              event.attributes.rpc.messageID =
+                messageSentCounter
                 .wrappingAdd(1, ordering: .sequentiallyConsistent)
                 .oldValue
               span.addEvent(event)
@@ -122,7 +123,8 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
           let onEachPartRecordingSequence = success.bodyParts.map { element in
             var event = SpanEvent(name: "rpc.message")
             event.attributes.rpc.messageType = "RECEIVED"
-            event.attributes.rpc.messageID = messageReceivedCounter
+            event.attributes.rpc.messageID =
+              messageReceivedCounter
               .wrappingAdd(1, ordering: .sequentiallyConsistent)
               .oldValue
             span.addEvent(event)
