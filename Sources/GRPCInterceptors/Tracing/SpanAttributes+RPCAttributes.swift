@@ -34,7 +34,7 @@ package struct RPCAttributes: SpanAttributeNamespace {
     var messageType: Key<String> { "rpc.message.type" }
     var grpcStatusCode: Key<Int> { "rpc.grpc.status_code" }
 
-    var serverAddress: Key<String>{ "server.address" }
+    var serverAddress: Key<String> { "server.address" }
     var serverPort: Key<Int> { "server.port" }
 
     var clientAddress: Key<String> { "client.address" }
@@ -47,9 +47,9 @@ package struct RPCAttributes: SpanAttributeNamespace {
   }
 }
 
-package extension SpanAttributes {
+extension SpanAttributes {
   /// Semantic conventions for RPC spans.
-  var rpc: RPCAttributes {
+  package var rpc: RPCAttributes {
     get {
       .init(attributes: self)
     }

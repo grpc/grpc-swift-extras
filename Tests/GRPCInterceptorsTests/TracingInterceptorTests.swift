@@ -73,25 +73,31 @@ final class TracingInterceptorTests: XCTestCase {
       try await AssertStreamContentsEqual([["response"]], response.messages)
 
       AssertTestSpanComponents(forMethod: methodDescriptor) { events in
-        XCTAssertEqual(events.map({ $0.name }), [
-          "Request started",
-          "Request ended",
-          "Received response start",
-          "Received response end"
-        ])
+        XCTAssertEqual(
+          events.map({ $0.name }),
+          [
+            "Request started",
+            "Request ended",
+            "Received response start",
+            "Received response end",
+          ]
+        )
       } assertAttributes: { attributes in
-        XCTAssertEqual(attributes, [
-          "rpc.system": .string("grpc"),
-          "rpc.method": .string(methodDescriptor.method),
-          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-          "rpc.grpc.status_code": .int(0),
-          "server.address": .string("someserver.com"),
-          "server.port": .int(567),
-          "network.peer.address": .string("10.1.2.80"),
-          "network.peer.port": .int(567),
-          "network.transport": .string("tcp"),
-          "network.type": .string("ipv4")
-        ])
+        XCTAssertEqual(
+          attributes,
+          [
+            "rpc.system": .string("grpc"),
+            "rpc.method": .string(methodDescriptor.method),
+            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+            "rpc.grpc.status_code": .int(0),
+            "server.address": .string("someserver.com"),
+            "server.port": .int(567),
+            "network.peer.address": .string("10.1.2.80"),
+            "network.peer.port": .int(567),
+            "network.transport": .string("tcp"),
+            "network.type": .string("ipv4"),
+          ]
+        )
       } assertStatus: { status in
         XCTAssertNil(status)
       } assertErrors: { errors in
@@ -152,23 +158,29 @@ final class TracingInterceptorTests: XCTestCase {
       try await AssertStreamContentsEqual([["response"]], response.messages)
 
       AssertTestSpanComponents(forMethod: methodDescriptor) { events in
-        XCTAssertEqual(events.map({ $0.name }), [
-          "Request started",
-          "Request ended",
-          "Received response start",
-          "Received response end"
-        ])
+        XCTAssertEqual(
+          events.map({ $0.name }),
+          [
+            "Request started",
+            "Request ended",
+            "Received response start",
+            "Received response end",
+          ]
+        )
       } assertAttributes: { attributes in
-        XCTAssertEqual(attributes, [
-          "rpc.system": .string("grpc"),
-          "rpc.method": .string(methodDescriptor.method),
-          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-          "rpc.grpc.status_code": .int(0),
-          "server.address": .string("someserver.com"),
-          "network.peer.address": .string("some-path"),
-          "network.transport": .string("tcp"),
-          "network.type": .string("unix")
-        ])
+        XCTAssertEqual(
+          attributes,
+          [
+            "rpc.system": .string("grpc"),
+            "rpc.method": .string(methodDescriptor.method),
+            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+            "rpc.grpc.status_code": .int(0),
+            "server.address": .string("someserver.com"),
+            "network.peer.address": .string("some-path"),
+            "network.transport": .string("tcp"),
+            "network.type": .string("unix"),
+          ]
+        )
       } assertStatus: { status in
         XCTAssertNil(status)
       } assertErrors: { errors in
@@ -226,33 +238,39 @@ final class TracingInterceptorTests: XCTestCase {
       try await AssertStreamContentsEqual([["response"]], response.messages)
 
       AssertTestSpanComponents(forMethod: methodDescriptor) { events in
-        XCTAssertEqual(events, [
-          TestSpanEvent("Request started", [:]),
-          // Recorded when `request1` is sent
-          TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 1]),
-          // Recorded when `request2` is sent
-          TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 2]),
-          // Recorded after all request parts have been sent
-          TestSpanEvent("Request ended", [:]),
-          // Recorded when receiving response part
-          TestSpanEvent("Received response start", [:]),
-          TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1]),
-          // Recorded at end of response
-          TestSpanEvent("Received response end", [:]),
-        ])
+        XCTAssertEqual(
+          events,
+          [
+            TestSpanEvent("Request started", [:]),
+            // Recorded when `request1` is sent
+            TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 1]),
+            // Recorded when `request2` is sent
+            TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 2]),
+            // Recorded after all request parts have been sent
+            TestSpanEvent("Request ended", [:]),
+            // Recorded when receiving response part
+            TestSpanEvent("Received response start", [:]),
+            TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1]),
+            // Recorded at end of response
+            TestSpanEvent("Received response end", [:]),
+          ]
+        )
       } assertAttributes: { attributes in
-        XCTAssertEqual(attributes, [
-          "rpc.system": .string("grpc"),
-          "rpc.method": .string(methodDescriptor.method),
-          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-          "rpc.grpc.status_code": .int(0),
-          "server.address": .string("someserver.com"),
-          "server.port": .int(567),
-          "network.peer.address": .string("10.1.2.80"),
-          "network.peer.port": .int(567),
-          "network.transport": .string("tcp"),
-          "network.type": .string("ipv4")
-        ])
+        XCTAssertEqual(
+          attributes,
+          [
+            "rpc.system": .string("grpc"),
+            "rpc.method": .string(methodDescriptor.method),
+            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+            "rpc.grpc.status_code": .int(0),
+            "server.address": .string("someserver.com"),
+            "server.port": .int(567),
+            "network.peer.address": .string("10.1.2.80"),
+            "network.peer.port": .int(567),
+            "network.transport": .string("tcp"),
+            "network.type": .string("ipv4"),
+          ]
+        )
       } assertStatus: { status in
         XCTAssertNil(status)
       } assertErrors: { errors in
@@ -312,17 +330,20 @@ final class TracingInterceptorTests: XCTestCase {
           XCTAssertEqual(events.map({ $0.name }), ["Request started"])
         } assertAttributes: { attributes in
           // The attributes should not contain a grpc status code, as the request was never even sent.
-          XCTAssertEqual(attributes, [
-            "rpc.system": .string("grpc"),
-            "rpc.method": .string(methodDescriptor.method),
-            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-            "server.address": .string("someserver.com"),
-            "server.port": .int(567),
-            "network.peer.address": .string("10.1.2.80"),
-            "network.peer.port": .int(567),
-            "network.transport": .string("tcp"),
-            "network.type": .string("ipv4")
-          ])
+          XCTAssertEqual(
+            attributes,
+            [
+              "rpc.system": .string("grpc"),
+              "rpc.method": .string(methodDescriptor.method),
+              "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+              "server.address": .string("someserver.com"),
+              "server.port": .int(567),
+              "network.peer.address": .string("10.1.2.80"),
+              "network.peer.port": .int(567),
+              "network.transport": .string("tcp"),
+              "network.type": .string("ipv4"),
+            ]
+          )
         } assertStatus: { status in
           XCTAssertNil(status)
         } assertErrors: { errors in
@@ -378,24 +399,30 @@ final class TracingInterceptorTests: XCTestCase {
       }
 
       AssertTestSpanComponents(forMethod: methodDescriptor) { events in
-        XCTAssertEqual(events.map({ $0.name }), [
-          "Request started",
-          "Request ended",
-          "Received error response"
-        ])
+        XCTAssertEqual(
+          events.map({ $0.name }),
+          [
+            "Request started",
+            "Request ended",
+            "Received error response",
+          ]
+        )
       } assertAttributes: { attributes in
-        XCTAssertEqual(attributes, [
-          "rpc.system": .string("grpc"),
-          "rpc.method": .string(methodDescriptor.method),
-          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-          "rpc.grpc.status_code": .int(14), // this is unavailable's raw code
-          "server.address": .string("someserver.com"),
-          "server.port": .int(567),
-          "network.peer.address": .string("10.1.2.80"),
-          "network.peer.port": .int(567),
-          "network.transport": .string("tcp"),
-          "network.type": .string("ipv4")
-        ])
+        XCTAssertEqual(
+          attributes,
+          [
+            "rpc.system": .string("grpc"),
+            "rpc.method": .string(methodDescriptor.method),
+            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+            "rpc.grpc.status_code": .int(14),  // this is unavailable's raw code
+            "server.address": .string("someserver.com"),
+            "server.port": .int(567),
+            "network.peer.address": .string("10.1.2.80"),
+            "network.peer.port": .int(567),
+            "network.transport": .string("tcp"),
+            "network.type": .string("ipv4"),
+          ]
+        )
       } assertStatus: { status in
         XCTAssertEqual(status, .some(.init(code: .error)))
       } assertErrors: { errors in

@@ -217,8 +217,8 @@ struct TestSpanEvent: Equatable, CustomDebugStringConvertible {
     }
 
     return """
-    (name: \(self.name), attributes: [\(attributesDescription)])
-    """
+      (name: \(self.name), attributes: [\(attributesDescription)])
+      """
   }
 
   init(_ name: String, _ attributes: SpanAttributes) {
