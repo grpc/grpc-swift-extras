@@ -210,6 +210,7 @@ struct TestSpanEvent: Equatable, CustomDebugStringConvertible {
   var name: String
   var attributes: SpanAttributes
 
+  // This conformance is so any test errors are nicer to look at and understand
   var debugDescription: String {
     var attributesDescription = ""
     self.attributes.forEach { key, value in

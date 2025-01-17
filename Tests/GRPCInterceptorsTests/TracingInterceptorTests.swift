@@ -641,8 +641,8 @@ final class TracingInterceptorTests: XCTestCase {
       request: .init(single: request),
       context: ServerContext(
         descriptor: methodDescriptor,
-        remotePeer: "ipv6:2001::130F:::09C0:876A:130B:1234",
-        localPeer: "ipv6:ff06:0:0:0:0:0:0:c3:5678",
+        remotePeer: "ipv6:[2001::130F:::09C0:876A:130B]:1234",
+        localPeer: "ipv6:[ff06:0:0:0:0:0:0:c3]:5678",
         cancellation: .init()
       )
     ) { _, _ in
