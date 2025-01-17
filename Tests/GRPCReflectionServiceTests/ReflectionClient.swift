@@ -15,14 +15,15 @@
  */
 
 import GRPCCore
+import GRPCInProcessTransport
 import GRPCReflectionService
 import SwiftProtobuf
 
 struct ReflectionClient: Sendable {
   private typealias Request = Grpc_Reflection_V1_ServerReflectionRequest
-  private let stub: Grpc_Reflection_V1_ServerReflection.Client
+  private let stub: Grpc_Reflection_V1_ServerReflection.Client<InProcessTransport.Client>
 
-  init(wrapping client: GRPCClient) {
+  init(wrapping client: GRPCClient<InProcessTransport.Client>) {
     self.stub = Grpc_Reflection_V1_ServerReflection.Client(wrapping: client)
   }
 

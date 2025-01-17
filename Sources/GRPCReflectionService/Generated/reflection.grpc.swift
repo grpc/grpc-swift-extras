@@ -155,7 +155,7 @@ extension Grpc_Reflection_V1_ServerReflection {
 
 // Default implementation of 'registerMethods(with:)'.
 extension Grpc_Reflection_V1_ServerReflection.StreamingServiceProtocol {
-    package func registerMethods(with router: inout GRPCCore.RPCRouter) {
+    package func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
             forMethod: Grpc_Reflection_V1_ServerReflection.Method.ServerReflectionInfo.descriptor,
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Reflection_V1_ServerReflectionRequest>(),
@@ -232,14 +232,14 @@ extension Grpc_Reflection_V1_ServerReflection {
     /// The ``Client`` provides an implementation of ``ClientProtocol`` which wraps
     /// a `GRPCCore.GRPCCClient`. The underlying `GRPCClient` provides the long-lived
     /// means of communication with the remote peer.
-    package struct Client: ClientProtocol {
-        private let client: GRPCCore.GRPCClient
+    package struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+        private let client: GRPCCore.GRPCClient<Transport>
 
         /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
         ///
         /// - Parameters:
         ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
-        package init(wrapping client: GRPCCore.GRPCClient) {
+        package init(wrapping client: GRPCCore.GRPCClient<Transport>) {
             self.client = client
         }
 

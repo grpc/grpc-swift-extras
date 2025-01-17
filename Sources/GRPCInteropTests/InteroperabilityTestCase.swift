@@ -23,7 +23,7 @@ public protocol InteroperabilityTest {
   ///
   /// - Parameter client: The client to use for the test.
   /// - Throws: Any exception may be thrown to indicate an unsuccessful test.
-  func run(client: GRPCClient) async throws
+  func run<Transport: ClientTransport>(client: GRPCClient<Transport>) async throws
 }
 
 /// Test cases as listed by the [gRPC interoperability test description specification]
