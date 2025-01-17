@@ -574,7 +574,7 @@ final class TracingInterceptorTests: XCTestCase {
         [
           "Received request",
           "Finished processing request",
-          "Sent response end"
+          "Sent response end",
         ]
       )
     } assertAttributes: { attributes in
@@ -591,7 +591,7 @@ final class TracingInterceptorTests: XCTestCase {
           "network.transport": .string("tcp"),
           "network.type": .string("ipv4"),
           "client.address": .string("10.1.2.80"),
-          "client.port": .int(567)
+          "client.port": .int(567),
         ]
       )
     } assertStatus: { status in
@@ -656,7 +656,7 @@ final class TracingInterceptorTests: XCTestCase {
         [
           "Received request",
           "Finished processing request",
-          "Sent response end"
+          "Sent response end",
         ]
       )
     } assertAttributes: { attributes in
@@ -673,7 +673,7 @@ final class TracingInterceptorTests: XCTestCase {
           "network.transport": .string("tcp"),
           "network.type": .string("ipv6"),
           "client.address": .string("2001::130F:::09C0:876A:130B"),
-          "client.port": .int(1234)
+          "client.port": .int(1234),
         ]
       )
     } assertStatus: { status in
@@ -738,7 +738,7 @@ final class TracingInterceptorTests: XCTestCase {
         [
           "Received request",
           "Finished processing request",
-          "Sent response end"
+          "Sent response end",
         ]
       )
     } assertAttributes: { attributes in
@@ -752,7 +752,7 @@ final class TracingInterceptorTests: XCTestCase {
           "network.peer.address": .string("some-path"),
           "network.transport": .string("tcp"),
           "network.type": .string("unix"),
-          "client.address": .string("some-path")
+          "client.address": .string("some-path"),
         ]
       )
     } assertStatus: { status in
@@ -846,7 +846,7 @@ final class TracingInterceptorTests: XCTestCase {
           "network.transport": .string("tcp"),
           "network.type": .string("ipv4"),
           "client.address": .string("10.1.2.80"),
-          "client.port": .int(567)
+          "client.port": .int(567),
         ]
       )
     } assertStatus: { status in
@@ -902,7 +902,7 @@ final class TracingInterceptorTests: XCTestCase {
             "network.transport": .string("tcp"),
             "network.type": .string("ipv4"),
             "client.address": .string("10.1.2.80"),
-            "client.port": .int(567)
+            "client.port": .int(567),
           ]
         )
       } assertStatus: { status in
@@ -937,7 +937,9 @@ final class TracingInterceptorTests: XCTestCase {
       // Make sure we get the metadata injected into our service context
       XCTAssertEqual(ServiceContext.current?.traceID, traceIDString)
 
-      return StreamingServerResponse<String>(error: RPCError(code: .unavailable, message: "Test error"))
+      return StreamingServerResponse<String>(
+        error: RPCError(code: .unavailable, message: "Test error")
+      )
     }
 
     XCTAssertThrowsError(try response.accepted.get())
@@ -948,7 +950,7 @@ final class TracingInterceptorTests: XCTestCase {
         [
           "Received request",
           "Finished processing request",
-          "Sent error response"
+          "Sent error response",
         ]
       )
     } assertAttributes: { attributes in
@@ -966,7 +968,7 @@ final class TracingInterceptorTests: XCTestCase {
           "network.transport": .string("tcp"),
           "network.type": .string("ipv4"),
           "client.address": .string("10.1.2.80"),
-          "client.port": .int(567)
+          "client.port": .int(567),
         ]
       )
     } assertStatus: { status in
