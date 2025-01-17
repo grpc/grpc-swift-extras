@@ -17,6 +17,8 @@
 public import GRPCCore
 public import ServiceLifecycle
 
+// A `@retroactive` conformance here is okay because this project is also owned by the owners of
+// `GRPCCore`, and thus, the owners of `GRPCServer`. A conflicting conformance won't be added.
 extension GRPCServer: @retroactive Service {
   public func run() async throws {
     try await withGracefulShutdownHandler {
