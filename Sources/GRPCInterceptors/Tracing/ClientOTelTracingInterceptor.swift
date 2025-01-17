@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, gRPC Authors All rights reserved.
+ * Copyright 2024-2025, gRPC Authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,42 @@
  */
 
 public import GRPCCore
+internal import Synchronization
 internal import Tracing
 
 /// A client interceptor that injects tracing information into the request.
 ///
 /// The tracing information is taken from the current `ServiceContext`, and injected into the request's
-/// metadata. It will then be picked up by the server-side ``ServerTracingInterceptor``.
+/// metadata. It will then be picked up by the server-side ``ServerOTelTracingInterceptor``.
 ///
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
-public struct ClientTracingInterceptor: ClientInterceptor {
+///
+/// This interceptor will also inject all required and recommended span and event attributes, and set span status, as defined by
+/// OpenTelemetry's documentation on:
+/// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
+/// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
+public struct ClientOTelTracingInterceptor: ClientInterceptor {
   private let injector: ClientRequestInjector
   private let emitEventOnEachWrite: Bool
+  private var serverHostname: String
+  private var networkTransportMethod: String
 
-  /// Create a new instance of a ``ClientTracingInterceptor``.
+  /// Create a new instance of a ``ClientOTelTracingInterceptor``.
   ///
-  /// - Parameter emitEventOnEachWrite: If `true`, each request part sent and response part
-  /// received will be recorded as a separate event in a tracing span. Otherwise, only the request/response
-  /// start and end will be recorded as events.
-  public init(emitEventOnEachWrite: Bool = false) {
+  /// - Parameters:
+  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "udp"). This will be the value for the
+  ///  `network.transport` attribute in spans.
+  ///  - emitEventOnEachWrite: If `true`, each request part sent and response part received will be recorded as a separate
+  ///  event in a tracing span. Otherwise, only the request/response start and end will be recorded as events.
+  public init(
+    serverHostname: String,
+    networkTransportMethod: String,
+    emitEventOnEachWrite: Bool = false
+  ) {
     self.injector = ClientRequestInjector()
+    self.serverHostname = serverHostname
+    self.networkTransportMethod = networkTransportMethod
     self.emitEventOnEachWrite = emitEventOnEachWrite
   }
 
@@ -42,6 +59,11 @@ public struct ClientTracingInterceptor: ClientInterceptor {
   ///
   /// Which key-value pairs are injected will depend on the specific tracing implementation
   /// that has been configured when bootstrapping `swift-distributed-tracing` in your application.
+  ///
+  /// It will also inject all required and recommended span and event attributes, and set span status, as defined by OpenTelemetry's
+  /// documentation on:
+  /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
+  /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
   public func intercept<Input, Output>(
     request: StreamingClientRequest<Input>,
     context: ClientContext,
@@ -65,63 +87,80 @@ public struct ClientTracingInterceptor: ClientInterceptor {
       context: serviceContext,
       ofKind: .client
     ) { span in
+      span.setOTelClientSpanGRPCAttributes(
+        context: context,
+        serverHostname: self.serverHostname,
+        networkTransportMethod: self.networkTransportMethod
+      )
+
       span.addEvent("Request started")
 
+      let wrappedProducer = request.producer
       if self.emitEventOnEachWrite {
-        let wrappedProducer = request.producer
         request.producer = { writer in
+          let messageSentCounter = Atomic(1)
           let eventEmittingWriter = HookedWriter(
             wrapping: writer,
-            beforeEachWrite: {
-              span.addEvent("Sending request part")
-            },
             afterEachWrite: {
-              span.addEvent("Sent request part")
+              var event = SpanEvent(name: "rpc.message")
+              event.attributes.rpc.messageType = "SENT"
+              event.attributes.rpc.messageID =
+                messageSentCounter
+                .wrappingAdd(1, ordering: .sequentiallyConsistent)
+                .oldValue
+              span.addEvent(event)
             }
           )
-
-          do {
-            try await wrappedProducer(RPCWriter(wrapping: eventEmittingWriter))
-          } catch {
-            span.addEvent("Error encountered")
-            throw error
-          }
-
-          span.addEvent("Request end")
+          try await wrappedProducer(RPCWriter(wrapping: eventEmittingWriter))
+          span.addEvent("Request ended")
+        }
+      } else {
+        request.producer = { writer in
+          try await wrappedProducer(RPCWriter(wrapping: writer))
+          span.addEvent("Request ended")
         }
       }
 
-      var response: StreamingClientResponse<Output>
-      do {
-        response = try await next(request, context)
-      } catch {
-        span.addEvent("Error encountered")
-        throw error
-      }
-
+      var response = try await next(request, context)
       switch response.accepted {
       case .success(var success):
+        span.addEvent("Received response start")
+        span.attributes.rpc.grpcStatusCode = 0
         if self.emitEventOnEachWrite {
+          let messageReceivedCounter = Atomic(1)
           let onEachPartRecordingSequence = success.bodyParts.map { element in
-            span.addEvent("Received response part")
+            var event = SpanEvent(name: "rpc.message")
+            event.attributes.rpc.messageType = "RECEIVED"
+            event.attributes.rpc.messageID =
+              messageReceivedCounter
+              .wrappingAdd(1, ordering: .sequentiallyConsistent)
+              .oldValue
+            span.addEvent(event)
             return element
           }
+
           let onFinishRecordingSequence = OnFinishAsyncSequence(
             wrapping: onEachPartRecordingSequence
           ) {
             span.addEvent("Received response end")
           }
+
           success.bodyParts = RPCAsyncSequence(wrapping: onFinishRecordingSequence)
           response.accepted = .success(success)
         } else {
           let onFinishRecordingSequence = OnFinishAsyncSequence(wrapping: success.bodyParts) {
             span.addEvent("Received response end")
           }
+
           success.bodyParts = RPCAsyncSequence(wrapping: onFinishRecordingSequence)
           response.accepted = .success(success)
         }
-      case .failure:
+
+      case .failure(let error):
+        span.attributes.rpc.grpcStatusCode = error.code.rawValue
+        span.setStatus(SpanStatus(code: .error))
         span.addEvent("Received error response")
+        span.recordError(error)
       }
 
       return response
