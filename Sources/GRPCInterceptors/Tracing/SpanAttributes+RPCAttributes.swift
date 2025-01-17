@@ -162,7 +162,9 @@ private enum PeerAddress {
     // - ipv4:<host>:<port> for ipv4 addresses
     // - ipv6:[<host>]:<port> for ipv6 addresses
     // - unix:<uds-pathname> for UNIX domain sockets
-    let addressComponents = address.split(separator: ":", omittingEmptySubsequences: false)
+
+    // First get the first component so that we know what type of address we're dealing with
+    let addressComponents = address.split(separator: ":", maxSplits: 1)
 
     guard addressComponents.count > 1 else {
       // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
@@ -173,32 +175,28 @@ private enum PeerAddress {
     // Check what type the transport is...
     switch addressComponents[0] {
     case "ipv4":
-      guard addressComponents.count == 3, let port = Int(addressComponents[2]) else {
+      let ipv4AddressComponents = addressComponents[1].split(separator: ":")
+      guard ipv4AddressComponents.count == 2, let port = Int(ipv4AddressComponents[1]) else {
         // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
         self = .other(address)
         return
       }
-      self = .ipv4(address: String(addressComponents[1]), port: port)
+      self = .ipv4(address: String(ipv4AddressComponents[0]), port: port)
 
     case "ipv6":
-      guard addressComponents.count > 2, let port = Int(addressComponents.last!) else {
+      // At this point, we are looking at an address with format: [<address>]:<port>
+      // We drop the first character ('[') and split by ']:' to keep two components: the address
+      // and the port.
+      let ipv6AddressComponents = addressComponents[1].dropFirst().split(separator: "]:")
+      guard ipv6AddressComponents.count == 2, let port = Int(ipv6AddressComponents[1]) else {
         // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
         self = .other(address)
         return
       }
-      self = .ipv6(
-        address: String(
-          addressComponents[1 ..< addressComponents.count - 1].joined(separator: ":")
-        ),
-        port: port
-      )
+      self = .ipv6(address: String(ipv6AddressComponents[0]), port: port)
 
     case "unix":
-      guard addressComponents.count == 2 else {
-        // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
-        self = .other(address)
-        return
-      }
+      // Whatever comes after "unix:" is the <pathname>
       self = .unixDomainSocket(path: String(addressComponents[1]))
 
     default:
