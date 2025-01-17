@@ -15,13 +15,13 @@
  */
 
 public import GRPCCore
-internal import Tracing
 internal import Synchronization
+internal import Tracing
 
 /// A server interceptor that extracts tracing information from the request.
 ///
 /// The extracted tracing information is made available to user code via the current `ServiceContext`.
-/// 
+///
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
 ///
 /// This interceptor will also inject all required and recommended span and event attributes, and set span status, as defined by
@@ -104,7 +104,7 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
               var event = SpanEvent(name: "rpc.message")
               event.attributes.rpc.messageType = "RECEIVED"
               event.attributes.rpc.messageID =
-              messageReceivedCounter
+                messageReceivedCounter
                 .wrappingAdd(1, ordering: .sequentiallyConsistent)
                 .oldValue
               span.addEvent(event)
@@ -130,7 +130,7 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
                   var event = SpanEvent(name: "rpc.message")
                   event.attributes.rpc.messageType = "SENT"
                   event.attributes.rpc.messageID =
-                  messageSentCounter
+                    messageSentCounter
                     .wrappingAdd(1, ordering: .sequentiallyConsistent)
                     .oldValue
                   span.addEvent(event)
