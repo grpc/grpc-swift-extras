@@ -24,7 +24,7 @@ final class HealthTests: XCTestCase {
   private func withHealthClient(
     _ body: @Sendable (
       Grpc_Health_V1_Health.Client<InProcessTransport.Client>,
-      Health.Provider
+      HealthService.Provider
     ) async throws -> Void
   ) async throws {
     let health = HealthService()
@@ -39,7 +39,7 @@ final class HealthTests: XCTestCase {
       }
 
       group.addTask {
-        try await client.run()
+        try await client.runConnections()
       }
 
       do {
