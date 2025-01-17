@@ -68,7 +68,9 @@ public struct ReflectionService: Sendable {
 }
 
 extension ReflectionService: RegistrableRPCService {
-  public func registerMethods(with router: inout RPCRouter) {
+  public func registerMethods<Transport>(
+    with router: inout RPCRouter<Transport>
+  ) where Transport: ServerTransport {
     self.service.registerMethods(with: &router)
   }
 }

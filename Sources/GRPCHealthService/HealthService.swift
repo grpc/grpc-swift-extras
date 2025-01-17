@@ -55,7 +55,9 @@ public struct HealthService: Sendable, RegistrableRPCService {
     self.provider = HealthService.Provider(healthService: healthService)
   }
 
-  public func registerMethods(with router: inout RPCRouter) {
+  public func registerMethods<Transport>(
+    with router: inout RPCRouter<Transport>
+  ) where Transport: ServerTransport {
     self.service.registerMethods(with: &router)
   }
 }

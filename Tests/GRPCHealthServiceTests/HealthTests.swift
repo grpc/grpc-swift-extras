@@ -22,7 +22,10 @@ import XCTest
 
 final class HealthTests: XCTestCase {
   private func withHealthClient(
-    _ body: @Sendable (Grpc_Health_V1_Health.Client, HealthService.Provider) async throws -> Void
+    _ body: @Sendable (
+      Grpc_Health_V1_Health.Client<InProcessTransport.Client>,
+      Health.Provider
+    ) async throws -> Void
   ) async throws {
     let health = HealthService()
     let inProcess = InProcessTransport()

@@ -664,7 +664,7 @@ extension Grpc_Testing_TestService {
 
 // Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_TestService.StreamingServiceProtocol {
-    public func registerMethods(with router: inout GRPCCore.RPCRouter) {
+    public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
             forMethod: Grpc_Testing_TestService.Method.EmptyCall.descriptor,
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
@@ -1162,14 +1162,14 @@ extension Grpc_Testing_TestService {
     /// >
     /// > A simple service to test the various types of RPCs and experiment with
     /// > performance with various types of payload.
-    public struct Client: ClientProtocol {
-        private let client: GRPCCore.GRPCClient
+    public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+        private let client: GRPCCore.GRPCClient<Transport>
 
         /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
         ///
         /// - Parameters:
         ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
-        public init(wrapping client: GRPCCore.GRPCClient) {
+        public init(wrapping client: GRPCCore.GRPCClient<Transport>) {
             self.client = client
         }
 
@@ -2099,7 +2099,7 @@ extension Grpc_Testing_UnimplementedService {
 
 // Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
-    public func registerMethods(with router: inout GRPCCore.RPCRouter) {
+    public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
             forMethod: Grpc_Testing_UnimplementedService.Method.UnimplementedCall.descriptor,
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_Empty>(),
@@ -2191,14 +2191,14 @@ extension Grpc_Testing_UnimplementedService {
     /// >
     /// > A simple service NOT implemented at servers so clients can test for
     /// > that case.
-    public struct Client: ClientProtocol {
-        private let client: GRPCCore.GRPCClient
+    public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+        private let client: GRPCCore.GRPCClient<Transport>
 
         /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
         ///
         /// - Parameters:
         ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
-        public init(wrapping client: GRPCCore.GRPCClient) {
+        public init(wrapping client: GRPCCore.GRPCClient<Transport>) {
             self.client = client
         }
 
@@ -2481,7 +2481,7 @@ extension Grpc_Testing_ReconnectService {
 
 // Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_ReconnectService.StreamingServiceProtocol {
-    public func registerMethods(with router: inout GRPCCore.RPCRouter) {
+    public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
             forMethod: Grpc_Testing_ReconnectService.Method.Start.descriptor,
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Testing_ReconnectParams>(),
@@ -2621,14 +2621,14 @@ extension Grpc_Testing_ReconnectService {
     /// > Source IDL Documentation:
     /// >
     /// > A service used to control reconnect server.
-    public struct Client: ClientProtocol {
-        private let client: GRPCCore.GRPCClient
+    public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+        private let client: GRPCCore.GRPCClient<Transport>
 
         /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
         ///
         /// - Parameters:
         ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
-        public init(wrapping client: GRPCCore.GRPCClient) {
+        public init(wrapping client: GRPCCore.GRPCClient<Transport>) {
             self.client = client
         }
 

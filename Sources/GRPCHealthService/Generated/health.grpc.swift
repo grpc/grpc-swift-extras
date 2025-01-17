@@ -299,7 +299,7 @@ extension Grpc_Health_V1_Health {
 
 // Default implementation of 'registerMethods(with:)'.
 extension Grpc_Health_V1_Health.StreamingServiceProtocol {
-    package func registerMethods(with router: inout GRPCCore.RPCRouter) {
+    package func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
             forMethod: Grpc_Health_V1_Health.Method.Check.descriptor,
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Health_V1_HealthCheckRequest>(),
@@ -477,14 +477,14 @@ extension Grpc_Health_V1_Health {
     /// > Health is gRPC's mechanism for checking whether a server is able to handle
     /// > RPCs. Its semantics are documented in
     /// > https://github.com/grpc/grpc/blob/master/doc/health-checking.md.
-    package struct Client: ClientProtocol {
-        private let client: GRPCCore.GRPCClient
+    package struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+        private let client: GRPCCore.GRPCClient<Transport>
 
         /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
         ///
         /// - Parameters:
         ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
-        package init(wrapping client: GRPCCore.GRPCClient) {
+        package init(wrapping client: GRPCCore.GRPCClient<Transport>) {
             self.client = client
         }
 

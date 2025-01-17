@@ -91,7 +91,7 @@ extension Grpc_Testing_EmptyService {
 
 // Default implementation of 'registerMethods(with:)'.
 extension Grpc_Testing_EmptyService.StreamingServiceProtocol {
-    public func registerMethods(with router: inout GRPCCore.RPCRouter) {}
+    public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {}
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
@@ -126,14 +126,14 @@ extension Grpc_Testing_EmptyService {
     /// >
     /// > A service that has zero methods.
     /// > See https://github.com/grpc/grpc/issues/15574
-    public struct Client: ClientProtocol {
-        private let client: GRPCCore.GRPCClient
+    public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+        private let client: GRPCCore.GRPCClient<Transport>
 
         /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
         ///
         /// - Parameters:
         ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
-        public init(wrapping client: GRPCCore.GRPCClient) {
+        public init(wrapping client: GRPCCore.GRPCClient<Transport>) {
             self.client = client
         }
     }
