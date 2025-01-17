@@ -45,7 +45,7 @@ final class TracingInterceptorTests: XCTestCase {
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
         }),
-        context: .init(descriptor: methodDescriptor)
+        context: ClientContext(descriptor: methodDescriptor, remotePeer: "", localPeer: "")
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
         XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
@@ -113,7 +113,7 @@ final class TracingInterceptorTests: XCTestCase {
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
         }),
-        context: .init(descriptor: methodDescriptor)
+        context: ClientContext(descriptor: methodDescriptor, remotePeer: "", localPeer: "")
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
         XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
@@ -181,7 +181,12 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor, peer: "", cancellation: .init())
+      context: ServerContext(
+        descriptor: methodDescriptor,
+        remotePeer: "",
+        localPeer: "",
+        cancellation: .init()
+      )
     ) { _, _ in
       StreamingServerResponse<String>(error: .init(code: .unknown, message: "Test error"))
     }
@@ -210,7 +215,12 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor, peer: "", cancellation: .init())
+      context: ServerContext(
+        descriptor: methodDescriptor,
+        remotePeer: "",
+        localPeer: "",
+        cancellation: .init()
+      )
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
         return StreamingServerResponse<String>(
@@ -275,7 +285,12 @@ final class TracingInterceptorTests: XCTestCase {
     let single = ServerRequest(metadata: ["trace-id": "some-trace-id"], message: [UInt8]())
     let response = try await interceptor.intercept(
       request: .init(single: single),
-      context: .init(descriptor: methodDescriptor, peer: "", cancellation: .init())
+      context: ServerContext(
+        descriptor: methodDescriptor,
+        remotePeer: "",
+        localPeer: "",
+        cancellation: .init()
+      )
     ) { _, _ in
       { [serviceContext = ServiceContext.current] in
         return StreamingServerResponse<String>(
