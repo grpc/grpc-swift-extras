@@ -33,13 +33,13 @@ public import struct Foundation.Data
 ///
 /// The service will offer information to clients about any registered services. You can register
 /// a service by providing its descriptor set to the service.
-public final class ReflectionService: Sendable {
+public struct ReflectionService: Sendable {
   private let service: ReflectionService.V1
 
   /// Create a new instance of the reflection service from a list of descriptor set file URLs.
   ///
   /// - Parameter fileURLs: A list of file URLs containing serialized descriptor sets.
-  public convenience init(
+  public init(
     descriptorSetFileURLs fileURLs: [URL]
   ) throws {
     let fileDescriptorProtos = try Self.readDescriptorSets(atURLs: fileURLs)
@@ -49,7 +49,7 @@ public final class ReflectionService: Sendable {
   /// Create a new instance of the reflection service from a list of descriptor set file paths.
   ///
   /// - Parameter filePaths: A list of file paths containing serialized descriptor sets.
-  public convenience init(
+  public init(
     descriptorSetFilePaths filePaths: [String]
   ) throws {
     let fileDescriptorProtos = try Self.readDescriptorSets(atPaths: filePaths)

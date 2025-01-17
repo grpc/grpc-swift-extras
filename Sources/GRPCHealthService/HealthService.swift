@@ -14,118 +14,102 @@
  * limitations under the License.
  */
 
-internal import GRPCCore
-private import Synchronization
+public import GRPCCore
 
-internal struct HealthService: Grpc_Health_V1_Health.ServiceProtocol {
-  private let state = HealthService.State()
+/// ``HealthService`` is gRPC's mechanism for checking whether a server is able to handle RPCs.
+/// Its semantics are documented in the [gRPC repository]( https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/health-checking.md).
+///
+/// `HealthService` implements the `grpc.health.v1` service and can be registered with a server
+/// like any other service. It holds a ``HealthService/Provider-swift.struct`` which provides
+/// status updates to the service. The service doesn't know about the other services running on the
+/// server so it must be provided with status updates via the ``Provider-swift.struct``. To make
+/// specifying the service being updated easier, the generated code for services includes an
+/// extension to `ServiceDescriptor`.
+///
+/// The following shows an example of initializing a Health service and updating the status of
+/// the `Foo` service in the `bar` package.
+///
+/// ```swift
+/// let health = HealthService()
+/// try await withGRPCServer(
+///   transport: transport,
+///   services: [health, FooService()]
+/// ) { server in
+///   // Update the status of the 'bar.Foo' service.
+///   health.provider.updateStatus(.serving, forService: .bar_Foo)
+///
+///   // ...
+/// }
+/// ```
+public struct HealthService: Sendable, RegistrableRPCService {
+  /// An implementation of the `grpc.health.v1.Health` service.
+  private let service: Service
 
-  func check(
-    request: ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
-    context: ServerContext
-  ) async throws -> ServerResponse<Grpc_Health_V1_HealthCheckResponse> {
-    let service = request.message.service
+  /// Provides status updates to the Health service.
+  public let provider: HealthService.Provider
 
-    guard let status = self.state.currentStatus(ofService: service) else {
-      throw RPCError(code: .notFound, message: "Requested service unknown.")
-    }
-
-    var response = Grpc_Health_V1_HealthCheckResponse()
-    response.status = status
-
-    return ServerResponse(message: response)
+  /// Constructs a new ``HealthService``.
+  public init() {
+    let healthService = Service()
+    self.service = healthService
+    self.provider = HealthService.Provider(healthService: healthService)
   }
 
-  func watch(
-    request: ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
-    context: ServerContext
-  ) async -> StreamingServerResponse<Grpc_Health_V1_HealthCheckResponse> {
-    let service = request.message.service
-    let statuses = AsyncStream.makeStream(of: Grpc_Health_V1_HealthCheckResponse.ServingStatus.self)
-
-    self.state.addContinuation(statuses.continuation, forService: service)
-
-    return StreamingServerResponse(of: Grpc_Health_V1_HealthCheckResponse.self) { writer in
-      var response = Grpc_Health_V1_HealthCheckResponse()
-
-      for await status in statuses.stream {
-        response.status = status
-        try await writer.write(response)
-      }
-
-      return [:]
-    }
-  }
-
-  func updateStatus(
-    _ status: Grpc_Health_V1_HealthCheckResponse.ServingStatus,
-    forService service: String
-  ) {
-    self.state.updateStatus(status, forService: service)
+  public func registerMethods(with router: inout RPCRouter) {
+    self.service.registerMethods(with: &router)
   }
 }
 
 extension HealthService {
-  private final class State: Sendable {
-    // The state of each service keyed by the fully qualified service name.
-    private let lockedStorage = Mutex([String: ServiceState]())
+  /// Provides status updates to ``HealthService``.
+  public struct Provider: Sendable {
+    private let healthService: Service
 
-    fileprivate func currentStatus(
-      ofService service: String
-    ) -> Grpc_Health_V1_HealthCheckResponse.ServingStatus? {
-      return self.lockedStorage.withLock { $0[service]?.currentStatus }
+    /// Updates the status of a service.
+    ///
+    /// - Parameters:
+    ///   - status: The status of the service.
+    ///   - service: The description of the service.
+    public func updateStatus(
+      _ status: ServingStatus,
+      forService service: ServiceDescriptor
+    ) {
+      self.healthService.updateStatus(
+        Grpc_Health_V1_HealthCheckResponse.ServingStatus(status),
+        forService: service.fullyQualifiedService
+      )
     }
 
-    fileprivate func updateStatus(
-      _ status: Grpc_Health_V1_HealthCheckResponse.ServingStatus,
+    /// Updates the status of a service.
+    ///
+    /// - Parameters:
+    ///   - status: The status of the service.
+    ///   - service: The fully qualified service name in the format:
+    ///     - "package.service": if the service is part of a package. For example, "helloworld.Greeter".
+    ///     - "service": if the service is not part of a package. For example, "Greeter".
+    public func updateStatus(
+      _ status: ServingStatus,
       forService service: String
     ) {
-      self.lockedStorage.withLock { storage in
-        storage[service, default: ServiceState(status: status)].updateStatus(status)
-      }
+      self.healthService.updateStatus(
+        Grpc_Health_V1_HealthCheckResponse.ServingStatus(status),
+        forService: service
+      )
     }
 
-    fileprivate func addContinuation(
-      _ continuation: AsyncStream<Grpc_Health_V1_HealthCheckResponse.ServingStatus>.Continuation,
-      forService service: String
-    ) {
-      self.lockedStorage.withLock { storage in
-        storage[service, default: ServiceState(status: .serviceUnknown)]
-          .addContinuation(continuation)
-      }
+    fileprivate init(healthService: Service) {
+      self.healthService = healthService
     }
   }
+}
 
-  // Encapsulates the current status of a service and the continuations of its watch streams.
-  private struct ServiceState: Sendable {
-    private(set) var currentStatus: Grpc_Health_V1_HealthCheckResponse.ServingStatus
-    private var continuations:
-      [AsyncStream<Grpc_Health_V1_HealthCheckResponse.ServingStatus>.Continuation]
-
-    fileprivate mutating func updateStatus(
-      _ status: Grpc_Health_V1_HealthCheckResponse.ServingStatus
-    ) {
-      guard status != self.currentStatus else {
-        return
-      }
-
-      self.currentStatus = status
-
-      for continuation in self.continuations {
-        continuation.yield(status)
-      }
-    }
-
-    fileprivate mutating func addContinuation(
-      _ continuation: AsyncStream<Grpc_Health_V1_HealthCheckResponse.ServingStatus>.Continuation
-    ) {
-      self.continuations.append(continuation)
-      continuation.yield(self.currentStatus)
-    }
-
-    fileprivate init(status: Grpc_Health_V1_HealthCheckResponse.ServingStatus = .unknown) {
-      self.currentStatus = status
-      self.continuations = []
+extension Grpc_Health_V1_HealthCheckResponse.ServingStatus {
+  package init(_ status: ServingStatus) {
+    switch status.value {
+    case .serving:
+      self = .serving
+    case .notServing:
+      self = .notServing
     }
   }
 }
