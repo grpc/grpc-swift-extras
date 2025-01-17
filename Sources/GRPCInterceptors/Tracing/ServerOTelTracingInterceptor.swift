@@ -16,23 +16,41 @@
 
 public import GRPCCore
 internal import Tracing
+internal import Synchronization
 
 /// A server interceptor that extracts tracing information from the request.
 ///
 /// The extracted tracing information is made available to user code via the current `ServiceContext`.
+/// 
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
-public struct ServerTracingInterceptor: ServerInterceptor {
+///
+/// This interceptor will also inject all required and recommended span and event attributes, and set span status, as defined by
+/// OpenTelemetry's documentation on:
+/// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
+/// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
+public struct ServerOTelTracingInterceptor: ServerInterceptor {
   private let extractor: ServerRequestExtractor
   private let emitEventOnEachWrite: Bool
+  private var serverHostname: String
+  private var networkTransportMethod: String
 
-  /// Create a new instance of a ``ServerTracingInterceptor``.
+  /// Create a new instance of a ``ServerOTelTracingInterceptor``.
   ///
-  /// - Parameter emitEventOnEachWrite: If `true`, each response part sent and request part
-  /// received will be recorded as a separate event in a tracing span. Otherwise, only the request/response
-  /// start and end will be recorded as events.
-  public init(emitEventOnEachWrite: Bool = false) {
+  /// - Parameters:
+  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "udp"). This will be the value for the
+  ///  `network.transport` attribute in spans.
+  ///  - emitEventOnEachWrite: If `true`, each response part sent and request part received will be recorded as a separate
+  ///  event in a tracing span. Otherwise, only the request/response start and end will be recorded as events.
+  public init(
+    serverHostname: String,
+    networkTransportMethod: String,
+    emitEventOnEachWrite: Bool = false
+  ) {
     self.extractor = ServerRequestExtractor()
     self.emitEventOnEachWrite = emitEventOnEachWrite
+    self.serverHostname = serverHostname
+    self.networkTransportMethod = networkTransportMethod
   }
 
   /// This interceptor will extract whatever `ServiceContext` key-value pairs have been inserted into the
@@ -41,6 +59,11 @@ public struct ServerTracingInterceptor: ServerInterceptor {
   ///
   /// Which key-value pairs are extracted and made available will depend on the specific tracing implementation
   /// that has been configured when bootstrapping `swift-distributed-tracing` in your application.
+  ///
+  /// It will also inject all required and recommended span and event attributes, and set span status, as defined by OpenTelemetry's
+  /// documentation on:
+  /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
+  /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
   public func intercept<Input, Output>(
     request: StreamingServerRequest<Input>,
     context: ServerContext,
@@ -65,14 +88,26 @@ public struct ServerTracingInterceptor: ServerInterceptor {
         context: serviceContext,
         ofKind: .server
       ) { span in
-        span.addEvent("Received request start")
+        span.setOTelServerSpanGRPCAttributes(
+          context: context,
+          serverHostname: self.serverHostname,
+          networkTransportMethod: self.networkTransportMethod
+        )
+
+        span.addEvent("Received request")
 
         var request = request
-
         if self.emitEventOnEachWrite {
+          let messageReceivedCounter = Atomic(1)
           request.messages = RPCAsyncSequence(
             wrapping: request.messages.map { element in
-              span.addEvent("Received request part")
+              var event = SpanEvent(name: "rpc.message")
+              event.attributes.rpc.messageType = "RECEIVED"
+              event.attributes.rpc.messageID =
+              messageReceivedCounter
+                .wrappingAdd(1, ordering: .sequentiallyConsistent)
+                .oldValue
+              span.addEvent(event)
               return element
             }
           )
@@ -80,7 +115,7 @@ public struct ServerTracingInterceptor: ServerInterceptor {
 
         var response = try await next(request, context)
 
-        span.addEvent("Received request end")
+        span.addEvent("Finished processing request")
 
         switch response.accepted {
         case .success(var success):
@@ -88,10 +123,17 @@ public struct ServerTracingInterceptor: ServerInterceptor {
 
           if self.emitEventOnEachWrite {
             success.producer = { writer in
+              let messageSentCounter = Atomic(1)
               let eventEmittingWriter = HookedWriter(
                 wrapping: writer,
                 afterEachWrite: {
-                  span.addEvent("Sent response part")
+                  var event = SpanEvent(name: "rpc.message")
+                  event.attributes.rpc.messageType = "SENT"
+                  event.attributes.rpc.messageID =
+                  messageSentCounter
+                    .wrappingAdd(1, ordering: .sequentiallyConsistent)
+                    .oldValue
+                  span.addEvent(event)
                 }
               )
 
@@ -112,8 +154,11 @@ public struct ServerTracingInterceptor: ServerInterceptor {
 
           response = .init(accepted: .success(success))
 
-        case .failure:
+        case .failure(let error):
+          span.attributes.rpc.grpcStatusCode = error.code.rawValue
+          span.setStatus(SpanStatus(code: .error))
           span.addEvent("Sent error response")
+          span.recordError(error)
         }
 
         return response
