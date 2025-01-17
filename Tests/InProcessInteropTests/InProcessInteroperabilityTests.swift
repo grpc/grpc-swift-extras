@@ -35,7 +35,7 @@ final class InProcessInteroperabilityTests: XCTestCase {
           try await withThrowingTaskGroup(of: Void.self) { clientGroup in
             let client = GRPCClient(transport: inProcess.client)
             clientGroup.addTask {
-              try await client.run()
+              try await client.runConnections()
             }
             try await interopTestCase.makeTest().run(client: client)
 

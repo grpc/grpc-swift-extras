@@ -31,6 +31,10 @@ let products: [Product] = [
     targets: ["GRPCInterceptors"]
   ),
   .library(
+    name: "GRPCServiceLifecycle",
+    targets: ["GRPCServiceLifecycle"]
+  ),
+  .library(
     name: "GRPCInteropTests",
     targets: ["GRPCInteropTests"]
   ),
@@ -39,7 +43,7 @@ let products: [Product] = [
 let dependencies: [Package.Dependency] = [
   .package(
     url: "https://github.com/grpc/grpc-swift.git",
-    exact: "2.0.0-beta.3"
+    branch: "main"
   ),
   .package(
     url: "https://github.com/grpc/grpc-swift-protobuf.git",
@@ -52,6 +56,10 @@ let dependencies: [Package.Dependency] = [
   .package(
     url: "https://github.com/apple/swift-distributed-tracing.git",
     from: "1.1.2"
+  ),
+  .package(
+    url: "https://github.com/swift-server/swift-service-lifecycle.git",
+    from: "2.6.3"
   ),
 ]
 
@@ -122,6 +130,26 @@ let targets: [Target] = [
       .target(name: "GRPCInterceptors"),
       .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+
+  // Retroactive conformances of gRPC client and server to swift-server-lifecycle's Service.
+  .target(
+    name: "GRPCServiceLifecycle",
+    dependencies: [
+      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+  .testTarget(
+    name: "GRPCServiceLifecycleTests",
+    dependencies: [
+      .target(name: "GRPCServiceLifecycle"),
+      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "ServiceLifecycleTestKit", package: "swift-service-lifecycle"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
     ],
     swiftSettings: defaultSwiftSettings
   ),
