@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import Tracing
+internal import Tracing
+internal import GRPCCore
 
 @dynamicMemberLookup
 package struct RPCAttributes: SpanAttributeNamespace {
@@ -55,6 +56,152 @@ extension SpanAttributes {
     }
     set {
       self = newValue.attributes
+    }
+  }
+}
+
+extension Span {
+  // See: https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans/
+  func setOTelClientSpanGRPCAttributes(
+    context: ClientContext,
+    serverHostname: String,
+    networkTransportMethod: String
+  ) {
+    self.attributes.rpc.system = "grpc"
+    self.attributes.rpc.serverAddress = serverHostname
+    self.attributes.rpc.networkTransport = networkTransportMethod
+    self.attributes.rpc.service = context.descriptor.service.fullyQualifiedService
+    self.attributes.rpc.method = context.descriptor.method
+
+    // Set server address information
+    switch PeerAddress(context.remotePeer) {
+    case .ipv4(let address, let port):
+      self.attributes.rpc.networkType = "ipv4"
+      self.attributes.rpc.networkPeerAddress = address
+      self.attributes.rpc.networkPeerPort = port
+      self.attributes.rpc.serverPort = port
+
+    case .ipv6(let address, let port):
+      self.attributes.rpc.networkType = "ipv6"
+      self.attributes.rpc.networkPeerAddress = address
+      self.attributes.rpc.networkPeerPort = port
+      self.attributes.rpc.serverPort = port
+
+    case .unixDomainSocket(let path):
+      self.attributes.rpc.networkType = "unix"
+      self.attributes.rpc.networkPeerAddress = path
+
+    case .other(let address):
+      // We can't nicely format the span attributes to contain the appropriate information here,
+      // so include the whole thing as part of the server address.
+      self.attributes.rpc.serverAddress = address
+    }
+  }
+
+  func setOTelServerSpanGRPCAttributes(
+    context: ServerContext,
+    serverHostname: String,
+    networkTransportMethod: String
+  ) {
+    self.attributes.rpc.system = "grpc"
+    self.attributes.rpc.serverAddress = serverHostname
+    self.attributes.rpc.networkTransport = networkTransportMethod
+    self.attributes.rpc.service = context.descriptor.service.fullyQualifiedService
+    self.attributes.rpc.method = context.descriptor.method
+
+    // Set server address information
+    switch PeerAddress(context.localPeer) {
+    case .ipv4(let address, let port):
+      self.attributes.rpc.networkType = "ipv4"
+      self.attributes.rpc.networkPeerAddress = address
+      self.attributes.rpc.networkPeerPort = port
+      self.attributes.rpc.serverPort = port
+
+    case .ipv6(let address, let port):
+      self.attributes.rpc.networkType = "ipv6"
+      self.attributes.rpc.networkPeerAddress = address
+      self.attributes.rpc.networkPeerPort = port
+      self.attributes.rpc.serverPort = port
+
+    case .unixDomainSocket(let path):
+      self.attributes.rpc.networkType = "unix"
+      self.attributes.rpc.networkPeerAddress = path
+
+    case .other(let address):
+      // We can't nicely format the span attributes to contain the appropriate information here,
+      // so include the whole thing as part of the server address.
+      self.attributes.rpc.serverAddress = address
+    }
+
+    switch PeerAddress(context.remotePeer) {
+    case .ipv4(let address, let port):
+      self.attributes.rpc.clientAddress = address
+      self.attributes.rpc.clientPort = port
+
+    case .ipv6(let address, let port):
+      self.attributes.rpc.clientAddress = address
+      self.attributes.rpc.clientPort = port
+
+    case .unixDomainSocket(let path):
+      self.attributes.rpc.clientAddress = path
+
+    case .other(let address):
+      self.attributes.rpc.clientAddress = address
+    }
+  }
+}
+
+private enum PeerAddress {
+  case ipv4(address: String, port: Int?)
+  case ipv6(address: String, port: Int?)
+  case unixDomainSocket(path: String)
+  case other(String)
+
+  init(_ address: String) {
+    // We expect this address to be of one of these formats:
+    // - ipv4:<host>:<port> for ipv4 addresses
+    // - ipv6:[<host>]:<port> for ipv6 addresses
+    // - unix:<uds-pathname> for UNIX domain sockets
+    let addressComponents = address.split(separator: ":", omittingEmptySubsequences: false)
+
+    guard addressComponents.count > 1 else {
+      // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
+      self = .other(address)
+      return
+    }
+
+    // Check what type the transport is...
+    switch addressComponents[0] {
+    case "ipv4":
+      guard addressComponents.count == 3, let port = Int(addressComponents[2]) else {
+        // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
+        self = .other(address)
+        return
+      }
+      self = .ipv4(address: String(addressComponents[1]), port: port)
+
+    case "ipv6":
+      guard addressComponents.count > 2, let port = Int(addressComponents.last!) else {
+        // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
+        self = .other(address)
+        return
+      }
+      self = .ipv6(
+        address: String(addressComponents[1..<addressComponents.count-1].joined(separator: ":")),
+        port: port
+      )
+
+    case "unix":
+      guard addressComponents.count == 2 else {
+        // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
+        self = .other(address)
+        return
+      }
+      self = .unixDomainSocket(path: String(addressComponents[1]))
+
+    default:
+      // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
+      self = .other(address)
     }
   }
 }

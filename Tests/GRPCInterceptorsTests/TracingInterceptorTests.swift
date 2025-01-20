@@ -25,7 +25,9 @@ final class TracingInterceptorTests: XCTestCase {
     InstrumentationSystem.bootstrap(TestTracer())
   }
 
-  func testClientInterceptor() async throws {
+  // - MARK: Client Interceptor Tests
+
+  func testClientInterceptor_IPv4() async throws {
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
     let interceptor = ClientOTelTracingInterceptor(
@@ -33,7 +35,7 @@ final class TracingInterceptorTests: XCTestCase {
       networkTransportMethod: "tcp",
       traceEachMessage: false
     )
-    let (stream, continuation) = AsyncStream<String>.makeStream()
+    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
     // FIXME: use 'ServiceContext.withValue(serviceContext)'
@@ -49,15 +51,19 @@ final class TracingInterceptorTests: XCTestCase {
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
         }),
-        context: self.getClientContext(forMethod: methodDescriptor)
+        context: ClientContext(
+          descriptor: methodDescriptor,
+          remotePeer: "ipv4:10.1.2.80:567",
+          localPeer: "ipv4:10.1.2.80:123"
+        )
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
         XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
 
-        // Write into the response stream to make sure the `producer` closure's called.
-        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: continuation))
+        // Write into the request stream to make sure the `producer` closure's called.
+        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
         try await stream.producer(writer)
-        continuation.finish()
+        requestStreamContinuation.finish()
 
         return .init(
           metadata: [],
@@ -70,7 +76,7 @@ final class TracingInterceptorTests: XCTestCase {
         )
       }
 
-      await AssertStreamContentsEqual(["request1", "request2"], stream)
+      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
       try await AssertStreamContentsEqual([["response"]], response.messages)
 
       AssertTestSpanComponents(forMethod: methodDescriptor) { events in
@@ -100,6 +106,85 @@ final class TracingInterceptorTests: XCTestCase {
     }
   }
 
+  func testClientInterceptor_IPv6() async throws {
+    var serviceContext = ServiceContext.topLevel
+    let traceIDString = UUID().uuidString
+    let interceptor = ClientOTelTracingInterceptor(
+      serverHostname: "someserver.com",
+      networkTransportMethod: "tcp",
+      traceEachMessage: false
+    )
+    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
+    serviceContext.traceID = traceIDString
+
+    // FIXME: use 'ServiceContext.withValue(serviceContext)'
+    //
+    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
+    try await ServiceContext.$current.withValue(serviceContext) {
+      let methodDescriptor = MethodDescriptor(
+        fullyQualifiedService: "TracingInterceptorTests",
+        method: "testClientInterceptor"
+      )
+      let response = try await interceptor.intercept(
+        request: .init(producer: { writer in
+          try await writer.write(contentsOf: ["request1"])
+          try await writer.write(contentsOf: ["request2"])
+        }),
+        context: ClientContext(
+          descriptor: methodDescriptor,
+          remotePeer: "ipv6:2001::130F:::09C0:876A:130B:1234",
+          localPeer: "ipv6:ff06:0:0:0:0:0:0:c3:5678"
+        )
+      ) { stream, _ in
+        // Assert the metadata contains the injected context key-value.
+        XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
+
+        // Write into the request stream to make sure the `producer` closure's called.
+        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
+        try await stream.producer(writer)
+        requestStreamContinuation.finish()
+
+        return .init(
+          metadata: [],
+          bodyParts: RPCAsyncSequence(
+            wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
+              $0.yield(.message(["response"]))
+              $0.finish()
+            }
+          )
+        )
+      }
+
+      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
+      try await AssertStreamContentsEqual([["response"]], response.messages)
+
+      AssertTestSpanComponents(forMethod: methodDescriptor) { events in
+        // No events are recorded
+        XCTAssertTrue(events.isEmpty)
+      } assertAttributes: { attributes in
+        XCTAssertEqual(
+          attributes,
+          [
+            "rpc.system": .string("grpc"),
+            "rpc.method": .string(methodDescriptor.method),
+            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+            "rpc.grpc.status_code": .int(0),
+            "server.address": .string("someserver.com"),
+            "server.port": .int(1234),
+            "network.peer.address": .string("2001::130F:::09C0:876A:130B"),
+            "network.peer.port": .int(1234),
+            "network.transport": .string("tcp"),
+            "network.type": .string("ipv6"),
+          ]
+        )
+      } assertStatus: { status in
+        XCTAssertNil(status)
+      } assertErrors: { errors in
+        XCTAssertEqual(errors, [])
+      }
+    }
+  }
+
   func testClientInterceptor_UDS() async throws {
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
@@ -108,7 +193,7 @@ final class TracingInterceptorTests: XCTestCase {
       networkTransportMethod: "tcp",
       traceEachMessage: false
     )
-    let (stream, continuation) = AsyncStream<String>.makeStream()
+    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
     // FIXME: use 'ServiceContext.withValue(serviceContext)'
@@ -133,10 +218,10 @@ final class TracingInterceptorTests: XCTestCase {
         // Assert the metadata contains the injected context key-value.
         XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
 
-        // Write into the response stream to make sure the `producer` closure's called.
-        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: continuation))
+        // Write into the request stream to make sure the `producer` closure's called.
+        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
         try await stream.producer(writer)
-        continuation.finish()
+        requestStreamContinuation.finish()
 
         return .init(
           metadata: [],
@@ -149,7 +234,7 @@ final class TracingInterceptorTests: XCTestCase {
         )
       }
 
-      await AssertStreamContentsEqual(["request1", "request2"], stream)
+      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
       try await AssertStreamContentsEqual([["response"]], response.messages)
 
       AssertTestSpanComponents(forMethod: methodDescriptor) { events in
@@ -189,7 +274,7 @@ final class TracingInterceptorTests: XCTestCase {
       networkTransportMethod: "tcp",
       traceEachMessage: true
     )
-    let (stream, continuation) = AsyncStream<String>.makeStream()
+    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
     // FIXME: use 'ServiceContext.withValue(serviceContext)'
@@ -201,15 +286,19 @@ final class TracingInterceptorTests: XCTestCase {
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
         }),
-        context: self.getClientContext(forMethod: methodDescriptor)
+        context: ClientContext(
+          descriptor: methodDescriptor,
+          remotePeer: "ipv4:10.1.2.80:567",
+          localPeer: "ipv4:10.1.2.80:123"
+        )
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
         XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
 
-        // Write into the response stream to make sure the `producer` closure's called.
-        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: continuation))
+        // Write into the request stream to make sure the `producer` closure's called.
+        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
         try await stream.producer(writer)
-        continuation.finish()
+        requestStreamContinuation.finish()
 
         return .init(
           metadata: [],
@@ -222,7 +311,7 @@ final class TracingInterceptorTests: XCTestCase {
         )
       }
 
-      await AssertStreamContentsEqual(["request1", "request2"], stream)
+      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
       try await AssertStreamContentsEqual([["response"]], response.messages)
 
       AssertTestSpanComponents(forMethod: methodDescriptor) { events in
@@ -263,13 +352,12 @@ final class TracingInterceptorTests: XCTestCase {
 
   func testClientInterceptorErrorEncountered() async throws {
     var serviceContext = ServiceContext.topLevel
-    let traceIDString = UUID().uuidString
     let interceptor = ClientOTelTracingInterceptor(
       serverHostname: "someserver.com",
       networkTransportMethod: "tcp",
       traceEachMessage: false
     )
-    let (_, continuation) = AsyncStream<String>.makeStream()
+    let traceIDString = UUID().uuidString
     serviceContext.traceID = traceIDString
 
     // FIXME: use 'ServiceContext.withValue(serviceContext)'
@@ -281,30 +369,18 @@ final class TracingInterceptorTests: XCTestCase {
         method: "testClientInterceptorErrorEncountered"
       )
       do {
-        _ = try await interceptor.intercept(
-          request: .init(producer: { writer in
-            try await writer.write("request")
-            throw TracingInterceptorTestError.testError
-          }),
-          context: self.getClientContext(forMethod: methodDescriptor)
+        let _: StreamingClientResponse<Void> = try await interceptor.intercept(
+          request: StreamingClientRequest(of: Void.self, producer: { writer in }),
+          context: ClientContext(
+            descriptor: methodDescriptor,
+            remotePeer: "ipv4:10.1.2.80:567",
+            localPeer: "ipv4:10.1.2.80:123"
+          )
         ) { stream, _ in
           // Assert the metadata contains the injected context key-value.
           XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
 
-          // Write into the response stream to make sure the `producer` closure's called.
-          let writer = RPCWriter(wrapping: TestWriter(streamContinuation: continuation))
-          try await stream.producer(writer)
-          continuation.finish()
-
-          return .init(
-            metadata: [],
-            bodyParts: RPCAsyncSequence(
-              wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
-                $0.yield(.message(["response"]))
-                $0.finish()
-              }
-            )
-          )
+          throw TracingInterceptorTestError.testError
         }
         XCTFail("Should have thrown")
       } catch {
@@ -344,7 +420,7 @@ final class TracingInterceptorTests: XCTestCase {
       networkTransportMethod: "tcp",
       traceEachMessage: false
     )
-    let (stream, continuation) = AsyncStream<String>.makeStream()
+    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
     // FIXME: use 'ServiceContext.withValue(serviceContext)'
@@ -359,20 +435,24 @@ final class TracingInterceptorTests: XCTestCase {
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request"])
         }),
-        context: self.getClientContext(forMethod: methodDescriptor)
+        context: ClientContext(
+          descriptor: methodDescriptor,
+          remotePeer: "ipv4:10.1.2.80:567",
+          localPeer: "ipv4:10.1.2.80:123"
+        )
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
         XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
 
-        // Write into the response stream to make sure the `producer` closure's called.
-        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: continuation))
+        // Write into the request stream to make sure the `producer` closure's called.
+        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
         try await stream.producer(writer)
-        continuation.finish()
+        requestStreamContinuation.finish()
 
         return .init(error: RPCError(code: .unavailable, message: "This should not work"))
       }
 
-      await AssertStreamContentsEqual(["request"], stream)
+      await AssertStreamContentsEqual(["request"], requestStream)
 
       switch response.accepted {
       case .success:
@@ -578,10 +658,8 @@ final class TracingInterceptorTests: XCTestCase {
         "Received request start",
         "Received request end",
         // Recorded when `response1` is sent
-        "Sending response part",
         "Sent response part",
         // Recorded when `response2` is sent
-        "Sending response part",
         "Sent response part",
         // Recorded when we're done sending response
         "Sent response end",

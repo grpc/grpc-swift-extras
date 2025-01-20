@@ -90,9 +90,6 @@ public struct ServerTracingInterceptor: ServerInterceptor {
             success.producer = { writer in
               let eventEmittingWriter = HookedWriter(
                 wrapping: writer,
-                beforeEachWrite: {
-                  span.addEvent("Sending response part")
-                },
                 afterEachWrite: {
                   span.addEvent("Sent response part")
                 }

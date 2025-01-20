@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, gRPC Authors All rights reserved.
+ * Copyright 2024-2025, gRPC Authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,11 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
       context: serviceContext,
       ofKind: .client
     ) { span in
-      self.setOTelSpanAttributes(into: span, context: context)
+      span.setOTelClientSpanGRPCAttributes(
+        context: context,
+        serverHostname: self.serverHostname,
+        networkTransportMethod: self.networkTransportMethod
+      )
 
       if self.traceEachMessage {
         let wrappedProducer = request.producer
@@ -90,7 +94,6 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
           let messageSentCounter = Atomic(1)
           let eventEmittingWriter = HookedWriter(
             wrapping: writer,
-            beforeEachWrite: {},
             afterEachWrite: {
               var event = SpanEvent(name: "rpc.message")
               event.attributes.rpc.messageType = "SENT"
@@ -153,31 +156,6 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
       }
 
       return response
-    }
-  }
-
-  private func setOTelSpanAttributes(into span: any Span, context: ClientContext) {
-    span.attributes.rpc.system = "grpc"
-    span.attributes.rpc.service = context.descriptor.service.fullyQualifiedService
-    span.attributes.rpc.method = context.descriptor.method
-    span.attributes.rpc.serverAddress = self.serverHostname
-    span.attributes.rpc.networkTransport = self.networkTransportMethod
-
-    let peer = context.remotePeer
-    // We expect this address to be of either of these two formats:
-    // - <type>:<host>:<port> for ipv4 and ipv6 addresses
-    // - unix:<uds-pathname> for UNIX domain sockets
-    let components = peer.split(separator: ":")
-    if components.count == 2 {
-      // This is the UDS case
-      span.attributes.rpc.networkType = String(components[0])
-      span.attributes.rpc.networkPeerAddress = String(components[1])
-    } else if components.count == 3 {
-      // This is the ipv4 or ipv6 case
-      span.attributes.rpc.networkType = String(components[0])
-      span.attributes.rpc.networkPeerAddress = String(components[1])
-      span.attributes.rpc.networkPeerPort = Int(components[2])
-      span.attributes.rpc.serverPort = Int(components[2])
     }
   }
 }
