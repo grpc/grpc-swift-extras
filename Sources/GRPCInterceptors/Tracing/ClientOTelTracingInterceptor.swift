@@ -26,7 +26,7 @@ internal import Tracing
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
 public struct ClientOTelTracingInterceptor: ClientInterceptor {
   private let injector: ClientRequestInjector
-  private let emitEventOnEachWrite: Bool
+  private let traceEachMessage: Bool
   private var serverHostname: String
   private var networkTransportMethod: String
 
@@ -36,17 +36,17 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
   ///  - networkTransportMethod: The transport in use (e.g. "tcp", "udp"). This will be the value for the
   ///  `network.transport` attribute in spans.
-  ///  - emitEventOnEachWrite: If `true`, each request part sent and response part received will be recorded as a separate
+  ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
   ///  event in a tracing span. Otherwise, only the request/response start and end will be recorded as events.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
-    emitEventOnEachWrite: Bool = false
+    traceEachMessage: Bool = true
   ) {
     self.injector = ClientRequestInjector()
     self.serverHostname = serverHostname
     self.networkTransportMethod = networkTransportMethod
-    self.emitEventOnEachWrite = emitEventOnEachWrite
+    self.traceEachMessage = traceEachMessage
   }
 
   /// This interceptor will inject as the request's metadata whatever `ServiceContext` key-value pairs
@@ -84,10 +84,8 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
     ) { span in
       self.setOTelSpanAttributes(into: span, context: context)
 
-      span.addEvent("Request started")
-
-      let wrappedProducer = request.producer
-      if self.emitEventOnEachWrite {
+      if self.traceEachMessage {
+        let wrappedProducer = request.producer
         request.producer = { writer in
           let messageSentCounter = Atomic(1)
           let eventEmittingWriter = HookedWriter(
@@ -104,54 +102,53 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
             }
           )
           try await wrappedProducer(RPCWriter(wrapping: eventEmittingWriter))
-          span.addEvent("Request ended")
-        }
-      } else {
-        request.producer = { writer in
-          try await wrappedProducer(RPCWriter(wrapping: writer))
-          span.addEvent("Request ended")
         }
       }
 
       var response = try await next(request, context)
       switch response.accepted {
       case .success(var success):
-        span.addEvent("Received response start")
-        span.attributes.rpc.grpcStatusCode = 0
-        if self.emitEventOnEachWrite {
+        let hookedSequence: HookedRPCAsyncSequence<
+          RPCAsyncSequence<StreamingClientResponse<Output>.Contents.BodyPart, any Error>
+        >
+        if self.traceEachMessage {
           let messageReceivedCounter = Atomic(1)
-          let onEachPartRecordingSequence = success.bodyParts.map { element in
+          hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { _ in
             var event = SpanEvent(name: "rpc.message")
             event.attributes.rpc.messageType = "RECEIVED"
-            event.attributes.rpc.messageID =
-              messageReceivedCounter
+            event.attributes.rpc.messageID = messageReceivedCounter
               .wrappingAdd(1, ordering: .sequentiallyConsistent)
               .oldValue
             span.addEvent(event)
-            return element
+          } onFinish: {
+            span.attributes.rpc.grpcStatusCode = 0
+          } onFailure: { error in
+            if let rpcError = error as? RPCError {
+              span.attributes.rpc.grpcStatusCode = rpcError.code.rawValue
+            }
+            span.setStatus(SpanStatus(code: .error))
+            span.recordError(error)
           }
-
-          let onFinishRecordingSequence = OnFinishAsyncSequence(
-            wrapping: onEachPartRecordingSequence
-          ) {
-            span.addEvent("Received response end")
-          }
-
-          success.bodyParts = RPCAsyncSequence(wrapping: onFinishRecordingSequence)
-          response.accepted = .success(success)
         } else {
-          let onFinishRecordingSequence = OnFinishAsyncSequence(wrapping: success.bodyParts) {
-            span.addEvent("Received response end")
+          hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { _ in
+            // Nothing to do if traceEachMessage is false
+          } onFinish: {
+            span.attributes.rpc.grpcStatusCode = 0
+          } onFailure: { error in
+            if let rpcError = error as? RPCError {
+              span.attributes.rpc.grpcStatusCode = rpcError.code.rawValue
+            }
+            span.setStatus(SpanStatus(code: .error))
+            span.recordError(error)
           }
-
-          success.bodyParts = RPCAsyncSequence(wrapping: onFinishRecordingSequence)
-          response.accepted = .success(success)
         }
+
+        success.bodyParts = RPCAsyncSequence(wrapping: hookedSequence)
+        response.accepted = .success(success)
 
       case .failure(let error):
         span.attributes.rpc.grpcStatusCode = error.code.rawValue
         span.setStatus(SpanStatus(code: .error))
-        span.addEvent("Received error response")
         span.recordError(error)
       }
 
