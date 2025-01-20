@@ -323,7 +323,7 @@ final class TracingInterceptorTests: XCTestCase {
             // Recorded when `request2` is sent
             TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 2]),
             // Recorded when receiving response part
-            TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1])
+            TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1]),
           ]
         )
       } assertAttributes: { attributes in

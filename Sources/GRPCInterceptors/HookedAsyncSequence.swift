@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-internal struct HookedRPCAsyncSequence<Wrapped: AsyncSequence & Sendable>: AsyncSequence, Sendable where Wrapped.Element: Sendable {
+internal struct HookedRPCAsyncSequence<Wrapped: AsyncSequence & Sendable>: AsyncSequence, Sendable
+where Wrapped.Element: Sendable {
   private let wrapped: Wrapped
 
   private let forEachElement: @Sendable (Wrapped.Element) -> Void
@@ -62,7 +63,9 @@ internal struct HookedRPCAsyncSequence<Wrapped: AsyncSequence & Sendable>: Async
       self.onFailure = onFailure
     }
 
-    mutating func next(isolation actor: isolated (any Actor)?) async throws(Wrapped.Failure) -> Wrapped.Element? {
+    mutating func next(
+      isolation actor: isolated (any Actor)?
+    ) async throws(Wrapped.Failure) -> Wrapped.Element? {
       do {
         if let element = try await self.wrapped.next(isolation: actor) {
           self.forEachElement(element)

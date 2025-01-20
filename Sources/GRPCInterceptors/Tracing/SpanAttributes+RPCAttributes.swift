@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-internal import Tracing
 internal import GRPCCore
+internal import Tracing
 
 @dynamicMemberLookup
 package struct RPCAttributes: SpanAttributeNamespace {
@@ -187,7 +187,9 @@ private enum PeerAddress {
         return
       }
       self = .ipv6(
-        address: String(addressComponents[1..<addressComponents.count-1].joined(separator: ":")),
+        address: String(
+          addressComponents[1 ..< addressComponents.count - 1].joined(separator: ":")
+        ),
         port: port
       )
 

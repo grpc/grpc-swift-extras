@@ -111,15 +111,17 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
       var response = try await next(request, context)
       switch response.accepted {
       case .success(var success):
-        let hookedSequence: HookedRPCAsyncSequence<
-          RPCAsyncSequence<StreamingClientResponse<Output>.Contents.BodyPart, any Error>
-        >
+        let hookedSequence:
+          HookedRPCAsyncSequence<
+            RPCAsyncSequence<StreamingClientResponse<Output>.Contents.BodyPart, any Error>
+          >
         if self.traceEachMessage {
           let messageReceivedCounter = Atomic(1)
           hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { _ in
             var event = SpanEvent(name: "rpc.message")
             event.attributes.rpc.messageType = "RECEIVED"
-            event.attributes.rpc.messageID = messageReceivedCounter
+            event.attributes.rpc.messageID =
+              messageReceivedCounter
               .wrappingAdd(1, ordering: .sequentiallyConsistent)
               .oldValue
             span.addEvent(event)
