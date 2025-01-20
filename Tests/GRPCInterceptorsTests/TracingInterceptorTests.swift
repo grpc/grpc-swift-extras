@@ -15,10 +15,10 @@
  */
 
 import GRPCCore
+import GRPCInterceptors
+import Testing
 import Tracing
 import XCTest
-import Testing
-import GRPCInterceptors
 
 @Suite("OTel Tracing Client Interceptor Tests")
 struct OTelTracingClientInterceptorTests {
@@ -53,7 +53,10 @@ struct OTelTracingClientInterceptorTests {
         fullyQualifiedService: "TracingInterceptorTests",
         method: "testClientInterceptor"
       )
-      let testValues = self.getTestValues(addressType: addressType, methodDescriptor: methodDescriptor)
+      let testValues = self.getTestValues(
+        addressType: addressType,
+        methodDescriptor: methodDescriptor
+      )
       let response = try await interceptor.intercept(
         tracer: self.tracer,
         request: .init(producer: { writer in
@@ -158,8 +161,8 @@ struct OTelTracingClientInterceptorTests {
       try await assertStreamContentsEqual([["response"]], response.messages)
 
       assertTestSpanComponents(forMethod: methodDescriptor) { events in
-        #expect(events ==
-          [
+        #expect(
+          events == [
             // Recorded when `request1` is sent
             TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 1]),
             // Recorded when `request2` is sent
@@ -219,8 +222,8 @@ struct OTelTracingClientInterceptorTests {
           #expect(events.isEmpty)
         } assertAttributes: { attributes in
           // The attributes should not contain a grpc status code, as the request was never even sent.
-          #expect(attributes ==
-            [
+          #expect(
+            attributes == [
               "rpc.system": "grpc",
               "rpc.method": .string(methodDescriptor.method),
               "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
@@ -298,8 +301,8 @@ struct OTelTracingClientInterceptorTests {
         // No events are recorded
         #expect(events.isEmpty)
       } assertAttributes: { attributes in
-        #expect(attributes ==
-          [
+        #expect(
+          attributes == [
             "rpc.system": "grpc",
             "rpc.method": .string(methodDescriptor.method),
             "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
@@ -322,7 +325,10 @@ struct OTelTracingClientInterceptorTests {
 
   // - MARK: Utilities
 
-  private func getTestValues(addressType: OTelTracingInterceptorTestAddressType, methodDescriptor: MethodDescriptor) -> OTelTracingInterceptorTestCaseValues {
+  private func getTestValues(
+    addressType: OTelTracingInterceptorTestAddressType,
+    methodDescriptor: MethodDescriptor
+  ) -> OTelTracingInterceptorTestCaseValues {
     switch addressType {
     case .ipv4:
       return OTelTracingInterceptorTestCaseValues(
