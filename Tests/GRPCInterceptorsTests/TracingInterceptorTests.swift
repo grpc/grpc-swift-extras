@@ -50,8 +50,8 @@ struct OTelTracingClientInterceptorTests {
         traceEachMessage: false
       )
       let methodDescriptor = MethodDescriptor(
-        fullyQualifiedService: "TracingInterceptorTests",
-        method: "testClientInterceptor"
+        fullyQualifiedService: "OTelTracingClientInterceptorTests",
+        method: "testSuccessfulRPC"
       )
       let testValues = self.getTestValues(
         addressType: addressType,
@@ -122,8 +122,8 @@ struct OTelTracingClientInterceptorTests {
         traceEachMessage: true
       )
       let methodDescriptor = MethodDescriptor(
-        fullyQualifiedService: "TracingInterceptorTests",
-        method: "testClientInterceptorAllEventsRecorded"
+        fullyQualifiedService: "OTelTracingClientInterceptorTests",
+        method: "testAllEventsRecorded"
       )
       let testValues = self.getTestValues(addressType: .ipv4, methodDescriptor: methodDescriptor)
       let response = try await interceptor.intercept(
@@ -181,8 +181,8 @@ struct OTelTracingClientInterceptorTests {
     }
   }
 
-  @Test("RPC resulting in error is correctly recorded")
-  func testClientInterceptorErrorEncountered() async throws {
+  @Test("RPC that throws is correctly recorded")
+  func testThrowingRPC() async throws {
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
     serviceContext.traceID = traceIDString
@@ -197,8 +197,8 @@ struct OTelTracingClientInterceptorTests {
         traceEachMessage: false
       )
       let methodDescriptor = MethodDescriptor(
-        fullyQualifiedService: "TracingInterceptorTests",
-        method: "testClientInterceptorErrorEncountered"
+        fullyQualifiedService: "OTelTracingClientInterceptorTests",
+        method: "testThrowingRPC"
       )
       do {
         let _: StreamingClientResponse<Void> = try await interceptor.intercept(
@@ -244,8 +244,8 @@ struct OTelTracingClientInterceptorTests {
     }
   }
 
-  @Test("RPC with error response is correctly recorded")
-  func testClientInterceptorErrorReponse() async throws {
+  @Test("RPC with a failure response is correctly recorded")
+  func testFailedRPC() async throws {
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
     let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
@@ -261,8 +261,8 @@ struct OTelTracingClientInterceptorTests {
         traceEachMessage: false
       )
       let methodDescriptor = MethodDescriptor(
-        fullyQualifiedService: "TracingInterceptorTests",
-        method: "testClientInterceptor"
+        fullyQualifiedService: "OTelTracingClientInterceptorTests",
+        method: "testFailedRPC"
       )
       let response: StreamingClientResponse<Void> = try await interceptor.intercept(
         tracer: self.tracer,
@@ -295,6 +295,96 @@ struct OTelTracingClientInterceptorTests {
 
       case .failure(let failure):
         #expect(failure == RPCError(code: .unavailable, message: "This should not work"))
+      }
+
+      assertTestSpanComponents(forMethod: methodDescriptor) { events in
+        // No events are recorded
+        #expect(events.isEmpty)
+      } assertAttributes: { attributes in
+        #expect(
+          attributes == [
+            "rpc.system": "grpc",
+            "rpc.method": .string(methodDescriptor.method),
+            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+            "rpc.grpc.status_code": 14,  // this is unavailable's raw code
+            "server.address": "someserver.com",
+            "server.port": 567,
+            "network.peer.address": "10.1.2.80",
+            "network.peer.port": 567,
+            "network.transport": "tcp",
+            "network.type": "ipv4",
+          ]
+        )
+      } assertStatus: { status in
+        #expect(status == .some(.init(code: .error)))
+      } assertErrors: { errors in
+        #expect(errors.count == 1)
+      }
+    }
+  }
+
+  @Test("Accepted server-streaming RPC that throws error during response is correctly recorded")
+  func testAcceptedRPCWithError() async throws {
+    var serviceContext = ServiceContext.topLevel
+    let traceIDString = UUID().uuidString
+    serviceContext.traceID = traceIDString
+
+    // FIXME: use 'ServiceContext.withValue(serviceContext)'
+    //
+    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
+    try await ServiceContext.$current.withValue(serviceContext) {
+      let interceptor = ClientOTelTracingInterceptor(
+        serverHostname: "someserver.com",
+        networkTransportMethod: "tcp",
+        traceEachMessage: false
+      )
+      let methodDescriptor = MethodDescriptor(
+        fullyQualifiedService: "OTelTracingClientInterceptorTests",
+        method: "testAcceptedRPCWithError"
+      )
+      let response: StreamingClientResponse<String> = try await interceptor.intercept(
+        tracer: self.tracer,
+        request: .init(producer: { writer in
+          try await writer.write(contentsOf: ["request"])
+        }),
+        context: ClientContext(
+          descriptor: methodDescriptor,
+          remotePeer: "ipv4:10.1.2.80:567",
+          localPeer: "ipv4:10.1.2.80:123"
+        )
+      ) { stream, _ in
+        // Assert the metadata contains the injected context key-value.
+        #expect(stream.metadata == ["trace-id": "\(traceIDString)"])
+
+        return .init(
+          metadata: [],
+          bodyParts: RPCAsyncSequence(
+            wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
+              $0.finish(throwing: RPCError(code: .unavailable, message: "This should be thrown"))
+            }
+          )
+        )
+      }
+
+      switch response.accepted {
+      case .success(let success):
+        do {
+          for try await _ in success.bodyParts {
+            // We don't care about any received messages here - we're not even writing any.
+          }
+        } catch {
+          #expect(
+            error as? RPCError
+              == RPCError(
+                code: .unavailable,
+                message: "This should be thrown"
+              )
+          )
+        }
+
+      case .failure:
+        Issue.record("Response should have been successful")
+        return
       }
 
       assertTestSpanComponents(forMethod: methodDescriptor) { events in
