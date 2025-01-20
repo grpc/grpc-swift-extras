@@ -16,7 +16,7 @@
 
 public import GRPCCore
 internal import Synchronization
-internal import Tracing
+package import Tracing
 
 /// A client interceptor that injects tracing information into the request.
 ///
@@ -67,8 +67,25 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
       ClientContext
     ) async throws -> StreamingClientResponse<Output>
   ) async throws -> StreamingClientResponse<Output> where Input: Sendable, Output: Sendable {
+    try await self.intercept(
+      tracer: InstrumentationSystem.tracer,
+      request: request,
+      context: context,
+      next: next
+    )
+  }
+
+  /// Same as ``intercept(request:context:next:)``, but allows specifying a `Tracer` for testing purposes.
+  package func intercept<Input, Output>(
+    tracer: any Tracer,
+    request: StreamingClientRequest<Input>,
+    context: ClientContext,
+    next: (
+      StreamingClientRequest<Input>,
+      ClientContext
+    ) async throws -> StreamingClientResponse<Output>
+  ) async throws -> StreamingClientResponse<Output> where Input: Sendable, Output: Sendable {
     var request = request
-    let tracer = InstrumentationSystem.tracer
     let serviceContext = ServiceContext.current ?? .topLevel
 
     tracer.inject(

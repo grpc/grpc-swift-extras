@@ -17,24 +17,26 @@
 import GRPCCore
 import Tracing
 import XCTest
+import Testing
+import GRPCInterceptors
 
-@testable import GRPCInterceptors
+@Suite("OTel Tracing Client Interceptor Tests")
+struct OTelTracingClientInterceptorTests {
+  private let tracer: TestTracer
 
-final class TracingInterceptorTests: XCTestCase {
-  override class func setUp() {
-    InstrumentationSystem.bootstrap(TestTracer())
+  init() {
+    self.tracer = TestTracer()
   }
 
   // - MARK: Client Interceptor Tests
 
-  func testClientInterceptor_IPv4() async throws {
+  @Test(
+    "Successful RPC is recorded correctly",
+    arguments: OTelTracingInterceptorTestAddressType.allCases
+  )
+  func testSuccessfulRPC(addressType: OTelTracingInterceptorTestAddressType) async throws {
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
-    let interceptor = ClientOTelTracingInterceptor(
-      serverHostname: "someserver.com",
-      networkTransportMethod: "tcp",
-      traceEachMessage: false
-    )
     let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
@@ -42,23 +44,30 @@ final class TracingInterceptorTests: XCTestCase {
     //
     // This is blocked on: https://github.com/apple/swift-service-context/pull/46
     try await ServiceContext.$current.withValue(serviceContext) {
+      let interceptor = ClientOTelTracingInterceptor(
+        serverHostname: "someserver.com",
+        networkTransportMethod: "tcp",
+        traceEachMessage: false
+      )
       let methodDescriptor = MethodDescriptor(
         fullyQualifiedService: "TracingInterceptorTests",
         method: "testClientInterceptor"
       )
+      let testValues = self.getTestValues(addressType: addressType, methodDescriptor: methodDescriptor)
       let response = try await interceptor.intercept(
+        tracer: self.tracer,
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
         }),
         context: ClientContext(
           descriptor: methodDescriptor,
-          remotePeer: "ipv4:10.1.2.80:567",
-          localPeer: "ipv4:10.1.2.80:123"
+          remotePeer: testValues.remotePeerAddress,
+          localPeer: testValues.localPeerAddress
         )
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
-        XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
+        #expect(stream.metadata == ["trace-id": "\(traceIDString)"])
 
         // Write into the request stream to make sure the `producer` closure's called.
         let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
@@ -76,44 +85,27 @@ final class TracingInterceptorTests: XCTestCase {
         )
       }
 
-      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
-      try await AssertStreamContentsEqual([["response"]], response.messages)
+      await assertStreamContentsEqual(["request1", "request2"], requestStream)
+      try await assertStreamContentsEqual([["response"]], response.messages)
 
-      AssertTestSpanComponents(forMethod: methodDescriptor) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor) { events in
         // No events are recorded
-        XCTAssertTrue(events.isEmpty)
+        #expect(events.isEmpty)
       } assertAttributes: { attributes in
-        XCTAssertEqual(
-          attributes,
-          [
-            "rpc.system": .string("grpc"),
-            "rpc.method": .string(methodDescriptor.method),
-            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-            "rpc.grpc.status_code": .int(0),
-            "server.address": .string("someserver.com"),
-            "server.port": .int(567),
-            "network.peer.address": .string("10.1.2.80"),
-            "network.peer.port": .int(567),
-            "network.transport": .string("tcp"),
-            "network.type": .string("ipv4"),
-          ]
-        )
+        #expect(attributes == testValues.expectedSpanAttributes)
       } assertStatus: { status in
-        XCTAssertNil(status)
+        #expect(status == nil)
       } assertErrors: { errors in
-        XCTAssertEqual(errors, [])
+        #expect(errors == [])
       }
     }
   }
 
-  func testClientInterceptor_IPv6() async throws {
+  @Test("All events are recorded when traceEachMessage is true")
+  func testAllEventsRecorded() async throws {
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
-    let interceptor = ClientOTelTracingInterceptor(
-      serverHostname: "someserver.com",
-      networkTransportMethod: "tcp",
-      traceEachMessage: false
-    )
+
     let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
@@ -121,23 +113,30 @@ final class TracingInterceptorTests: XCTestCase {
     //
     // This is blocked on: https://github.com/apple/swift-service-context/pull/46
     try await ServiceContext.$current.withValue(serviceContext) {
+      let interceptor = ClientOTelTracingInterceptor(
+        serverHostname: "someserver.com",
+        networkTransportMethod: "tcp",
+        traceEachMessage: true
+      )
       let methodDescriptor = MethodDescriptor(
         fullyQualifiedService: "TracingInterceptorTests",
-        method: "testClientInterceptor"
+        method: "testClientInterceptorAllEventsRecorded"
       )
+      let testValues = self.getTestValues(addressType: .ipv4, methodDescriptor: methodDescriptor)
       let response = try await interceptor.intercept(
+        tracer: self.tracer,
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
         }),
         context: ClientContext(
           descriptor: methodDescriptor,
-          remotePeer: "ipv6:2001::130F:::09C0:876A:130B:1234",
-          localPeer: "ipv6:ff06:0:0:0:0:0:0:c3:5678"
+          remotePeer: testValues.remotePeerAddress,
+          localPeer: testValues.localPeerAddress
         )
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
-        XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
+        #expect(stream.metadata == ["trace-id": "\(traceIDString)"])
 
         // Write into the request stream to make sure the `producer` closure's called.
         let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
@@ -155,168 +154,11 @@ final class TracingInterceptorTests: XCTestCase {
         )
       }
 
-      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
-      try await AssertStreamContentsEqual([["response"]], response.messages)
+      await assertStreamContentsEqual(["request1", "request2"], requestStream)
+      try await assertStreamContentsEqual([["response"]], response.messages)
 
-      AssertTestSpanComponents(forMethod: methodDescriptor) { events in
-        // No events are recorded
-        XCTAssertTrue(events.isEmpty)
-      } assertAttributes: { attributes in
-        XCTAssertEqual(
-          attributes,
-          [
-            "rpc.system": .string("grpc"),
-            "rpc.method": .string(methodDescriptor.method),
-            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-            "rpc.grpc.status_code": .int(0),
-            "server.address": .string("someserver.com"),
-            "server.port": .int(1234),
-            "network.peer.address": .string("2001::130F:::09C0:876A:130B"),
-            "network.peer.port": .int(1234),
-            "network.transport": .string("tcp"),
-            "network.type": .string("ipv6"),
-          ]
-        )
-      } assertStatus: { status in
-        XCTAssertNil(status)
-      } assertErrors: { errors in
-        XCTAssertEqual(errors, [])
-      }
-    }
-  }
-
-  func testClientInterceptor_UDS() async throws {
-    var serviceContext = ServiceContext.topLevel
-    let traceIDString = UUID().uuidString
-    let interceptor = ClientOTelTracingInterceptor(
-      serverHostname: "someserver.com",
-      networkTransportMethod: "tcp",
-      traceEachMessage: false
-    )
-    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
-    serviceContext.traceID = traceIDString
-
-    // FIXME: use 'ServiceContext.withValue(serviceContext)'
-    //
-    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
-    try await ServiceContext.$current.withValue(serviceContext) {
-      let methodDescriptor = MethodDescriptor(
-        fullyQualifiedService: "TracingInterceptorTests",
-        method: "testClientInterceptor"
-      )
-      let response = try await interceptor.intercept(
-        request: .init(producer: { writer in
-          try await writer.write(contentsOf: ["request1"])
-          try await writer.write(contentsOf: ["request2"])
-        }),
-        context: ClientContext(
-          descriptor: methodDescriptor,
-          remotePeer: "unix:some-path",
-          localPeer: "unix:some-path"
-        )
-      ) { stream, _ in
-        // Assert the metadata contains the injected context key-value.
-        XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
-
-        // Write into the request stream to make sure the `producer` closure's called.
-        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
-        try await stream.producer(writer)
-        requestStreamContinuation.finish()
-
-        return .init(
-          metadata: [],
-          bodyParts: RPCAsyncSequence(
-            wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
-              $0.yield(.message(["response"]))
-              $0.finish()
-            }
-          )
-        )
-      }
-
-      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
-      try await AssertStreamContentsEqual([["response"]], response.messages)
-
-      AssertTestSpanComponents(forMethod: methodDescriptor) { events in
-        // No events are recorded
-        XCTAssertTrue(events.isEmpty)
-      } assertAttributes: { attributes in
-        XCTAssertEqual(
-          attributes,
-          [
-            "rpc.system": .string("grpc"),
-            "rpc.method": .string(methodDescriptor.method),
-            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-            "rpc.grpc.status_code": .int(0),
-            "server.address": .string("someserver.com"),
-            "network.peer.address": .string("some-path"),
-            "network.transport": .string("tcp"),
-            "network.type": .string("unix"),
-          ]
-        )
-      } assertStatus: { status in
-        XCTAssertNil(status)
-      } assertErrors: { errors in
-        XCTAssertEqual(errors, [])
-      }
-    }
-  }
-
-  func testClientInterceptorAllEventsRecorded() async throws {
-    let methodDescriptor = MethodDescriptor(
-      fullyQualifiedService: "TracingInterceptorTests",
-      method: "testClientInterceptorAllEventsRecorded"
-    )
-    var serviceContext = ServiceContext.topLevel
-    let traceIDString = UUID().uuidString
-    let interceptor = ClientOTelTracingInterceptor(
-      serverHostname: "someserver.com",
-      networkTransportMethod: "tcp",
-      traceEachMessage: true
-    )
-    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
-    serviceContext.traceID = traceIDString
-
-    // FIXME: use 'ServiceContext.withValue(serviceContext)'
-    //
-    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
-    try await ServiceContext.$current.withValue(serviceContext) {
-      let response = try await interceptor.intercept(
-        request: .init(producer: { writer in
-          try await writer.write(contentsOf: ["request1"])
-          try await writer.write(contentsOf: ["request2"])
-        }),
-        context: ClientContext(
-          descriptor: methodDescriptor,
-          remotePeer: "ipv4:10.1.2.80:567",
-          localPeer: "ipv4:10.1.2.80:123"
-        )
-      ) { stream, _ in
-        // Assert the metadata contains the injected context key-value.
-        XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
-
-        // Write into the request stream to make sure the `producer` closure's called.
-        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
-        try await stream.producer(writer)
-        requestStreamContinuation.finish()
-
-        return .init(
-          metadata: [],
-          bodyParts: RPCAsyncSequence(
-            wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
-              $0.yield(.message(["response"]))
-              $0.finish()
-            }
-          )
-        )
-      }
-
-      await AssertStreamContentsEqual(["request1", "request2"], requestStream)
-      try await AssertStreamContentsEqual([["response"]], response.messages)
-
-      AssertTestSpanComponents(forMethod: methodDescriptor) { events in
-        XCTAssertEqual(
-          events,
+      assertTestSpanComponents(forMethod: methodDescriptor) { events in
+        #expect(events ==
           [
             // Recorded when `request1` is sent
             TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 1]),
@@ -327,36 +169,18 @@ final class TracingInterceptorTests: XCTestCase {
           ]
         )
       } assertAttributes: { attributes in
-        XCTAssertEqual(
-          attributes,
-          [
-            "rpc.system": .string("grpc"),
-            "rpc.method": .string(methodDescriptor.method),
-            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-            "rpc.grpc.status_code": .int(0),
-            "server.address": .string("someserver.com"),
-            "server.port": .int(567),
-            "network.peer.address": .string("10.1.2.80"),
-            "network.peer.port": .int(567),
-            "network.transport": .string("tcp"),
-            "network.type": .string("ipv4"),
-          ]
-        )
+        #expect(attributes == testValues.expectedSpanAttributes)
       } assertStatus: { status in
-        XCTAssertNil(status)
+        #expect(status == nil)
       } assertErrors: { errors in
-        XCTAssertEqual(errors, [])
+        #expect(errors == [])
       }
     }
   }
 
+  @Test("RPC resulting in error is correctly recorded")
   func testClientInterceptorErrorEncountered() async throws {
     var serviceContext = ServiceContext.topLevel
-    let interceptor = ClientOTelTracingInterceptor(
-      serverHostname: "someserver.com",
-      networkTransportMethod: "tcp",
-      traceEachMessage: false
-    )
     let traceIDString = UUID().uuidString
     serviceContext.traceID = traceIDString
 
@@ -364,12 +188,18 @@ final class TracingInterceptorTests: XCTestCase {
     //
     // This is blocked on: https://github.com/apple/swift-service-context/pull/46
     await ServiceContext.$current.withValue(serviceContext) {
+      let interceptor = ClientOTelTracingInterceptor(
+        serverHostname: "someserver.com",
+        networkTransportMethod: "tcp",
+        traceEachMessage: false
+      )
       let methodDescriptor = MethodDescriptor(
         fullyQualifiedService: "TracingInterceptorTests",
         method: "testClientInterceptorErrorEncountered"
       )
       do {
         let _: StreamingClientResponse<Void> = try await interceptor.intercept(
+          tracer: self.tracer,
           request: StreamingClientRequest(of: Void.self, producer: { writer in }),
           context: ClientContext(
             descriptor: methodDescriptor,
@@ -378,48 +208,43 @@ final class TracingInterceptorTests: XCTestCase {
           )
         ) { stream, _ in
           // Assert the metadata contains the injected context key-value.
-          XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
-
+          #expect(stream.metadata == ["trace-id": "\(traceIDString)"])
+          // Now throw
           throw TracingInterceptorTestError.testError
         }
-        XCTFail("Should have thrown")
+        Issue.record("Should have thrown")
       } catch {
-        AssertTestSpanComponents(forMethod: methodDescriptor) { events in
+        assertTestSpanComponents(forMethod: methodDescriptor) { events in
           // No events are recorded
-          XCTAssertTrue(events.isEmpty)
+          #expect(events.isEmpty)
         } assertAttributes: { attributes in
           // The attributes should not contain a grpc status code, as the request was never even sent.
-          XCTAssertEqual(
-            attributes,
+          #expect(attributes ==
             [
-              "rpc.system": .string("grpc"),
+              "rpc.system": "grpc",
               "rpc.method": .string(methodDescriptor.method),
               "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-              "server.address": .string("someserver.com"),
-              "server.port": .int(567),
-              "network.peer.address": .string("10.1.2.80"),
-              "network.peer.port": .int(567),
-              "network.transport": .string("tcp"),
-              "network.type": .string("ipv4"),
+              "server.address": "someserver.com",
+              "server.port": 567,
+              "network.peer.address": "10.1.2.80",
+              "network.peer.port": 567,
+              "network.transport": "tcp",
+              "network.type": "ipv4",
             ]
           )
         } assertStatus: { status in
-          XCTAssertNil(status)
+          #expect(status == nil)
         } assertErrors: { errors in
-          XCTAssertEqual(errors, [.testError])
+          #expect(errors == [.testError])
         }
       }
     }
   }
 
+  @Test("RPC with error response is correctly recorded")
   func testClientInterceptorErrorReponse() async throws {
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
-    let interceptor = ClientOTelTracingInterceptor(
-      serverHostname: "someserver.com",
-      networkTransportMethod: "tcp",
-      traceEachMessage: false
-    )
     let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
     serviceContext.traceID = traceIDString
 
@@ -427,11 +252,17 @@ final class TracingInterceptorTests: XCTestCase {
     //
     // This is blocked on: https://github.com/apple/swift-service-context/pull/46
     try await ServiceContext.$current.withValue(serviceContext) {
+      let interceptor = ClientOTelTracingInterceptor(
+        serverHostname: "someserver.com",
+        networkTransportMethod: "tcp",
+        traceEachMessage: false
+      )
       let methodDescriptor = MethodDescriptor(
         fullyQualifiedService: "TracingInterceptorTests",
         method: "testClientInterceptor"
       )
       let response: StreamingClientResponse<Void> = try await interceptor.intercept(
+        tracer: self.tracer,
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request"])
         }),
@@ -442,7 +273,7 @@ final class TracingInterceptorTests: XCTestCase {
         )
       ) { stream, _ in
         // Assert the metadata contains the injected context key-value.
-        XCTAssertEqual(stream.metadata, ["trace-id": "\(traceIDString)"])
+        #expect(stream.metadata == ["trace-id": "\(traceIDString)"])
 
         // Write into the request stream to make sure the `producer` closure's called.
         let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
@@ -452,42 +283,148 @@ final class TracingInterceptorTests: XCTestCase {
         return .init(error: RPCError(code: .unavailable, message: "This should not work"))
       }
 
-      await AssertStreamContentsEqual(["request"], requestStream)
+      await assertStreamContentsEqual(["request"], requestStream)
 
       switch response.accepted {
       case .success:
-        XCTFail("Response should have failed")
+        Issue.record("Response should have failed")
+        return
 
       case .failure(let failure):
-        XCTAssertEqual(failure, RPCError(code: .unavailable, message: "This should not work"))
+        #expect(failure == RPCError(code: .unavailable, message: "This should not work"))
       }
 
-      AssertTestSpanComponents(forMethod: methodDescriptor) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor) { events in
         // No events are recorded
-        XCTAssertTrue(events.isEmpty)
+        #expect(events.isEmpty)
       } assertAttributes: { attributes in
-        XCTAssertEqual(
-          attributes,
+        #expect(attributes ==
           [
-            "rpc.system": .string("grpc"),
+            "rpc.system": "grpc",
             "rpc.method": .string(methodDescriptor.method),
             "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-            "rpc.grpc.status_code": .int(14),  // this is unavailable's raw code
-            "server.address": .string("someserver.com"),
-            "server.port": .int(567),
-            "network.peer.address": .string("10.1.2.80"),
-            "network.peer.port": .int(567),
-            "network.transport": .string("tcp"),
-            "network.type": .string("ipv4"),
+            "rpc.grpc.status_code": 14,  // this is unavailable's raw code
+            "server.address": "someserver.com",
+            "server.port": 567,
+            "network.peer.address": "10.1.2.80",
+            "network.peer.port": 567,
+            "network.transport": "tcp",
+            "network.type": "ipv4",
           ]
         )
       } assertStatus: { status in
-        XCTAssertEqual(status, .some(.init(code: .error)))
+        #expect(status == .some(.init(code: .error)))
       } assertErrors: { errors in
-        XCTAssertEqual(errors.count, 1)
+        #expect(errors.count == 1)
       }
     }
   }
+
+  // - MARK: Utilities
+
+  private func getTestValues(addressType: OTelTracingInterceptorTestAddressType, methodDescriptor: MethodDescriptor) -> OTelTracingInterceptorTestCaseValues {
+    switch addressType {
+    case .ipv4:
+      return OTelTracingInterceptorTestCaseValues(
+        remotePeerAddress: "ipv4:10.1.2.80:567",
+        localPeerAddress: "ipv4:10.1.2.80:123",
+        expectedSpanAttributes: [
+          "rpc.system": "grpc",
+          "rpc.method": .string(methodDescriptor.method),
+          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": 0,
+          "server.address": "someserver.com",
+          "server.port": 567,
+          "network.peer.address": "10.1.2.80",
+          "network.peer.port": 567,
+          "network.transport": "tcp",
+          "network.type": "ipv4",
+        ]
+      )
+
+    case .ipv6:
+      return OTelTracingInterceptorTestCaseValues(
+        remotePeerAddress: "ipv6:2001::130F:::09C0:876A:130B:1234",
+        localPeerAddress: "ipv6:ff06:0:0:0:0:0:0:c3:5678",
+        expectedSpanAttributes: [
+          "rpc.system": "grpc",
+          "rpc.method": .string(methodDescriptor.method),
+          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": 0,
+          "server.address": "someserver.com",
+          "server.port": 1234,
+          "network.peer.address": "2001::130F:::09C0:876A:130B",
+          "network.peer.port": 1234,
+          "network.transport": "tcp",
+          "network.type": "ipv6",
+        ]
+      )
+
+    case .uds:
+      return OTelTracingInterceptorTestCaseValues(
+        remotePeerAddress: "unix:some-path",
+        localPeerAddress: "unix:some-path",
+        expectedSpanAttributes: [
+          "rpc.system": "grpc",
+          "rpc.method": .string(methodDescriptor.method),
+          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": 0,
+          "server.address": "someserver.com",
+          "network.peer.address": "some-path",
+          "network.transport": "tcp",
+          "network.type": "unix",
+        ]
+      )
+    }
+  }
+
+  private func getTestSpanForMethod(_ methodDescriptor: MethodDescriptor) -> TestSpan {
+    return self.tracer.getSpan(ofOperation: methodDescriptor.fullyQualifiedMethod)!
+  }
+
+  private func assertTestSpanComponents(
+    forMethod method: MethodDescriptor,
+    assertEvents: ([TestSpanEvent]) -> Void,
+    assertAttributes: (SpanAttributes) -> Void,
+    assertStatus: (SpanStatus?) -> Void,
+    assertErrors: ([TracingInterceptorTestError]) -> Void
+  ) {
+    let span = self.getTestSpanForMethod(method)
+    assertEvents(span.events.map({ TestSpanEvent($0) }))
+    assertAttributes(span.attributes)
+    assertStatus(span.status)
+    assertErrors(span.errors)
+  }
+
+  private func assertStreamContentsEqual<T: Equatable>(
+    _ array: [T],
+    _ stream: any AsyncSequence<T, any Error>
+  ) async throws {
+    var streamElements = [T]()
+    for try await element in stream {
+      streamElements.append(element)
+    }
+    #expect(streamElements == array)
+  }
+
+  private func assertStreamContentsEqual<T: Equatable>(
+    _ array: [T],
+    _ stream: any AsyncSequence<T, Never>
+  ) async {
+    var streamElements = [T]()
+    for await element in stream {
+      streamElements.append(element)
+    }
+    #expect(streamElements == array)
+  }
+}
+
+final class TracingInterceptorTests: XCTestCase {
+  override class func setUp() {
+    InstrumentationSystem.bootstrap(TestTracer())
+  }
+
+  // - MARK: Server Interceptor Tests
 
   func testServerInterceptorErrorResponse() async throws {
     let methodDescriptor = MethodDescriptor(
@@ -667,20 +604,12 @@ final class TracingInterceptorTests: XCTestCase {
     )
   }
 
-  private func getClientContext(forMethod method: MethodDescriptor) -> ClientContext {
-    ClientContext(
-      descriptor: method,
-      remotePeer: "ipv4:10.1.2.80:567",
-      localPeer: "ipv6:localhost:1234"
-    )
-  }
-
   private func getTestSpanForMethod(_ methodDescriptor: MethodDescriptor) -> TestSpan {
     let tracer = InstrumentationSystem.tracer as! TestTracer
     return tracer.getSpan(ofOperation: methodDescriptor.fullyQualifiedMethod)!
   }
 
-  private func AssertTestSpanComponents(
+  private func assertTestSpanComponents(
     forMethod method: MethodDescriptor,
     assertEvents: ([TestSpanEvent]) -> Void,
     assertAttributes: (SpanAttributes) -> Void,
@@ -694,7 +623,7 @@ final class TracingInterceptorTests: XCTestCase {
     assertErrors(span.errors)
   }
 
-  private func AssertStreamContentsEqual<T: Equatable>(
+  private func assertStreamContentsEqual<T: Equatable>(
     _ array: [T],
     _ stream: any AsyncSequence<T, any Error>
   ) async throws {
@@ -705,7 +634,7 @@ final class TracingInterceptorTests: XCTestCase {
     XCTAssertEqual(streamElements, array)
   }
 
-  private func AssertStreamContentsEqual<T: Equatable>(
+  private func assertStreamContentsEqual<T: Equatable>(
     _ array: [T],
     _ stream: any AsyncSequence<T, Never>
   ) async {
@@ -715,4 +644,18 @@ final class TracingInterceptorTests: XCTestCase {
     }
     XCTAssertEqual(streamElements, array)
   }
+}
+
+enum OTelTracingInterceptorTestAddressType {
+  case ipv4
+  case ipv6
+  case uds
+
+  static let allCases: [Self] = [.ipv4, .ipv6, .uds]
+}
+
+struct OTelTracingInterceptorTestCaseValues {
+  let remotePeerAddress: String
+  let localPeerAddress: String
+  let expectedSpanAttributes: SpanAttributes
 }
