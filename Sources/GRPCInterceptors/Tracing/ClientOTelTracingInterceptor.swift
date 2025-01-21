@@ -34,7 +34,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   ///
   /// - Parameters:
   ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
-  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "udp"). This will be the value for the
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
   ///  event in a tracing span. Otherwise, only the request/response start and end will be recorded as events.
@@ -113,8 +113,8 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
             wrapping: writer,
             afterEachWrite: {
               var event = SpanEvent(name: "rpc.message")
-              event.attributes.rpc.messageType = "SENT"
-              event.attributes.rpc.messageID =
+              event.attributes[GRPCTracingKeys.rpcMessageType] = "SENT"
+              event.attributes[GRPCTracingKeys.rpcMessageID] =
                 messageSentCounter
                 .wrappingAdd(1, ordering: .sequentiallyConsistent)
                 .oldValue
@@ -136,32 +136,36 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
           let messageReceivedCounter = Atomic(1)
           hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { _ in
             var event = SpanEvent(name: "rpc.message")
-            event.attributes.rpc.messageType = "RECEIVED"
-            event.attributes.rpc.messageID =
+            event.attributes[GRPCTracingKeys.rpcMessageType] = "RECEIVED"
+            event.attributes[GRPCTracingKeys.rpcMessageID] =
               messageReceivedCounter
               .wrappingAdd(1, ordering: .sequentiallyConsistent)
               .oldValue
             span.addEvent(event)
-          } onFinish: {
-            span.attributes.rpc.grpcStatusCode = 0
-          } onFailure: { error in
-            if let rpcError = error as? RPCError {
-              span.attributes.rpc.grpcStatusCode = rpcError.code.rawValue
+          } onFinish: { error in
+            if let error {
+              if let errorCode = error.grpcErrorCode {
+                span.attributes[GRPCTracingKeys.grpcStatusCode] = errorCode.rawValue
+              }
+              span.setStatus(SpanStatus(code: .error))
+              span.recordError(error)
+            } else {
+              span.attributes[GRPCTracingKeys.grpcStatusCode] = 0
             }
-            span.setStatus(SpanStatus(code: .error))
-            span.recordError(error)
           }
         } else {
           hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { _ in
             // Nothing to do if traceEachMessage is false
-          } onFinish: {
-            span.attributes.rpc.grpcStatusCode = 0
-          } onFailure: { error in
-            if let rpcError = error as? RPCError {
-              span.attributes.rpc.grpcStatusCode = rpcError.code.rawValue
+          } onFinish: { error in
+            if let error {
+              if let errorCode = error.grpcErrorCode {
+                span.attributes[GRPCTracingKeys.grpcStatusCode] = errorCode.rawValue
+              }
+              span.setStatus(SpanStatus(code: .error))
+              span.recordError(error)
+            } else {
+              span.attributes[GRPCTracingKeys.grpcStatusCode] = 0
             }
-            span.setStatus(SpanStatus(code: .error))
-            span.recordError(error)
           }
         }
 
@@ -169,7 +173,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
         response.accepted = .success(success)
 
       case .failure(let error):
-        span.attributes.rpc.grpcStatusCode = error.code.rawValue
+        span.attributes[GRPCTracingKeys.grpcStatusCode] = error.code.rawValue
         span.setStatus(SpanStatus(code: .error))
         span.recordError(error)
       }
@@ -186,5 +190,17 @@ struct ClientRequestInjector: Instrumentation.Injector {
 
   func inject(_ value: String, forKey key: String, into carrier: inout Carrier) {
     carrier.addString(value, forKey: key)
+  }
+}
+
+extension Error {
+  var grpcErrorCode: RPCError.Code? {
+    if let rpcError = self as? RPCError {
+      return rpcError.code
+    } else if let rpcError = self as? any RPCErrorConvertible {
+      return rpcError.rpcErrorCode
+    } else {
+      return nil
+    }
   }
 }

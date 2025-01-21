@@ -19,27 +19,23 @@ where Wrapped.Element: Sendable {
   private let wrapped: Wrapped
 
   private let forEachElement: @Sendable (Wrapped.Element) -> Void
-  private let onFinish: @Sendable () -> Void
-  private let onFailure: @Sendable (any Error) -> Void
+  private let onFinish: @Sendable ((any Error)?) -> Void
 
   init(
     wrapping sequence: Wrapped,
     forEachElement: @escaping @Sendable (Wrapped.Element) -> Void,
-    onFinish: @escaping @Sendable () -> Void,
-    onFailure: @escaping @Sendable (any Error) -> Void
+    onFinish: @escaping @Sendable ((any Error)?) -> Void
   ) {
     self.wrapped = sequence
     self.forEachElement = forEachElement
     self.onFinish = onFinish
-    self.onFailure = onFailure
   }
 
   func makeAsyncIterator() -> HookedAsyncIterator {
     HookedAsyncIterator(
       self.wrapped,
       forEachElement: self.forEachElement,
-      onFinish: self.onFinish,
-      onFailure: self.onFailure
+      onFinish: self.onFinish
     )
   }
 
@@ -48,19 +44,16 @@ where Wrapped.Element: Sendable {
 
     private var wrapped: Wrapped.AsyncIterator
     private let forEachElement: @Sendable (Wrapped.Element) -> Void
-    private let onFinish: @Sendable () -> Void
-    private let onFailure: @Sendable (any Error) -> Void
+    private let onFinish: @Sendable ((any Error)?) -> Void
 
     init(
       _ sequence: Wrapped,
       forEachElement: @escaping @Sendable (Wrapped.Element) -> Void,
-      onFinish: @escaping @Sendable () -> Void,
-      onFailure: @escaping @Sendable (any Error) -> Void
+      onFinish: @escaping @Sendable ((any Error)?) -> Void
     ) {
       self.wrapped = sequence.makeAsyncIterator()
       self.forEachElement = forEachElement
       self.onFinish = onFinish
-      self.onFailure = onFailure
     }
 
     mutating func next(
@@ -70,29 +63,18 @@ where Wrapped.Element: Sendable {
         if let element = try await self.wrapped.next(isolation: actor) {
           self.forEachElement(element)
           return element
+        } else {
+          self.onFinish(nil)
+          return nil
         }
-
-        self.onFinish()
-        return nil
       } catch {
-        self.onFailure(error)
+        self.onFinish(error)
         throw error
       }
     }
 
     mutating func next() async throws -> Wrapped.Element? {
-      do {
-        if let element = try await self.wrapped.next() {
-          self.forEachElement(element)
-          return element
-        }
-
-        self.onFinish()
-        return nil
-      } catch {
-        self.onFailure(error)
-        throw error
-      }
+      try await self.next(isolation: nil)
     }
   }
 }
