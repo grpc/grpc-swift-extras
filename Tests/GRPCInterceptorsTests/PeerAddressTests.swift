@@ -27,7 +27,7 @@ struct PeerAddressTests {
 
   @Test("IPv6 addresses are correctly parsed")
   func testIPv6() {
-    let address = PeerAddress("ipv6:2001::130F:::09C0:876A:130B:1234")
+    let address = PeerAddress("ipv6:[2001::130F:::09C0:876A:130B]:1234")
     #expect(address == .ipv6(address: "2001::130F:::09C0:876A:130B", port: 1234))
   }
 

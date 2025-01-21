@@ -440,8 +440,8 @@ struct OTelTracingClientInterceptorTests {
 
     case .ipv6:
       return OTelTracingInterceptorTestCaseValues(
-        remotePeerAddress: "ipv6:2001::130F:::09C0:876A:130B:1234",
-        localPeerAddress: "ipv6:ff06:0:0:0:0:0:0:c3:5678",
+        remotePeerAddress: "ipv6:[2001::130F:::09C0:876A:130B]:1234",
+        localPeerAddress: "ipv6:[ff06:0:0:0:0:0:0:c3]:5678",
         expectedSpanAttributes: [
           "rpc.system": "grpc",
           "rpc.method": .string(methodDescriptor.method),

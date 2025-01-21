@@ -17,7 +17,7 @@
 internal import GRPCCore
 internal import Tracing
 
-public enum GRPCTracingKeys {
+enum GRPCTracingKeys {
   static let rpcSystem = "rpc.system"
   static let rpcMethod = "rpc.method"
   static let rpcService = "rpc.service"
@@ -87,7 +87,9 @@ package enum PeerAddress: Equatable {
     // - ipv4:<host>:<port> for ipv4 addresses
     // - ipv6:[<host>]:<port> for ipv6 addresses
     // - unix:<uds-pathname> for UNIX domain sockets
-    let addressComponents = address.split(separator: ":", omittingEmptySubsequences: false)
+
+    // First get the first component so that we know what type of address we're dealing with
+    let addressComponents = address.split(separator: ":", maxSplits: 1)
 
     guard addressComponents.count > 1 else {
       // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
@@ -98,32 +100,28 @@ package enum PeerAddress: Equatable {
     // Check what type the transport is...
     switch addressComponents[0] {
     case "ipv4":
-      guard addressComponents.count == 3, let port = Int(addressComponents[2]) else {
+      let ipv4AddressComponents = addressComponents[1].split(separator: ":")
+      if ipv4AddressComponents.count == 2, let port = Int(ipv4AddressComponents[1]) {
+        self = .ipv4(address: String(ipv4AddressComponents[0]), port: port)
+      } else {
         // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
         self = .other(address)
-        return
       }
-      self = .ipv4(address: String(addressComponents[1]), port: port)
 
     case "ipv6":
-      guard addressComponents.count > 2, let port = Int(addressComponents.last!) else {
+      // At this point, we are looking at an address with format: [<address>]:<port>
+      // We drop the first character ('[') and split by ']:' to keep two components: the address
+      // and the port.
+      let ipv6AddressComponents = addressComponents[1].dropFirst().split(separator: "]:")
+      if ipv6AddressComponents.count == 2, let port = Int(ipv6AddressComponents[1]) {
+        self = .ipv6(address: String(ipv6AddressComponents[0]), port: port)
+      } else {
         // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
         self = .other(address)
-        return
       }
-      self = .ipv6(
-        address: String(
-          addressComponents[1 ..< addressComponents.count - 1].joined(separator: ":")
-        ),
-        port: port
-      )
 
     case "unix":
-      guard addressComponents.count == 2 else {
-        // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
-        self = .other(address)
-        return
-      }
+      // Whatever comes after "unix:" is the <pathname>
       self = .unixDomainSocket(path: String(addressComponents[1]))
 
     default:
