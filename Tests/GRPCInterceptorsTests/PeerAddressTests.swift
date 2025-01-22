@@ -37,9 +37,23 @@ struct PeerAddressTests {
     #expect(address == .unixDomainSocket(path: "some-path"))
   }
 
-  @Test("Unrecognised addresses are correctly parsed")
-  func testOther() {
-    let address = PeerAddress("in-process:1234")
-    #expect(address == .other("in-process:1234"))
+  @Test(
+    "Unrecognised addresses return nil",
+    arguments: [
+      "",
+      "unknown",
+      "in-process:1234",
+      "ipv4:",
+      "ipv4:1234",
+      "ipv6:",
+      "ipv6:123:456:789:123",
+      "ipv6:123:456:789]:123",
+      "ipv6:123:456:789]",
+      "unix",
+    ]
+  )
+  func testOther(address: String) {
+    let address = PeerAddress(address)
+    #expect(address == nil)
   }
 }

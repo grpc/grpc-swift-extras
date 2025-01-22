@@ -65,13 +65,11 @@ extension Span {
       self.attributes[GRPCTracingKeys.serverPort] = port
 
     case .unixDomainSocket(let path):
-      self.attributes[GRPCTracingKeys.networkType] = "unix"
       self.attributes[GRPCTracingKeys.networkPeerAddress] = path
 
-    case .other(let address):
-      // We can't nicely format the span attributes to contain the appropriate information here,
-      // so include the whole thing as part of the peer address.
-      self.attributes[GRPCTracingKeys.networkPeerAddress] = address
+    case .none:
+      // We don't recognise this address format, so don't populate any fields.
+      ()
     }
   }
 }
@@ -80,9 +78,8 @@ package enum PeerAddress: Equatable {
   case ipv4(address: String, port: Int?)
   case ipv6(address: String, port: Int?)
   case unixDomainSocket(path: String)
-  case other(String)
 
-  package init(_ address: String) {
+  package init?(_ address: String) {
     // We expect this address to be of one of these formats:
     // - ipv4:<host>:<port> for ipv4 addresses
     // - ipv6:[<host>]:<port> for ipv6 addresses
@@ -92,9 +89,8 @@ package enum PeerAddress: Equatable {
     let addressComponents = address.split(separator: ":", maxSplits: 1)
 
     guard addressComponents.count > 1 else {
-      // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
-      self = .other(address)
-      return
+      // This is some unexpected/unknown format
+      return nil
     }
 
     // Check what type the transport is...
@@ -104,20 +100,22 @@ package enum PeerAddress: Equatable {
       if ipv4AddressComponents.count == 2, let port = Int(ipv4AddressComponents[1]) {
         self = .ipv4(address: String(ipv4AddressComponents[0]), port: port)
       } else {
-        // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
-        self = .other(address)
+        return nil
       }
 
     case "ipv6":
-      // At this point, we are looking at an address with format: [<address>]:<port>
-      // We drop the first character ('[') and split by ']:' to keep two components: the address
-      // and the port.
-      let ipv6AddressComponents = addressComponents[1].dropFirst().split(separator: "]:")
-      if ipv6AddressComponents.count == 2, let port = Int(ipv6AddressComponents[1]) {
-        self = .ipv6(address: String(ipv6AddressComponents[0]), port: port)
+      if addressComponents[1].first == "[" {
+        // At this point, we are looking at an address with format: [<address>]:<port>
+        // We drop the first character ('[') and split by ']:' to keep two components: the address
+        // and the port.
+        let ipv6AddressComponents = addressComponents[1].dropFirst().split(separator: "]:")
+        if ipv6AddressComponents.count == 2, let port = Int(ipv6AddressComponents[1]) {
+          self = .ipv6(address: String(ipv6AddressComponents[0]), port: port)
+        } else {
+          return nil
+        }
       } else {
-        // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
-        self = .other(address)
+        return nil
       }
 
     case "unix":
@@ -125,8 +123,8 @@ package enum PeerAddress: Equatable {
       self = .unixDomainSocket(path: String(addressComponents[1]))
 
     default:
-      // This is some unexpected/unknown format, so we have no way of splitting it up nicely.
-      self = .other(address)
+      // This is some unexpected/unknown format
+      return nil
     }
   }
 }
