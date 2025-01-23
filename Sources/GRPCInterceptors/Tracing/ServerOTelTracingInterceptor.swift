@@ -154,10 +154,6 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
 
               return wrappedResult
             }
-          } else {
-            success.producer = { writer in
-              return try await wrappedProducer(writer)
-            }
           }
 
           response = .init(accepted: .success(success))
