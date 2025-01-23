@@ -47,7 +47,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/grpc/grpc-swift-protobuf.git",
-    exact: "1.0.0-beta.3"
+    branch: "main"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",

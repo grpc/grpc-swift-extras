@@ -90,43 +90,28 @@ public struct ServerTracingInterceptor: ServerInterceptor {
             success.producer = { writer in
               let eventEmittingWriter = HookedWriter(
                 wrapping: writer,
-                beforeEachWrite: {
-                  span.addEvent("Sending response part")
-                },
                 afterEachWrite: {
                   span.addEvent("Sent response part")
                 }
               )
 
-              let wrappedResult: Metadata
-              do {
-                wrappedResult = try await wrappedProducer(
-                  RPCWriter(wrapping: eventEmittingWriter)
-                )
-              } catch {
-                span.addEvent("Error encountered")
-                throw error
-              }
+              let wrappedResult = try await wrappedProducer(
+                RPCWriter(wrapping: eventEmittingWriter)
+              )
 
               span.addEvent("Sent response end")
               return wrappedResult
             }
           } else {
             success.producer = { writer in
-              let wrappedResult: Metadata
-              do {
-                wrappedResult = try await wrappedProducer(writer)
-              } catch {
-                span.addEvent("Error encountered")
-                throw error
-              }
-
+              let wrappedResult = try await wrappedProducer(writer)
               span.addEvent("Sent response end")
               return wrappedResult
             }
           }
 
           response = .init(accepted: .success(success))
+
         case .failure:
           span.addEvent("Sent error response")
         }

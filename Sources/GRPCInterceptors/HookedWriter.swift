@@ -18,27 +18,22 @@ internal import Tracing
 
 struct HookedWriter<Element: Sendable>: RPCWriterProtocol {
   private let writer: any RPCWriterProtocol<Element>
-  private let beforeEachWrite: @Sendable () -> Void
   private let afterEachWrite: @Sendable () -> Void
 
   init(
     wrapping other: some RPCWriterProtocol<Element>,
-    beforeEachWrite: @Sendable @escaping () -> Void,
     afterEachWrite: @Sendable @escaping () -> Void
   ) {
     self.writer = other
-    self.beforeEachWrite = beforeEachWrite
     self.afterEachWrite = afterEachWrite
   }
 
   func write(_ element: Element) async throws {
-    self.beforeEachWrite()
     try await self.writer.write(element)
     self.afterEachWrite()
   }
 
   func write(contentsOf elements: some Sequence<Element>) async throws {
-    self.beforeEachWrite()
     try await self.writer.write(contentsOf: elements)
     self.afterEachWrite()
   }
