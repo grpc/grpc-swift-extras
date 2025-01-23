@@ -42,7 +42,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
-  ///  event in a tracing span. Otherwise, only the request/response start and end will be recorded as events.
+  ///  event in a tracing span.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
