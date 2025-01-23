@@ -18,6 +18,7 @@ import GRPCCore
 import GRPCInterceptors
 import Testing
 import Tracing
+
 import struct Foundation.UUID
 
 @Suite("OTel Tracing Client Interceptor Tests")
@@ -605,8 +606,8 @@ struct OTelTracingServerInterceptorTests {
     await assertStreamContentsEqual(["response1", "response2"], responseStream)
 
     assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
-      #expect(events ==
-        [
+      #expect(
+        events == [
           // Recorded when request is received
           TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1]),
           // Recorded when `response1` is sent
@@ -708,20 +709,22 @@ struct OTelTracingServerInterceptorTests {
     assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
       #expect(events.isEmpty)
     } assertAttributes: { attributes in
-      #expect(attributes == [
-        "rpc.system": "grpc",
-        "rpc.method": .string(methodDescriptor.method),
-        "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
-        "rpc.grpc.status_code": 14,  // this is unavailable's raw code
-        "server.address": "someserver.com",
-        "server.port": 123,
-        "network.peer.address": "10.1.2.90",
-        "network.peer.port": 123,
-        "network.transport": "tcp",
-        "network.type": "ipv4",
-        "client.address": "10.1.2.80",
-        "client.port": 567,
-      ])
+      #expect(
+        attributes == [
+          "rpc.system": "grpc",
+          "rpc.method": .string(methodDescriptor.method),
+          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": 14,  // this is unavailable's raw code
+          "server.address": "someserver.com",
+          "server.port": 123,
+          "network.peer.address": "10.1.2.90",
+          "network.peer.port": 123,
+          "network.transport": "tcp",
+          "network.type": "ipv4",
+          "client.address": "10.1.2.80",
+          "client.port": 567,
+        ]
+      )
     } assertStatus: { status in
       #expect(status == .some(.init(code: .error)))
     } assertErrors: { errors in
@@ -792,11 +795,14 @@ struct OTelTracingServerInterceptorTests {
 
 // -  MARK: Utilities
 
-fileprivate func getTestSpanForMethod(tracer: TestTracer, methodDescriptor: MethodDescriptor) -> TestSpan {
+private func getTestSpanForMethod(
+  tracer: TestTracer,
+  methodDescriptor: MethodDescriptor
+) -> TestSpan {
   tracer.getSpan(ofOperation: methodDescriptor.fullyQualifiedMethod)!
 }
 
-fileprivate func assertTestSpanComponents(
+private func assertTestSpanComponents(
   forMethod method: MethodDescriptor,
   tracer: TestTracer,
   assertEvents: ([TestSpanEvent]) -> Void,
@@ -811,7 +817,7 @@ fileprivate func assertTestSpanComponents(
   assertErrors(span.errors)
 }
 
-fileprivate func assertStreamContentsEqual<T: Equatable>(
+private func assertStreamContentsEqual<T: Equatable>(
   _ array: [T],
   _ stream: any AsyncSequence<T, any Error>
 ) async throws {
@@ -822,7 +828,7 @@ fileprivate func assertStreamContentsEqual<T: Equatable>(
   #expect(streamElements == array)
 }
 
-fileprivate func assertStreamContentsEqual<T: Equatable>(
+private func assertStreamContentsEqual<T: Equatable>(
   _ array: [T],
   _ stream: any AsyncSequence<T, Never>
 ) async {

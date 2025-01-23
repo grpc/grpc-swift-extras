@@ -68,7 +68,7 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
     request: StreamingServerRequest<Input>,
     context: ServerContext,
     next: @Sendable (StreamingServerRequest<Input>, ServerContext) async throws ->
-    StreamingServerResponse<Output>
+      StreamingServerResponse<Output>
   ) async throws -> StreamingServerResponse<Output> where Input: Sendable, Output: Sendable {
     try await self.intercept(
       tracer: InstrumentationSystem.tracer,
@@ -116,7 +116,8 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
             wrapping: request.messages.map { element in
               var event = SpanEvent(name: "rpc.message")
               event.attributes[GRPCTracingKeys.rpcMessageType] = "RECEIVED"
-              event.attributes[GRPCTracingKeys.rpcMessageID] = messageReceivedCounter
+              event.attributes[GRPCTracingKeys.rpcMessageID] =
+                messageReceivedCounter
                 .wrappingAdd(1, ordering: .sequentiallyConsistent)
                 .oldValue
               span.addEvent(event)
@@ -139,7 +140,8 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
                 afterEachWrite: {
                   var event = SpanEvent(name: "rpc.message")
                   event.attributes[GRPCTracingKeys.rpcMessageType] = "SENT"
-                  event.attributes[GRPCTracingKeys.rpcMessageID] = messageSentCounter
+                  event.attributes[GRPCTracingKeys.rpcMessageID] =
+                    messageSentCounter
                     .wrappingAdd(1, ordering: .sequentiallyConsistent)
                     .oldValue
                   span.addEvent(event)
