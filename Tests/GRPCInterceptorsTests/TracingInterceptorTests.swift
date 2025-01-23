@@ -468,7 +468,6 @@ struct OTelTracingClientInterceptorTests {
           "server.address": "someserver.com",
           "network.peer.address": "some-path",
           "network.transport": "tcp",
-          "network.type": "unix",
         ]
       )
     }
