@@ -15,7 +15,7 @@
  */
 
 import GRPCCore
-import GRPCInterceptors
+import GRPCOTelTracingInterceptors
 import Testing
 import Tracing
 

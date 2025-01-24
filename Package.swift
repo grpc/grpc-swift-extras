@@ -27,8 +27,8 @@ let products: [Product] = [
     targets: ["GRPCReflectionService"]
   ),
   .library(
-    name: "GRPCInterceptors",
-    targets: ["GRPCInterceptors"]
+    name: "GRPCOTelTracingInterceptors",
+    targets: ["GRPCOTelTracingInterceptors"]
   ),
   .library(
     name: "GRPCServiceLifecycle",
@@ -115,9 +115,9 @@ let targets: [Target] = [
     swiftSettings: defaultSwiftSettings
   ),
 
-  // Common interceptors for gRPC.
+  // gRPC OTel tracing interceptors.
   .target(
-    name: "GRPCInterceptors",
+    name: "GRPCOTelTracingInterceptors",
     dependencies: [
       .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
@@ -125,9 +125,9 @@ let targets: [Target] = [
     swiftSettings: defaultSwiftSettings
   ),
   .testTarget(
-    name: "GRPCInterceptorsTests",
+    name: "GRPCOTelTracingInterceptorsTests",
     dependencies: [
-      .target(name: "GRPCInterceptors"),
+      .target(name: "GRPCOTelTracingInterceptors"),
       .product(name: "GRPCCore", package: "grpc-swift"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
     ],
