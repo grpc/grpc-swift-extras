@@ -72,6 +72,58 @@ extension Span {
       ()
     }
   }
+
+  func setOTelServerSpanGRPCAttributes(
+    context: ServerContext,
+    serverHostname: String,
+    networkTransportMethod: String
+  ) {
+    self.attributes[GRPCTracingKeys.rpcSystem] = "grpc"
+    self.attributes[GRPCTracingKeys.serverAddress] = serverHostname
+    self.attributes[GRPCTracingKeys.networkTransport] = networkTransportMethod
+    self.attributes[GRPCTracingKeys.rpcService] = context.descriptor.service.fullyQualifiedService
+    self.attributes[GRPCTracingKeys.rpcMethod] = context.descriptor.method
+
+    // Set server address information
+    switch PeerAddress(context.localPeer) {
+    case .ipv4(let address, let port):
+      self.attributes[GRPCTracingKeys.networkType] = "ipv4"
+      self.attributes[GRPCTracingKeys.networkPeerAddress] = address
+      self.attributes[GRPCTracingKeys.networkPeerPort] = port
+      self.attributes[GRPCTracingKeys.serverPort] = port
+
+    case .ipv6(let address, let port):
+      self.attributes[GRPCTracingKeys.networkType] = "ipv6"
+      self.attributes[GRPCTracingKeys.networkPeerAddress] = address
+      self.attributes[GRPCTracingKeys.networkPeerPort] = port
+      self.attributes[GRPCTracingKeys.serverPort] = port
+
+    case .unixDomainSocket(let path):
+      self.attributes[GRPCTracingKeys.networkPeerAddress] = path
+
+    case .none:
+      // We don't recognise this address format, so don't populate any fields.
+      ()
+    }
+
+    // Set client address information
+    switch PeerAddress(context.remotePeer) {
+    case .ipv4(let address, let port):
+      self.attributes[GRPCTracingKeys.clientAddress] = address
+      self.attributes[GRPCTracingKeys.clientPort] = port
+
+    case .ipv6(let address, let port):
+      self.attributes[GRPCTracingKeys.clientAddress] = address
+      self.attributes[GRPCTracingKeys.clientPort] = port
+
+    case .unixDomainSocket(let path):
+      self.attributes[GRPCTracingKeys.clientAddress] = path
+
+    case .none:
+      // We don't recognise this address format, so don't populate any fields.
+      ()
+    }
+  }
 }
 
 package enum PeerAddress: Equatable {

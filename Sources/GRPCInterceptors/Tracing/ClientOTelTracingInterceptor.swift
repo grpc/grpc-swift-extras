@@ -21,9 +21,14 @@ package import Tracing
 /// A client interceptor that injects tracing information into the request.
 ///
 /// The tracing information is taken from the current `ServiceContext`, and injected into the request's
-/// metadata. It will then be picked up by the server-side ``ServerTracingInterceptor``.
+/// metadata. It will then be picked up by the server-side ``ServerOTelTracingInterceptor``.
 ///
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
+///
+/// This interceptor will also inject all required and recommended span and event attributes, and set span status, as defined by
+/// OpenTelemetry's documentation on:
+/// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
+/// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
 public struct ClientOTelTracingInterceptor: ClientInterceptor {
   private let injector: ClientRequestInjector
   private let traceEachMessage: Bool
@@ -37,7 +42,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
-  ///  event in a tracing span. Otherwise, only the request/response start and end will be recorded as events.
+  ///  event in a tracing span.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
