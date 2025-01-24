@@ -31,9 +31,11 @@ package import Tracing
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
 public struct ClientOTelTracingInterceptor: ClientInterceptor {
   private let injector: ClientRequestInjector
-  private let traceEachMessage: Bool
   private var serverHostname: String
   private var networkTransportMethod: String
+
+  private let traceEachMessage: Bool
+  private var includeRequestMetadata: Bool
 
   /// Create a new instance of a ``ClientOTelTracingInterceptor``.
   ///
@@ -43,15 +45,20 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
   ///  event in a tracing span.
+  ///  - includeRequestMetadata: if `true`, **all** metadata keys included in the request will be added to the span as attributes.
+  ///
+  /// - Important: Be careful when setting `includeRequestMetadata=true`, as including all request metadata can be a security risk.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
-    traceEachMessage: Bool = true
+    traceEachMessage: Bool = true,
+    includeRequestMetadata: Bool = false
   ) {
     self.injector = ClientRequestInjector()
     self.serverHostname = serverHostname
     self.networkTransportMethod = networkTransportMethod
     self.traceEachMessage = traceEachMessage
+    self.includeRequestMetadata = includeRequestMetadata
   }
 
   /// This interceptor will inject as the request's metadata whatever `ServiceContext` key-value pairs
@@ -93,12 +100,6 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
     var request = request
     let serviceContext = ServiceContext.current ?? .topLevel
 
-    tracer.inject(
-      serviceContext,
-      into: &request.metadata,
-      using: self.injector
-    )
-
     return try await tracer.withSpan(
       context.descriptor.fullyQualifiedMethod,
       context: serviceContext,
@@ -108,6 +109,16 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
         context: context,
         serverHostname: self.serverHostname,
         networkTransportMethod: self.networkTransportMethod
+      )
+
+      if self.includeRequestMetadata {
+        span.setMetadataStringAttributesAsRequestSpanAttributes(request.metadata)
+      }
+
+      tracer.inject(
+        serviceContext,
+        into: &request.metadata,
+        using: self.injector
       )
 
       if self.traceEachMessage {

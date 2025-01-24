@@ -180,6 +180,114 @@ struct OTelTracingClientInterceptorTests {
     }
   }
 
+  @Test("All request metadata is included if opted-in")
+  func testRequestMetadataOptIn() async throws {
+    var serviceContext = ServiceContext.topLevel
+    let traceIDString = UUID().uuidString
+
+    let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
+    serviceContext.traceID = traceIDString
+
+    // FIXME: use 'ServiceContext.withValue(serviceContext)'
+    //
+    // This is blocked on: https://github.com/apple/swift-service-context/pull/46
+    try await ServiceContext.$current.withValue(serviceContext) {
+      let interceptor = ClientOTelTracingInterceptor(
+        serverHostname: "someserver.com",
+        networkTransportMethod: "tcp",
+        includeRequestMetadata: true
+      )
+      let methodDescriptor = MethodDescriptor(
+        fullyQualifiedService: "OTelTracingClientInterceptorTests",
+        method: "testAllEventsRecorded"
+      )
+      let response = try await interceptor.intercept(
+        tracer: self.tracer,
+        request: .init(
+          metadata: [
+            "some-request-metadata": "some-request-value",
+            "some-repeated-request-metadata": "some-repeated-request-value1",
+            "some-repeated-request-metadata": "some-repeated-request-value2",
+            "some-request-metadata-bin": .binary([1]),
+          ],
+          producer: { writer in
+            try await writer.write(contentsOf: ["request1"])
+            try await writer.write(contentsOf: ["request2"])
+          }
+        ),
+        context: ClientContext(
+          descriptor: methodDescriptor,
+          remotePeer: "ipv4:10.1.2.80:567",
+          localPeer: "ipv4:10.1.2.80:123"
+        )
+      ) { stream, _ in
+        // Assert the metadata contains the injected context key-value.
+        #expect(
+          stream.metadata.contains(where: {
+            ($0.key == "trace-id") && ($0.value == .string(traceIDString))
+          })
+        )
+
+        // Write into the request stream to make sure the `producer` closure's called.
+        let writer = RPCWriter(wrapping: TestWriter(streamContinuation: requestStreamContinuation))
+        try await stream.producer(writer)
+        requestStreamContinuation.finish()
+
+        return .init(
+          metadata: [
+            "some-response-metadata": "some-response-value",
+            "some-response-metadata-bin": .binary([2]),
+          ],
+          bodyParts: RPCAsyncSequence(
+            wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
+              $0.yield(.message(["response"]))
+              $0.finish()
+            }
+          )
+        )
+      }
+
+      await assertStreamContentsEqual(["request1", "request2"], requestStream)
+      try await assertStreamContentsEqual([["response"]], response.messages)
+
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+        #expect(
+          events == [
+            // Recorded when `request1` is sent
+            TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 1]),
+            // Recorded when `request2` is sent
+            TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 2]),
+            // Recorded when receiving response part
+            TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1]),
+          ]
+        )
+      } assertAttributes: { attributes in
+        #expect(
+          attributes == [
+            "rpc.system": "grpc",
+            "rpc.method": .string(methodDescriptor.method),
+            "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+            "rpc.grpc.status_code": 0,
+            "server.address": "someserver.com",
+            "server.port": 567,
+            "network.peer.address": "10.1.2.80",
+            "network.peer.port": 567,
+            "network.transport": "tcp",
+            "network.type": "ipv4",
+            "rpc.grpc.request.metadata.some-request-metadata": "some-request-value",
+            "rpc.grpc.request.metadata.some-repeated-request-metadata": .stringArray([
+              "some-repeated-request-value1", "some-repeated-request-value2",
+            ]),
+          ]
+        )
+      } assertStatus: { status in
+        #expect(status == nil)
+      } assertErrors: { errors in
+        #expect(errors == [])
+      }
+    }
+  }
+
   @Test("RPC that throws is correctly recorded")
   func testThrowingRPC() async throws {
     var serviceContext = ServiceContext.topLevel
