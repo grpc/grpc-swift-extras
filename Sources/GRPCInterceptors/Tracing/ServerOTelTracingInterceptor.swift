@@ -38,7 +38,7 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
   ///
   /// - Parameters:
   ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
-  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "udp"). This will be the value for the
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each response part sent and request part received will be recorded as a separate
   ///  event in a tracing span.
