@@ -36,6 +36,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
 
   private let traceEachMessage: Bool
   private var includeRequestMetadata: Bool
+  private var includeResponseMetadata: Bool
 
   /// Create a new instance of a ``ClientOTelTracingInterceptor``.
   ///
@@ -45,20 +46,24 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
   ///  event in a tracing span.
-  ///  - includeRequestMetadata: if `true`, **all** metadata keys included in the request will be added to the span as attributes.
+  ///  - includeRequestMetadata: if `true`, **all** metadata keys with string values included in the request will be added to the span as attributes.
+  ///  - includeResponseMetadata: if `true`, **all** metadata keys with string values included in the response will be added to the span as attributes.
   ///
-  /// - Important: Be careful when setting `includeRequestMetadata=true`, as including all request metadata can be a security risk.
+  /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
+  /// as including all request/response metadata can be a security risk.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
     traceEachMessage: Bool = true,
-    includeRequestMetadata: Bool = false
+    includeRequestMetadata: Bool = false,
+    includeResponseMetadata: Bool = false
   ) {
     self.injector = ClientRequestInjector()
     self.serverHostname = serverHostname
     self.networkTransportMethod = networkTransportMethod
     self.traceEachMessage = traceEachMessage
     self.includeRequestMetadata = includeRequestMetadata
+    self.includeResponseMetadata = includeResponseMetadata
   }
 
   /// This interceptor will inject as the request's metadata whatever `ServiceContext` key-value pairs
@@ -142,6 +147,11 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
       }
 
       var response = try await next(request, context)
+
+      if self.includeResponseMetadata {
+        span.setMetadataStringAttributesAsResponseSpanAttributes(response.metadata)
+      }
+
       switch response.accepted {
       case .success(var success):
         let hookedSequence:
@@ -150,14 +160,22 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
           >
         if self.traceEachMessage {
           let messageReceivedCounter = Atomic(1)
-          hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { _ in
-            var event = SpanEvent(name: "rpc.message")
-            event.attributes[GRPCTracingKeys.rpcMessageType] = "RECEIVED"
-            event.attributes[GRPCTracingKeys.rpcMessageID] =
+          hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { part in
+            switch part {
+            case .message(let message):
+              var event = SpanEvent(name: "rpc.message")
+              event.attributes[GRPCTracingKeys.rpcMessageType] = "RECEIVED"
+              event.attributes[GRPCTracingKeys.rpcMessageID] =
               messageReceivedCounter
-              .wrappingAdd(1, ordering: .sequentiallyConsistent)
-              .oldValue
-            span.addEvent(event)
+                .wrappingAdd(1, ordering: .sequentiallyConsistent)
+                .oldValue
+              span.addEvent(event)
+
+            case .trailingMetadata(let trailingMetadata):
+              if self.includeResponseMetadata {
+                span.setMetadataStringAttributesAsResponseSpanAttributes(trailingMetadata)
+              }
+            }
           } onFinish: { error in
             if let error {
               if let errorCode = error.grpcErrorCode {
