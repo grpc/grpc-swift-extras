@@ -162,11 +162,11 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
           let messageReceivedCounter = Atomic(1)
           hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { part in
             switch part {
-            case .message(let message):
+            case .message:
               var event = SpanEvent(name: "rpc.message")
               event.attributes[GRPCTracingKeys.rpcMessageType] = "RECEIVED"
               event.attributes[GRPCTracingKeys.rpcMessageID] =
-              messageReceivedCounter
+                messageReceivedCounter
                 .wrappingAdd(1, ordering: .sequentiallyConsistent)
                 .oldValue
               span.addEvent(event)

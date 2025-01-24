@@ -37,6 +37,7 @@ enum GRPCTracingKeys {
   static let networkPeerPort = "network.peer.port"
 
   fileprivate static let requestMetadataPrefix = "rpc.grpc.request.metadata."
+  fileprivate static let responseMetadataPrefix = "rpc.grpc.response.metadata."
 }
 
 extension Span {
@@ -131,6 +132,13 @@ extension Span {
     self.setMetadataStringAttributesAsSpanAttributes(
       metadata,
       prefix: GRPCTracingKeys.requestMetadataPrefix
+    )
+  }
+
+  func setMetadataStringAttributesAsResponseSpanAttributes(_ metadata: Metadata) {
+    self.setMetadataStringAttributesAsSpanAttributes(
+      metadata,
+      prefix: GRPCTracingKeys.responseMetadataPrefix
     )
   }
 

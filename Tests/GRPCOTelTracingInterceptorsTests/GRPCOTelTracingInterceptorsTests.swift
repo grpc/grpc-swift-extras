@@ -241,6 +241,12 @@ struct OTelTracingClientInterceptorTests {
           bodyParts: RPCAsyncSequence(
             wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
               $0.yield(.message(["response"]))
+              $0.yield(
+                .trailingMetadata([
+                  "some-repeated-response-metadata": "some-repeated-response-value1",
+                  "some-repeated-response-metadata": "some-repeated-response-value2",
+                ])
+              )
               $0.finish()
             }
           )
@@ -349,10 +355,12 @@ struct OTelTracingClientInterceptorTests {
           bodyParts: RPCAsyncSequence(
             wrapping: AsyncThrowingStream<StreamingClientResponse.Contents.BodyPart, any Error> {
               $0.yield(.message(["response"]))
-              $0.yield(.trailingMetadata([
-                "some-repeated-response-metadata": "some-repeated-response-value1",
-                "some-repeated-response-metadata": "some-repeated-response-value2"
-              ]))
+              $0.yield(
+                .trailingMetadata([
+                  "some-repeated-response-metadata": "some-repeated-response-value1",
+                  "some-repeated-response-metadata": "some-repeated-response-value2",
+                ])
+              )
               $0.finish()
             }
           )
@@ -838,6 +846,222 @@ struct OTelTracingServerInterceptorTests {
       )
     } assertAttributes: { attributes in
       #expect(attributes == testValues.expectedSpanAttributes)
+    } assertStatus: { status in
+      #expect(status == nil)
+    } assertErrors: { errors in
+      #expect(errors.isEmpty)
+    }
+  }
+
+  @Test("All string-valued request metadata is included if opted-in")
+  func testRequestMetadataOptIn() async throws {
+    let methodDescriptor = MethodDescriptor(
+      fullyQualifiedService: "OTelTracingServerInterceptorTests",
+      method: "testRequestMetadataOptIn"
+    )
+    let interceptor = ServerOTelTracingInterceptor(
+      serverHostname: "someserver.com",
+      networkTransportMethod: "tcp",
+      includeRequestMetadata: true
+    )
+    let request = ServerRequest(
+      metadata: [
+        "some-request-metadata": "some-request-value",
+        "some-repeated-request-metadata": "some-repeated-request-value1",
+        "some-repeated-request-metadata": "some-repeated-request-value2",
+        "some-request-metadata-bin": .binary([1]),
+      ],
+      message: [UInt8]()
+    )
+    let response = try await interceptor.intercept(
+      tracer: self.tracer,
+      request: .init(single: request),
+      context: ServerContext(
+        descriptor: methodDescriptor,
+        remotePeer: "ipv4:10.1.2.80:567",
+        localPeer: "ipv4:10.1.2.90:123",
+        cancellation: .init()
+      )
+    ) { request, _ in
+      for try await _ in request.messages {
+        // We need to iterate over the messages for the span to be able to record the events.
+      }
+
+      return StreamingServerResponse<String>(
+        accepted: .success(
+          .init(
+            metadata: [
+              "some-response-metadata": "some-response-value",
+              "some-response-metadata-bin": .binary([2]),
+            ],
+            producer: { writer in
+              try await writer.write("response1")
+              try await writer.write("response2")
+              return [
+                "some-repeated-response-metadata": "some-repeated-response-value1",
+                "some-repeated-response-metadata": "some-repeated-response-value2",
+              ]
+            }
+          )
+        )
+      )
+    }
+
+    // Get the response out into a response stream, and assert its contents
+    let (responseStream, responseStreamContinuation) = AsyncStream<String>.makeStream()
+    let responseContents = try response.accepted.get()
+    let trailingMetadata = try await responseContents.producer(
+      RPCWriter(wrapping: TestWriter(streamContinuation: responseStreamContinuation))
+    )
+    responseStreamContinuation.finish()
+
+    #expect(
+      trailingMetadata == [
+        "some-repeated-response-metadata": "some-repeated-response-value1",
+        "some-repeated-response-metadata": "some-repeated-response-value2",
+      ]
+    )
+    await assertStreamContentsEqual(["response1", "response2"], responseStream)
+
+    assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      #expect(
+        events == [
+          // Recorded when request is received
+          TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1]),
+          // Recorded when `response1` is sent
+          TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 1]),
+          // Recorded when `response2` is sent
+          TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 2]),
+        ]
+      )
+    } assertAttributes: { attributes in
+      #expect(
+        attributes == [
+          "rpc.system": "grpc",
+          "rpc.method": .string(methodDescriptor.method),
+          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "server.address": "someserver.com",
+          "server.port": 123,
+          "network.peer.address": "10.1.2.90",
+          "network.peer.port": 123,
+          "network.transport": "tcp",
+          "network.type": "ipv4",
+          "client.address": "10.1.2.80",
+          "client.port": 567,
+          "rpc.grpc.request.metadata.some-request-metadata": "some-request-value",
+          "rpc.grpc.request.metadata.some-repeated-request-metadata": .stringArray([
+            "some-repeated-request-value1", "some-repeated-request-value2",
+          ]),
+        ]
+      )
+    } assertStatus: { status in
+      #expect(status == nil)
+    } assertErrors: { errors in
+      #expect(errors.isEmpty)
+    }
+  }
+
+  @Test("All string-valued response metadata is included if opted-in")
+  func testResponseMetadataOptIn() async throws {
+    let methodDescriptor = MethodDescriptor(
+      fullyQualifiedService: "OTelTracingServerInterceptorTests",
+      method: "testResponseMetadataOptIn"
+    )
+    let interceptor = ServerOTelTracingInterceptor(
+      serverHostname: "someserver.com",
+      networkTransportMethod: "tcp",
+      includeResponseMetadata: true
+    )
+    let request = ServerRequest(
+      metadata: [
+        "some-request-metadata": "some-request-value",
+        "some-repeated-request-metadata": "some-repeated-request-value1",
+        "some-repeated-request-metadata": "some-repeated-request-value2",
+        "some-request-metadata-bin": .binary([1]),
+      ],
+      message: [UInt8]()
+    )
+    let response = try await interceptor.intercept(
+      tracer: self.tracer,
+      request: .init(single: request),
+      context: ServerContext(
+        descriptor: methodDescriptor,
+        remotePeer: "ipv4:10.1.2.80:567",
+        localPeer: "ipv4:10.1.2.90:123",
+        cancellation: .init()
+      )
+    ) { request, _ in
+      for try await _ in request.messages {
+        // We need to iterate over the messages for the span to be able to record the events.
+      }
+
+      return StreamingServerResponse<String>(
+        accepted: .success(
+          .init(
+            metadata: [
+              "some-response-metadata": "some-response-value",
+              "some-response-metadata-bin": .binary([2]),
+            ],
+            producer: { writer in
+              try await writer.write("response1")
+              try await writer.write("response2")
+              return [
+                "some-repeated-response-metadata": "some-repeated-response-value1",
+                "some-repeated-response-metadata": "some-repeated-response-value2",
+              ]
+            }
+          )
+        )
+      )
+    }
+
+    // Get the response out into a response stream, and assert its contents
+    let (responseStream, responseStreamContinuation) = AsyncStream<String>.makeStream()
+    let responseContents = try response.accepted.get()
+    let trailingMetadata = try await responseContents.producer(
+      RPCWriter(wrapping: TestWriter(streamContinuation: responseStreamContinuation))
+    )
+    responseStreamContinuation.finish()
+
+    #expect(
+      trailingMetadata == [
+        "some-repeated-response-metadata": "some-repeated-response-value1",
+        "some-repeated-response-metadata": "some-repeated-response-value2",
+      ]
+    )
+    await assertStreamContentsEqual(["response1", "response2"], responseStream)
+
+    assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      #expect(
+        events == [
+          // Recorded when request is received
+          TestSpanEvent("rpc.message", ["rpc.message.type": "RECEIVED", "rpc.message.id": 1]),
+          // Recorded when `response1` is sent
+          TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 1]),
+          // Recorded when `response2` is sent
+          TestSpanEvent("rpc.message", ["rpc.message.type": "SENT", "rpc.message.id": 2]),
+        ]
+      )
+    } assertAttributes: { attributes in
+      #expect(
+        attributes == [
+          "rpc.system": "grpc",
+          "rpc.method": .string(methodDescriptor.method),
+          "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "server.address": "someserver.com",
+          "server.port": 123,
+          "network.peer.address": "10.1.2.90",
+          "network.peer.port": 123,
+          "network.transport": "tcp",
+          "network.type": "ipv4",
+          "client.address": "10.1.2.80",
+          "client.port": 567,
+          "rpc.grpc.response.metadata.some-response-metadata": "some-response-value",
+          "rpc.grpc.response.metadata.some-repeated-response-metadata": .stringArray([
+            "some-repeated-response-value1", "some-repeated-response-value2",
+          ]),
+        ]
+      )
     } assertStatus: { status in
       #expect(status == nil)
     } assertErrors: { errors in
