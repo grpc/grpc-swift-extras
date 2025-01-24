@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import GRPCOTelTracingInterceptor
+import GRPCOTelTracingInterceptors
 import Testing
 
 @Suite("PeerAddress tests")
