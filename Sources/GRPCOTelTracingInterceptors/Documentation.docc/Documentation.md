@@ -21,7 +21,7 @@ let interceptor = ClientOTelTracingInterceptor(
 
 // Add it as an interceptor when creating your client
 let client = GRPCClient(
-  transport: someTransport, 
+  transport: transport, 
   interceptors: [interceptor]
 )
 
@@ -40,7 +40,7 @@ let interceptor = ServerOTelTracingInterceptor(
 
 // Add it as an interceptor when creating your server
 let server = GRPCServer(
-  transport: inProcess.server,
+  transport: transport,
   services: [TestService()],
   interceptors: interceptor
 )
