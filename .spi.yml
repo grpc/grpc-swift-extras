@@ -1,5 +1,5 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [GRPCHealthService, GRPCInterceptors]
+    - documentation_targets: [GRPCHealthService, GRPCInteropTests, GRPCReflectionService, GRPCOTelTracingInterceptors, GRPCServiceLifecycle]
       swift_version: 6.0

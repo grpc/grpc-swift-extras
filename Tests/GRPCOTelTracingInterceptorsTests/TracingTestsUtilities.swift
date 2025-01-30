@@ -23,9 +23,12 @@ final class TestTracer: Tracer {
 
   private let testSpans: Mutex<[String: TestSpan]> = .init([:])
 
-  func getEventsForTestSpan(ofOperationName operationName: String) -> [SpanEvent] {
-    let span = self.testSpans.withLock({ $0[operationName] })
-    return span?.events ?? []
+  func getSpan(ofOperation operationName: String) -> TestSpan? {
+    self.testSpans.withLock { $0[operationName] }
+  }
+
+  func getEventsForTestSpan(ofOperation operationName: String) -> [SpanEvent] {
+    self.getSpan(ofOperation: operationName)?.events ?? []
   }
 
   func extract<Carrier, Extract>(
@@ -75,6 +78,7 @@ final class TestSpan: Span, Sendable {
     var attributes: Tracing.SpanAttributes
     var status: Tracing.SpanStatus?
     var events: [Tracing.SpanEvent] = []
+    var errors: [TracingInterceptorTestError]
   }
 
   private let state: Mutex<State>
@@ -98,13 +102,26 @@ final class TestSpan: Span, Sendable {
     self.state.withLock { $0.events }
   }
 
+  var status: SpanStatus? {
+    self.state.withLock { $0.status }
+  }
+
+  var errors: [TracingInterceptorTestError] {
+    self.state.withLock { $0.errors }
+  }
+
   init(
     context: ServiceContextModule.ServiceContext,
     operationName: String,
     attributes: Tracing.SpanAttributes = [:],
     isRecording: Bool = true
   ) {
-    let state = State(context: context, operationName: operationName, attributes: attributes)
+    let state = State(
+      context: context,
+      operationName: operationName,
+      attributes: attributes,
+      errors: []
+    )
     self.state = Mutex(state)
     self.isRecording = isRecording
   }
@@ -122,12 +139,8 @@ final class TestSpan: Span, Sendable {
     attributes: Tracing.SpanAttributes,
     at instant: @autoclosure () -> Instant
   ) where Instant: Tracing.TracerInstant {
-    self.setStatus(
-      .init(
-        code: .error,
-        message: "Error: \(error), attributes: \(attributes), at instant: \(instant())"
-      )
-    )
+    // For the purposes of these tests, we don't really care about the error being thrown
+    self.state.withLock { $0.errors.append(TracingInterceptorTestError.testError) }
   }
 
   func addLink(_ link: Tracing.SpanLink) {
@@ -137,7 +150,7 @@ final class TestSpan: Span, Sendable {
   }
 
   func end<Instant>(at instant: @autoclosure () -> Instant) where Instant: Tracing.TracerInstant {
-    self.setStatus(.init(code: .ok, message: "Ended at instant: \(instant())"))
+    // no-op
   }
 }
 
@@ -191,4 +204,35 @@ struct TestWriter<WriterElement: Sendable>: RPCWriterProtocol {
       self.write(element)
     }
   }
+}
+
+struct TestSpanEvent: Equatable, CustomDebugStringConvertible {
+  var name: String
+  var attributes: SpanAttributes
+
+  // This conformance is so any test errors are nicer to look at and understand
+  var debugDescription: String {
+    var attributesDescription = ""
+    self.attributes.forEach { key, value in
+      attributesDescription += " \(key): \(value),"
+    }
+
+    return """
+      (name: \(self.name), attributes: [\(attributesDescription)])
+      """
+  }
+
+  init(_ name: String, _ attributes: SpanAttributes) {
+    self.name = name
+    self.attributes = attributes
+  }
+
+  init(_ spanEvent: SpanEvent) {
+    self.name = spanEvent.name
+    self.attributes = spanEvent.attributes
+  }
+}
+
+enum TracingInterceptorTestError: Error, Equatable {
+  case testError
 }
