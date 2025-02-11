@@ -136,45 +136,59 @@ package enum PeerAddress: Equatable {
     // - ipv4:<host>:<port> for ipv4 addresses
     // - ipv6:[<host>]:<port> for ipv6 addresses
     // - unix:<uds-pathname> for UNIX domain sockets
+    let addressUTF8View = address.utf8
 
     // First get the first component so that we know what type of address we're dealing with
-    let addressComponents = address.split(separator: ":", maxSplits: 1)
+    let firstColonIndex = addressUTF8View.firstIndex(of: UInt8(ascii: ":"))
 
-    guard addressComponents.count > 1 else {
+    guard let firstColonIndex else {
       // This is some unexpected/unknown format
       return nil
     }
 
+    let addressType = addressUTF8View[..<firstColonIndex]
+
+    var addressWithoutType = addressUTF8View[firstColonIndex...]
+    _ = addressWithoutType.popFirst()
+
     // Check what type the transport is...
-    switch addressComponents[0] {
-    case "ipv4":
-      let ipv4AddressComponents = addressComponents[1].split(separator: ":")
-      if ipv4AddressComponents.count == 2, let port = Int(ipv4AddressComponents[1]) {
-        self = .ipv4(address: String(ipv4AddressComponents[0]), port: port)
-      } else {
+    if addressType.elementsEqual("ipv4".utf8) {
+      guard let addressColon = addressWithoutType.firstIndex(of: UInt8(ascii: ":")) else {
+        // This is some unexpected/unknown format
         return nil
       }
 
-    case "ipv6":
-      if addressComponents[1].first == "[" {
-        // At this point, we are looking at an address with format: [<address>]:<port>
-        // We drop the first character ('[') and split by ']:' to keep two components: the address
-        // and the port.
-        let ipv6AddressComponents = addressComponents[1].dropFirst().split(separator: "]:")
-        if ipv6AddressComponents.count == 2, let port = Int(ipv6AddressComponents[1]) {
-          self = .ipv6(address: String(ipv6AddressComponents[0]), port: port)
-        } else {
-          return nil
-        }
+      let hostComponent = addressWithoutType[..<addressColon]
+      var portComponent = addressWithoutType[addressColon...]
+      _ = portComponent.popFirst()
+
+      if let host = String(hostComponent), let port = String(portComponent) {
+        self = .ipv4(address: host, port: Int(port))
       } else {
         return nil
       }
+    } else if addressType.elementsEqual("ipv6".utf8) {
+      guard let lastColonIndex = addressWithoutType.lastIndex(of: UInt8(ascii: ":")) else {
+        // This is some unexpected/unknown format
+        return nil
+      }
 
-    case "unix":
+      var hostComponent = addressWithoutType[..<lastColonIndex]
+      var portComponent = addressWithoutType[lastColonIndex...]
+      _ = portComponent.popFirst()
+
+      if let firstBracket = hostComponent.popFirst(), let lastBracket = hostComponent.popLast(),
+         firstBracket == UInt8(ascii: "["), lastBracket == UInt8(ascii: "]"),
+         let host = String(hostComponent), let port = String(portComponent) {
+        self = .ipv6(address: host, port: Int(port))
+      } else {
+        // This is some unexpected/unknown format
+        return nil
+      }
+    } else if addressType.elementsEqual("unix".utf8) {
       // Whatever comes after "unix:" is the <pathname>
-      self = .unixDomainSocket(path: String(addressComponents[1]))
-
-    default:
+      self = .unixDomainSocket(path: String(addressWithoutType) ?? "")
+    } else {
       // This is some unexpected/unknown format
       return nil
     }
