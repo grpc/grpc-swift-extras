@@ -162,8 +162,8 @@ package enum PeerAddress: Equatable {
       var portComponent = addressWithoutType[addressColon...]
       _ = portComponent.popFirst()
 
-      if let host = String(hostComponent), let port = String(portComponent) {
-        self = .ipv4(address: host, port: Int(port))
+      if let host = String(hostComponent), let port = Int(utf8View: portComponent) {
+        self = .ipv4(address: host, port: port)
       } else {
         return nil
       }
@@ -179,8 +179,8 @@ package enum PeerAddress: Equatable {
 
       if let firstBracket = hostComponent.popFirst(), let lastBracket = hostComponent.popLast(),
          firstBracket == UInt8(ascii: "["), lastBracket == UInt8(ascii: "]"),
-         let host = String(hostComponent), let port = String(portComponent) {
-        self = .ipv6(address: host, port: Int(port))
+         let host = String(hostComponent), let port = Int(utf8View: portComponent) {
+        self = .ipv6(address: host, port: port)
       } else {
         // This is some unexpected/unknown format
         return nil
@@ -192,5 +192,21 @@ package enum PeerAddress: Equatable {
       // This is some unexpected/unknown format
       return nil
     }
+  }
+}
+
+extension Int {
+  package init?(utf8View: Substring.UTF8View.SubSequence) {
+    var value = 0
+    for utf8Element in utf8View {
+      value &*= 10
+      let elementValue = Int(utf8Element - 48) // ASCII code for 0 is 48
+      guard elementValue >= 0, elementValue <= 9 else {
+        // non-digit character
+        return nil
+      }
+      value &+= elementValue
+    }
+    self = value
   }
 }

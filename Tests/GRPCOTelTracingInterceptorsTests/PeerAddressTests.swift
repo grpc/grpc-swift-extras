@@ -56,4 +56,9 @@ struct PeerAddressTests {
     let address = PeerAddress(address)
     #expect(address == nil)
   }
+
+  @Test("Int.init(utf8View:)")
+  func testIntInitFromUTF8View() async throws {
+    #expect(54321 == Int(utf8View: "54321".utf8[...]))
+  }
 }
