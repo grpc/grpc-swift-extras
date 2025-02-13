@@ -215,8 +215,8 @@ extension Int {
       value &+= Int(utf8Char)
     }
 
-    guard value <= 65535 else {
-      // Valid IP port values go up to 2^16-1 = 65535.
+    guard value <= Int(UInt16.max) else {
+      // Valid IP port values go up to 2^16-1.
       // If a number greater than this was given, it can't be a valid port.
       return nil
     }

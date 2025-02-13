@@ -68,10 +68,10 @@ struct PeerAddressTests {
       ("65536", nil),  // Invalid: over 65535 IP port limit
       ("654321", nil),  // Invalid: over 5 digits
       ("abc", nil),  // Invalid: no digits
-      ("a123", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
-      ("123a", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
-      ("(123", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
-      ("123(", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
+      ("a123", nil),  // Invalid: mixed digits and chars outside the valid ascii range for digits
+      ("123a", nil),  // Invalid: mixed digits and chars outside the valid ascii range for digits
+      ("(123", nil),  // Invalid: mixed digits and chars outside the valid ascii range for digits
+      ("123(", nil),  // Invalid: mixed digits and chars outside the valid ascii range for digits
       ("", nil),  // Invalid: empty string
     ]
   )
