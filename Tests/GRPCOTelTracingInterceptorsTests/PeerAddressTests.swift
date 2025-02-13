@@ -57,8 +57,25 @@ struct PeerAddressTests {
     #expect(address == nil)
   }
 
-  @Test("Int.init(utf8View:)")
-  func testIntInitFromUTF8View() async throws {
-    #expect(54321 == Int(utf8View: "54321".utf8[...]))
+  @Test(
+    "Int.init(utf8View:)",
+    arguments: [
+      ("1", 1),
+      ("21", 21),
+      ("321", 321),
+      ("4321", 4321),
+      ("54321", 54321),
+      ("65536", nil),  // Invalid: over 65535 IP port limit
+      ("654321", nil),  // Invalid: over 5 digits
+      ("abc", nil),  // Invalid: no digits
+      ("a123", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
+      ("123a", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
+      ("(123", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
+      ("123(", nil),  // Invalid: mixed digits and characters outside the valid ascii range for digits
+      ("", nil),  // Invalid: empty string
+    ]
+  )
+  func testIntInitFromUTF8View(string: String, expectedInt: Int?) async throws {
+    #expect(expectedInt == Int(ipAddressPortStringBytes: string.utf8))
   }
 }

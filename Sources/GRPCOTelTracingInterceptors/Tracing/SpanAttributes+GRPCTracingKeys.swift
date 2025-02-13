@@ -149,7 +149,7 @@ package enum PeerAddress: Equatable {
     let addressType = addressUTF8View[..<firstColonIndex]
 
     var addressWithoutType = addressUTF8View[firstColonIndex...]
-    _ = addressWithoutType.popFirst()
+    addressWithoutType.removeFirst()
 
     // Check what type the transport is...
     if addressType.elementsEqual("ipv4".utf8) {
@@ -160,9 +160,9 @@ package enum PeerAddress: Equatable {
 
       let hostComponent = addressWithoutType[..<addressColon]
       var portComponent = addressWithoutType[addressColon...]
-      _ = portComponent.popFirst()
+      portComponent.removeFirst()
 
-      if let host = String(hostComponent), let port = Int(utf8View: portComponent) {
+      if let host = String(hostComponent), let port = Int(ipAddressPortStringBytes: portComponent) {
         self = .ipv4(address: host, port: port)
       } else {
         return nil
@@ -175,11 +175,11 @@ package enum PeerAddress: Equatable {
 
       var hostComponent = addressWithoutType[..<lastColonIndex]
       var portComponent = addressWithoutType[lastColonIndex...]
-      _ = portComponent.popFirst()
+      portComponent.removeFirst()
 
       if let firstBracket = hostComponent.popFirst(), let lastBracket = hostComponent.popLast(),
         firstBracket == UInt8(ascii: "["), lastBracket == UInt8(ascii: "]"),
-        let host = String(hostComponent), let port = Int(utf8View: portComponent)
+        let host = String(hostComponent), let port = Int(ipAddressPortStringBytes: portComponent)
       {
         self = .ipv6(address: host, port: port)
       } else {
@@ -197,17 +197,30 @@ package enum PeerAddress: Equatable {
 }
 
 extension Int {
-  package init?(utf8View: Substring.UTF8View.SubSequence) {
+  package init?(ipAddressPortStringBytes: some Collection<UInt8>) {
+    guard (1 ... 5).contains(ipAddressPortStringBytes.count) else {
+      // Valid IP port values go up to 2^16-1 (65535), which is 5 digits long.
+      // If the string we get is over 5 characters, we know for sure that this is an invalid port.
+      // If it's empty, we also know it's invalid as we need at least one digit.
+      return nil
+    }
+
     var value = 0
-    for utf8Element in utf8View {
+    for utf8Char in ipAddressPortStringBytes {
       value &*= 10
-      let elementValue = Int(utf8Element - 48)  // ASCII code for 0 is 48
-      guard elementValue >= 0, elementValue <= 9 else {
+      guard (UInt8(ascii: "0") ... UInt8(ascii: "9")).contains(utf8Char) else {
         // non-digit character
         return nil
       }
-      value &+= elementValue
+      value &+= Int(utf8Char)
     }
+
+    guard value <= 65535 else {
+      // Valid IP port values go up to 2^16-1 = 65535.
+      // If a number greater than this was given, it can't be a valid port.
+      return nil
+    }
+
     self = value
   }
 }
