@@ -212,7 +212,7 @@ extension Int {
         // non-digit character
         return nil
       }
-      value &+= Int(utf8Char)
+      value &+= Int(utf8Char - UInt8(ascii: "0"))
     }
 
     guard value <= Int(UInt16.max) else {
