@@ -73,9 +73,6 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   ///  event in a tracing span.
   ///  - includeRequestMetadata: if `true`, **all** metadata keys with string values included in the request will be added to the span as attributes.
   ///  - includeResponseMetadata: if `true`, **all** metadata keys with string values included in the response will be added to the span as attributes.
-  ///
-  /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
-  /// as including all request/response metadata can be a security risk.
   public init(
     serverHostname: String,
     networkTransportMethod: String,

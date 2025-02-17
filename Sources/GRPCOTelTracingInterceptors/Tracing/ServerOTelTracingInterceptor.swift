@@ -45,9 +45,6 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each response part sent and request part received will be recorded as a separate
   ///  event in a tracing span.
-  ///
-  /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
-  /// as including all request/response metadata can be a security risk.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
