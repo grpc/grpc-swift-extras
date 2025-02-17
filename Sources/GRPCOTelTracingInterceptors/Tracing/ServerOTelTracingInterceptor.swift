@@ -30,9 +30,12 @@ package import Tracing
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
 public struct ServerOTelTracingInterceptor: ServerInterceptor {
   private let extractor: ServerRequestExtractor
-  private let traceEachMessage: Bool
   private var serverHostname: String
   private var networkTransportMethod: String
+
+  private let traceEachMessage: Bool
+  private var includeRequestMetadata: Bool
+  private var includeResponseMetadata: Bool
 
   /// Create a new instance of a ``ServerOTelTracingInterceptor``.
   ///
@@ -47,10 +50,41 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
     networkTransportMethod: String,
     traceEachMessage: Bool = true
   ) {
+    self.init(
+      serverHostname: serverHostname,
+      networkTransportMethod: networkTransportMethod,
+      traceEachMessage: traceEachMessage,
+      includeRequestMetadata: false,
+      includeResponseMetadata: false
+    )
+  }
+
+  /// Create a new instance of a ``ServerOTelTracingInterceptor``.
+  ///
+  /// - Parameters:
+  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
+  ///  `network.transport` attribute in spans.
+  ///  - traceEachMessage: If `true`, each response part sent and request part received will be recorded as a separate
+  ///  event in a tracing span.
+  ///  - includeRequestMetadata: if `true`, **all** metadata keys with string values included in the request will be added to the span as attributes.
+  ///  - includeResponseMetadata: if `true`, **all** metadata keys with string values included in the response will be added to the span as attributes.
+  ///
+  /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
+  /// as including all request/response metadata can be a security risk.
+  public init(
+    serverHostname: String,
+    networkTransportMethod: String,
+    traceEachMessage: Bool = true,
+    includeRequestMetadata: Bool = false,
+    includeResponseMetadata: Bool = false
+  ) {
     self.extractor = ServerRequestExtractor()
     self.traceEachMessage = traceEachMessage
     self.serverHostname = serverHostname
     self.networkTransportMethod = networkTransportMethod
+    self.includeRequestMetadata = includeRequestMetadata
+    self.includeResponseMetadata = includeResponseMetadata
   }
 
   /// This interceptor will extract whatever `ServiceContext` key-value pairs have been inserted into the
@@ -109,6 +143,10 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
           networkTransportMethod: self.networkTransportMethod
         )
 
+        if self.includeRequestMetadata {
+          span.setMetadataStringAttributesAsRequestSpanAttributes(request.metadata)
+        }
+
         var request = request
         if self.traceEachMessage {
           let messageReceivedCounter = Atomic(1)
@@ -127,6 +165,10 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
         }
 
         var response = try await next(request, context)
+
+        if self.includeResponseMetadata {
+          span.setMetadataStringAttributesAsResponseSpanAttributes(response.metadata)
+        }
 
         switch response.accepted {
         case .success(var success):
@@ -148,11 +190,15 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
                 }
               )
 
-              let wrappedResult = try await wrappedProducer(
+              let trailingMetadata = try await wrappedProducer(
                 RPCWriter(wrapping: eventEmittingWriter)
               )
 
-              return wrappedResult
+              if self.includeResponseMetadata {
+                span.setMetadataStringAttributesAsResponseSpanAttributes(trailingMetadata)
+              }
+
+              return trailingMetadata
             }
           }
 

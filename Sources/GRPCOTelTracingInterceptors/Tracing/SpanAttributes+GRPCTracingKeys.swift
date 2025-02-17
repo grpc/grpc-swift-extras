@@ -35,6 +35,9 @@ enum GRPCTracingKeys {
   static let networkType = "network.type"
   static let networkPeerAddress = "network.peer.address"
   static let networkPeerPort = "network.peer.port"
+
+  fileprivate static let requestMetadataPrefix = "rpc.grpc.request.metadata."
+  fileprivate static let responseMetadataPrefix = "rpc.grpc.response.metadata."
 }
 
 extension Span {
@@ -122,6 +125,48 @@ extension Span {
     case .none:
       // We don't recognise this address format, so don't populate any fields.
       ()
+    }
+  }
+
+  func setMetadataStringAttributesAsRequestSpanAttributes(_ metadata: Metadata) {
+    self.setMetadataStringAttributesAsSpanAttributes(
+      metadata,
+      prefix: GRPCTracingKeys.requestMetadataPrefix
+    )
+  }
+
+  func setMetadataStringAttributesAsResponseSpanAttributes(_ metadata: Metadata) {
+    self.setMetadataStringAttributesAsSpanAttributes(
+      metadata,
+      prefix: GRPCTracingKeys.responseMetadataPrefix
+    )
+  }
+
+  private func setMetadataStringAttributesAsSpanAttributes(_ metadata: Metadata, prefix: String) {
+    for (key, value) in metadata {
+      switch value {
+      case .string(let stringValue):
+        let spanKey = prefix + key.lowercased()
+
+        if let existingValue = self.attributes[spanKey]?.toSpanAttribute() {
+          switch existingValue {
+          case .stringArray(var strings):
+            strings.append(stringValue)
+            self.attributes[spanKey] = strings
+
+          case .string(let oldString):
+            self.attributes[spanKey] = [oldString, stringValue]
+
+          default:
+            ()
+          }
+        } else {
+          self.attributes[spanKey] = stringValue
+        }
+
+      case .binary:
+        ()
+      }
     }
   }
 }
