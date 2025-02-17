@@ -158,7 +158,7 @@ extension Span {
             self.attributes[spanKey] = [oldString, stringValue]
 
           default:
-            fatalError("This should never happen: only strings should be iterated here.")
+            ()
           }
         } else {
           self.attributes[spanKey] = stringValue

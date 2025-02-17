@@ -45,6 +45,31 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
   ///  `network.transport` attribute in spans.
   ///  - traceEachMessage: If `true`, each response part sent and request part received will be recorded as a separate
   ///  event in a tracing span.
+  ///
+  /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
+  /// as including all request/response metadata can be a security risk.
+  public init(
+    serverHostname: String,
+    networkTransportMethod: String,
+    traceEachMessage: Bool = true
+  ) {
+    self.init(
+      serverHostname: serverHostname,
+      networkTransportMethod: networkTransportMethod,
+      traceEachMessage: traceEachMessage,
+      includeRequestMetadata: false,
+      includeResponseMetadata: false
+    )
+  }
+
+  /// Create a new instance of a ``ServerOTelTracingInterceptor``.
+  ///
+  /// - Parameters:
+  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
+  ///  `network.transport` attribute in spans.
+  ///  - traceEachMessage: If `true`, each response part sent and request part received will be recorded as a separate
+  ///  event in a tracing span.
   ///  - includeRequestMetadata: if `true`, **all** metadata keys with string values included in the request will be added to the span as attributes.
   ///  - includeResponseMetadata: if `true`, **all** metadata keys with string values included in the response will be added to the span as attributes.
   ///
