@@ -707,13 +707,13 @@ struct CustomMetadata: InteroperabilityTest {
   let trailingMetadataValue: [UInt8] = [0xAB, 0xAB, 0xAB]
 
   func checkInitialMetadata(_ metadata: Metadata) throws {
-    let values = metadata[self.initialMetadataName]
-    try assertEqual(Array(values), [.string(self.initialMetadataValue)])
+    let values = metadata[stringValues: self.initialMetadataName]
+    try assertEqual(Array(values), [self.initialMetadataValue])
   }
 
   func checkTrailingMetadata(_ metadata: Metadata) throws {
-    let values = metadata[self.trailingMetadataName]
-    try assertEqual(Array(values), [.binary(self.trailingMetadataValue)])
+    let values = metadata[binaryValues: self.trailingMetadataName]
+    try assertEqual(Array(values), [self.trailingMetadataValue])
   }
 
   func run<Transport: ClientTransport>(client: GRPCClient<Transport>) async throws {
