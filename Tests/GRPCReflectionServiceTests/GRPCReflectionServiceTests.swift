@@ -23,6 +23,7 @@ import Testing
 
 @Suite("gRPC Reflection Service Tests")
 struct GRPCReflectionServiceTests {
+  @available(gRPCSwiftExtras 1.0, *)
   func withReflectionClient(
     descriptorSetPaths: [String] = Bundle.module.pathsForDescriptorSets,
     execute body: (ReflectionClient) async throws -> Void
@@ -39,6 +40,7 @@ struct GRPCReflectionServiceTests {
   }
 
   @Test("List services")
+  @available(gRPCSwiftExtras 1.0, *)
   func listServices() async throws {
     try await self.withReflectionClient { reflection in
       let services = try await reflection.listServices()
@@ -57,6 +59,7 @@ struct GRPCReflectionServiceTests {
       "grpc/health/v1/health.proto",
     ]
   )
+  @available(gRPCSwiftExtras 1.0, *)
   func fileByFileName(fileName: String) async throws {
     try await self.withReflectionClient { reflection in
       let descriptors = try await reflection.fileByFileName(fileName)
@@ -66,6 +69,7 @@ struct GRPCReflectionServiceTests {
   }
 
   @Test("File by file name (doesn't exist)")
+  @available(gRPCSwiftExtras 1.0, *)
   func testFileByNonExistentFileName() async throws {
     try await self.withReflectionClient { reflection in
       await #expect {
@@ -89,6 +93,7 @@ struct GRPCReflectionServiceTests {
       ("grpc/reflection/v1/reflection.proto", "grpc.reflection.v1.ErrorResponse"),
     ] as [(String, String)]
   )
+  @available(gRPCSwiftExtras 1.0, *)
   func fileContainingSymbol(fileName: String, symbol: String) async throws {
     try await self.withReflectionClient { reflection in
       let descriptors = try await reflection.fileContainingSymbol(symbol)
@@ -98,6 +103,7 @@ struct GRPCReflectionServiceTests {
   }
 
   @Test("File containing symbol includes dependencies")
+  @available(gRPCSwiftExtras 1.0, *)
   func fileContainingSymbolWithDependency() async throws {
     try await self.withReflectionClient { reflection in
       let descriptors = try await reflection.fileContainingSymbol(".MessageWithDependency")
@@ -107,6 +113,7 @@ struct GRPCReflectionServiceTests {
   }
 
   @Test("File containing symbol (doesn't exist)")
+  @available(gRPCSwiftExtras 1.0, *)
   func testFileContainingNonExistentSymbol() async throws {
     try await self.withReflectionClient { reflection in
       await #expect {
@@ -121,6 +128,7 @@ struct GRPCReflectionServiceTests {
   }
 
   @Test("File containing extension")
+  @available(gRPCSwiftExtras 1.0, *)
   func testFileContainingExtension() async throws {
     try await self.withReflectionClient { reflection in
       let descriptors = try await reflection.fileContainingExtension(number: 100, in: "BaseMessage")
@@ -130,6 +138,7 @@ struct GRPCReflectionServiceTests {
   }
 
   @Test("File containing extension (doesn't exist)")
+  @available(gRPCSwiftExtras 1.0, *)
   func testFileContainingNonExistentExtension() async throws {
     try await self.withReflectionClient { reflection in
       await #expect {

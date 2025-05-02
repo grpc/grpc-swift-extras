@@ -18,6 +18,7 @@
 ///
 /// - ``ServingStatus/serving`` indicates that a service is healthy.
 /// - ``ServingStatus/notServing`` indicates that a service is unhealthy.
+@available(gRPCSwiftExtras 1.0, *)
 public struct ServingStatus: Sendable, Hashable {
   internal enum Value: Sendable, Hashable {
     case serving

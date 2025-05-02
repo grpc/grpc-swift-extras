@@ -47,7 +47,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/grpc/grpc-swift-protobuf.git",
-    from: "1.0.0"
+    from: "1.3.0"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
@@ -59,16 +59,32 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/swift-server/swift-service-lifecycle.git",
-    from: "2.6.3"
+    from: "2.8.0"
   ),
 ]
 
-let defaultSwiftSettings: [SwiftSetting] = [
-  .swiftLanguageMode(.v6),
-  .enableUpcomingFeature("ExistentialAny"),
-  .enableUpcomingFeature("InternalImportsByDefault"),
-  .enableUpcomingFeature("MemberImportVisibility"),
-]
+// -------------------------------------------------------------------------------------------------
+
+// This adds some build settings which allow us to map "@available(gRPCSwiftExtras 1.x, *)" to
+// the appropriate OS platforms.
+let nextMinorVersion = 1
+let availabilitySettings: [SwiftSetting] = (0 ... nextMinorVersion).map { minor in
+  let name = "gRPCSwiftExtras"
+  let version = "1.\(minor)"
+  let platforms = "macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"
+  let setting = "AvailabilityMacro=\(name) \(version):\(platforms)"
+  return .enableExperimentalFeature(setting)
+}
+
+let defaultSwiftSettings: [SwiftSetting] =
+  availabilitySettings + [
+    .swiftLanguageMode(.v6),
+    .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("InternalImportsByDefault"),
+    .enableUpcomingFeature("MemberImportVisibility"),
+  ]
+
+// -------------------------------------------------------------------------------------------------
 
 let targets: [Target] = [
   // An implementation of the gRPC Health service.
@@ -177,13 +193,6 @@ let targets: [Target] = [
 
 let package = Package(
   name: "grpc-swift-extras",
-  platforms: [
-    .macOS(.v15),
-    .iOS(.v18),
-    .tvOS(.v18),
-    .watchOS(.v11),
-    .visionOS(.v2),
-  ],
   products: products,
   dependencies: dependencies,
   targets: targets

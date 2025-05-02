@@ -23,6 +23,7 @@ import Testing
 @Suite("gRPC ServiceLifecycle/Service conformance tests")
 struct ServiceLifecycleConformanceTests {
   @Test("Client respects graceful shutdown")
+  @available(gRPCSwiftExtras 1.0, *)
   func clientGracefulShutdown() async throws {
     let inProcess = InProcessTransport()
     try await testGracefulShutdown { trigger in
@@ -41,6 +42,7 @@ struct ServiceLifecycleConformanceTests {
   }
 
   @Test("Server respects graceful shutdown")
+  @available(gRPCSwiftExtras 1.0, *)
   func serverGracefulShutdown() async throws {
     let inProcess = InProcessTransport()
     try await testGracefulShutdown { trigger in

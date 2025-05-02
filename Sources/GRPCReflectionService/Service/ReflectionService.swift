@@ -33,6 +33,7 @@ public import struct Foundation.Data
 ///
 /// The service will offer information to clients about any registered services. You can register
 /// a service by providing its descriptor set to the service.
+@available(gRPCSwiftExtras 1.0, *)
 public struct ReflectionService: Sendable {
   private let service: ReflectionService.V1
 
@@ -67,6 +68,7 @@ public struct ReflectionService: Sendable {
   }
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 extension ReflectionService: RegistrableRPCService {
   public func registerMethods<Transport>(
     with router: inout RPCRouter<Transport>
@@ -75,6 +77,7 @@ extension ReflectionService: RegistrableRPCService {
   }
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 extension ReflectionService {
   static func readSerializedFileDescriptorProto(
     atPath path: String

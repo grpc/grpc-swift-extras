@@ -15,6 +15,7 @@
  */
 public import GRPCCore
 
+@available(gRPCSwiftExtras 1.0, *)
 public protocol InteroperabilityTest {
   /// Run a test case using the given connection.
   ///
@@ -47,6 +48,7 @@ public protocol InteroperabilityTest {
 /// Note: Tests for compression have not been implemented yet as compression is
 /// not supported. Once the API which allows for compression will be implemented
 /// these tests should be added.
+@available(gRPCSwiftExtras 1.0, *)
 public enum InteroperabilityTestCase: String, CaseIterable, Sendable {
   case emptyUnary = "empty_unary"
   case largeUnary = "large_unary"
@@ -68,6 +70,7 @@ public enum InteroperabilityTestCase: String, CaseIterable, Sendable {
   }
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 extension InteroperabilityTestCase {
   /// Return a new instance of the test case.
   public func makeTest() -> any InteroperabilityTest {

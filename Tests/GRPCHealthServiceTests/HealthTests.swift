@@ -20,6 +20,7 @@ import GRPCInProcessTransport
 import SwiftProtobuf
 import XCTest
 
+@available(gRPCSwiftExtras 1.0, *)
 final class HealthTests: XCTestCase {
   private func withHealthClient(
     _ body: @Sendable (
@@ -286,6 +287,7 @@ final class HealthTests: XCTestCase {
   }
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 extension ServiceDescriptor {
   fileprivate static let testService = ServiceDescriptor(package: "test", service: "Service")
 }
