@@ -174,17 +174,18 @@ class ClientCompressedUnary: InteroperabilityTest {
     }
 
     // With compression expected and enabled.
-    options.compression = .gzip
-
-    try await testServiceClient.unaryCall(
-      request: ClientRequest(message: compressedRequest),
-      options: options
-    ) { response in
-      switch response.accepted {
-      case .success(let success):
-        try assertEqual(success.message.get().payload.body, Data(repeating: 0, count: 314_159))
-      case .failure:
-        throw AssertionFailure(message: "Response should have been accepted.")
+    for algorithm in [CompressionAlgorithm.gzip, .deflate] {
+      options.compression = algorithm
+      try await testServiceClient.unaryCall(
+        request: ClientRequest(message: compressedRequest),
+        options: options
+      ) { response in
+        switch response.accepted {
+        case .success(let success):
+          try assertEqual(success.message.get().payload.body, Data(repeating: 0, count: 314_159))
+        case .failure:
+          throw AssertionFailure(message: "Response should have been accepted.")
+        }
       }
     }
 
@@ -266,7 +267,7 @@ class ServerCompressedUnary: InteroperabilityTest {
       request: ClientRequest(message: compressedRequest)
     ) { response in
       // We can't verify that the compression bit was set, instead we verify that the encoding header
-      // was sent by the server. This isn't quite the same since as it can still be set but the
+      // was sent by the server. This isn't quite the same as it can still be set but the
       // compression may _not_ be set.
       try assertTrue(response.metadata["grpc-encoding"].contains { $0 != "identity" })
 
