@@ -28,6 +28,7 @@ internal import GRPCProtobuf
 // MARK: - grpc.testing.EmptyService
 
 /// Namespace containing generated types for the "grpc.testing.EmptyService" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 public enum Grpc_Testing_EmptyService {
     /// Service descriptor for the "grpc.testing.EmptyService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.EmptyService")
@@ -38,6 +39,7 @@ public enum Grpc_Testing_EmptyService {
     }
 }
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "grpc.testing.EmptyService" service.
     public static let grpc_testing_EmptyService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.EmptyService")
@@ -45,6 +47,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: grpc.testing.EmptyService (server)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService {
     /// Streaming variant of the service protocol for the "grpc.testing.EmptyService" service.
     ///
@@ -91,20 +94,24 @@ extension Grpc_Testing_EmptyService {
 }
 
 // Default implementation of 'registerMethods(with:)'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService.StreamingServiceProtocol {
     public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {}
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService.SimpleServiceProtocol {
 }
 
 // MARK: grpc.testing.EmptyService (client)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService {
     /// Generated client protocol for the "grpc.testing.EmptyService" service.
     ///
@@ -141,9 +148,11 @@ extension Grpc_Testing_EmptyService {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_EmptyService.ClientProtocol {
 }

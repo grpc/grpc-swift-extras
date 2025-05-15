@@ -31,6 +31,7 @@ internal import GRPCProtobuf
 // MARK: - grpc.testing.TestService
 
 /// Namespace containing generated types for the "grpc.testing.TestService" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 public enum Grpc_Testing_TestService {
     /// Service descriptor for the "grpc.testing.TestService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService")
@@ -146,6 +147,7 @@ public enum Grpc_Testing_TestService {
     }
 }
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "grpc.testing.TestService" service.
     public static let grpc_testing_TestService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService")
@@ -153,6 +155,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: grpc.testing.TestService (server)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_TestService {
     /// Streaming variant of the service protocol for the "grpc.testing.TestService" service.
     ///
@@ -664,6 +667,7 @@ extension Grpc_Testing_TestService {
 }
 
 // Default implementation of 'registerMethods(with:)'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_TestService.StreamingServiceProtocol {
     public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
@@ -758,6 +762,7 @@ extension Grpc_Testing_TestService.StreamingServiceProtocol {
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_TestService.ServiceProtocol {
     public func emptyCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
@@ -827,6 +832,7 @@ extension Grpc_Testing_TestService.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_TestService.SimpleServiceProtocol {
     public func emptyCall(
         request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
@@ -947,6 +953,7 @@ extension Grpc_Testing_TestService.SimpleServiceProtocol {
 
 // MARK: grpc.testing.TestService (client)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_TestService {
     /// Generated client protocol for the "grpc.testing.TestService" service.
     ///
@@ -1453,6 +1460,7 @@ extension Grpc_Testing_TestService {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_TestService.ClientProtocol {
     /// Call the "EmptyCall" method.
     ///
@@ -1692,6 +1700,7 @@ extension Grpc_Testing_TestService.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_TestService.ClientProtocol {
     /// Call the "EmptyCall" method.
     ///
@@ -1968,6 +1977,7 @@ extension Grpc_Testing_TestService.ClientProtocol {
 // MARK: - grpc.testing.UnimplementedService
 
 /// Namespace containing generated types for the "grpc.testing.UnimplementedService" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 public enum Grpc_Testing_UnimplementedService {
     /// Service descriptor for the "grpc.testing.UnimplementedService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.UnimplementedService")
@@ -1992,6 +2002,7 @@ public enum Grpc_Testing_UnimplementedService {
     }
 }
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "grpc.testing.UnimplementedService" service.
     public static let grpc_testing_UnimplementedService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.UnimplementedService")
@@ -1999,6 +2010,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: grpc.testing.UnimplementedService (server)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_UnimplementedService {
     /// Streaming variant of the service protocol for the "grpc.testing.UnimplementedService" service.
     ///
@@ -2099,6 +2111,7 @@ extension Grpc_Testing_UnimplementedService {
 }
 
 // Default implementation of 'registerMethods(with:)'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
     public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
@@ -2116,6 +2129,7 @@ extension Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_UnimplementedService.ServiceProtocol {
     public func unimplementedCall(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_Empty>,
@@ -2130,6 +2144,7 @@ extension Grpc_Testing_UnimplementedService.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_UnimplementedService.SimpleServiceProtocol {
     public func unimplementedCall(
         request: GRPCCore.ServerRequest<Grpc_Testing_Empty>,
@@ -2147,6 +2162,7 @@ extension Grpc_Testing_UnimplementedService.SimpleServiceProtocol {
 
 // MARK: grpc.testing.UnimplementedService (client)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_UnimplementedService {
     /// Generated client protocol for the "grpc.testing.UnimplementedService" service.
     ///
@@ -2240,6 +2256,7 @@ extension Grpc_Testing_UnimplementedService {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_UnimplementedService.ClientProtocol {
     /// Call the "UnimplementedCall" method.
     ///
@@ -2272,6 +2289,7 @@ extension Grpc_Testing_UnimplementedService.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_UnimplementedService.ClientProtocol {
     /// Call the "UnimplementedCall" method.
     ///
@@ -2310,6 +2328,7 @@ extension Grpc_Testing_UnimplementedService.ClientProtocol {
 // MARK: - grpc.testing.ReconnectService
 
 /// Namespace containing generated types for the "grpc.testing.ReconnectService" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 public enum Grpc_Testing_ReconnectService {
     /// Service descriptor for the "grpc.testing.ReconnectService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService")
@@ -2347,6 +2366,7 @@ public enum Grpc_Testing_ReconnectService {
     }
 }
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "grpc.testing.ReconnectService" service.
     public static let grpc_testing_ReconnectService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService")
@@ -2354,6 +2374,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: grpc.testing.ReconnectService (server)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_ReconnectService {
     /// Streaming variant of the service protocol for the "grpc.testing.ReconnectService" service.
     ///
@@ -2481,6 +2502,7 @@ extension Grpc_Testing_ReconnectService {
 }
 
 // Default implementation of 'registerMethods(with:)'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_ReconnectService.StreamingServiceProtocol {
     public func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
@@ -2509,6 +2531,7 @@ extension Grpc_Testing_ReconnectService.StreamingServiceProtocol {
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_ReconnectService.ServiceProtocol {
     public func start(
         request: GRPCCore.StreamingServerRequest<Grpc_Testing_ReconnectParams>,
@@ -2534,6 +2557,7 @@ extension Grpc_Testing_ReconnectService.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_ReconnectService.SimpleServiceProtocol {
     public func start(
         request: GRPCCore.ServerRequest<Grpc_Testing_ReconnectParams>,
@@ -2564,6 +2588,7 @@ extension Grpc_Testing_ReconnectService.SimpleServiceProtocol {
 
 // MARK: grpc.testing.ReconnectService (client)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_ReconnectService {
     /// Generated client protocol for the "grpc.testing.ReconnectService" service.
     ///
@@ -2696,6 +2721,7 @@ extension Grpc_Testing_ReconnectService {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_ReconnectService.ClientProtocol {
     /// Call the "Start" method.
     ///
@@ -2749,6 +2775,7 @@ extension Grpc_Testing_ReconnectService.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Testing_ReconnectService.ClientProtocol {
     /// Call the "Start" method.
     ///
