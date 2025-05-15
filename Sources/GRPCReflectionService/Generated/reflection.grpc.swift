@@ -35,6 +35,7 @@ internal import GRPCProtobuf
 // MARK: - grpc.reflection.v1.ServerReflection
 
 /// Namespace containing generated types for the "grpc.reflection.v1.ServerReflection" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 package enum Grpc_Reflection_V1_ServerReflection {
     /// Service descriptor for the "grpc.reflection.v1.ServerReflection" service.
     package static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.reflection.v1.ServerReflection")
@@ -59,6 +60,7 @@ package enum Grpc_Reflection_V1_ServerReflection {
     }
 }
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "grpc.reflection.v1.ServerReflection" service.
     package static let grpc_reflection_v1_ServerReflection = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.reflection.v1.ServerReflection")
@@ -66,6 +68,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: grpc.reflection.v1.ServerReflection (server)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Reflection_V1_ServerReflection {
     /// Streaming variant of the service protocol for the "grpc.reflection.v1.ServerReflection" service.
     ///
@@ -155,6 +158,7 @@ extension Grpc_Reflection_V1_ServerReflection {
 }
 
 // Default implementation of 'registerMethods(with:)'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Reflection_V1_ServerReflection.StreamingServiceProtocol {
     package func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
@@ -172,10 +176,12 @@ extension Grpc_Reflection_V1_ServerReflection.StreamingServiceProtocol {
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Reflection_V1_ServerReflection.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Reflection_V1_ServerReflection.SimpleServiceProtocol {
     package func serverReflectionInfo(
         request: GRPCCore.StreamingServerRequest<Grpc_Reflection_V1_ServerReflectionRequest>,
@@ -197,6 +203,7 @@ extension Grpc_Reflection_V1_ServerReflection.SimpleServiceProtocol {
 
 // MARK: grpc.reflection.v1.ServerReflection (client)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Reflection_V1_ServerReflection {
     /// Generated client protocol for the "grpc.reflection.v1.ServerReflection" service.
     ///
@@ -280,6 +287,7 @@ extension Grpc_Reflection_V1_ServerReflection {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Reflection_V1_ServerReflection.ClientProtocol {
     /// Call the "ServerReflectionInfo" method.
     ///
@@ -311,6 +319,7 @@ extension Grpc_Reflection_V1_ServerReflection.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Reflection_V1_ServerReflection.ClientProtocol {
     /// Call the "ServerReflectionInfo" method.
     ///

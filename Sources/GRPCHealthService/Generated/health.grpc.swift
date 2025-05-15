@@ -31,6 +31,7 @@ internal import GRPCProtobuf
 // MARK: - grpc.health.v1.Health
 
 /// Namespace containing generated types for the "grpc.health.v1.Health" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 package enum Grpc_Health_V1_Health {
     /// Service descriptor for the "grpc.health.v1.Health" service.
     package static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.health.v1.Health")
@@ -68,6 +69,7 @@ package enum Grpc_Health_V1_Health {
     }
 }
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "grpc.health.v1.Health" service.
     package static let grpc_health_v1_Health = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.health.v1.Health")
@@ -75,6 +77,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: grpc.health.v1.Health (server)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Health_V1_Health {
     /// Streaming variant of the service protocol for the "grpc.health.v1.Health" service.
     ///
@@ -299,6 +302,7 @@ extension Grpc_Health_V1_Health {
 }
 
 // Default implementation of 'registerMethods(with:)'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Health_V1_Health.StreamingServiceProtocol {
     package func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
@@ -327,6 +331,7 @@ extension Grpc_Health_V1_Health.StreamingServiceProtocol {
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Health_V1_Health.ServiceProtocol {
     package func check(
         request: GRPCCore.StreamingServerRequest<Grpc_Health_V1_HealthCheckRequest>,
@@ -352,6 +357,7 @@ extension Grpc_Health_V1_Health.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Health_V1_Health.SimpleServiceProtocol {
     package func check(
         request: GRPCCore.ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
@@ -386,6 +392,7 @@ extension Grpc_Health_V1_Health.SimpleServiceProtocol {
 
 // MARK: grpc.health.v1.Health (client)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Health_V1_Health {
     /// Generated client protocol for the "grpc.health.v1.Health" service.
     ///
@@ -580,6 +587,7 @@ extension Grpc_Health_V1_Health {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Health_V1_Health.ClientProtocol {
     /// Call the "Check" method.
     ///
@@ -661,6 +669,7 @@ extension Grpc_Health_V1_Health.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Grpc_Health_V1_Health.ClientProtocol {
     /// Call the "Check" method.
     ///
