@@ -16,6 +16,7 @@
 internal import GRPCCore
 internal import Tracing
 
+@available(gRPCSwiftExtras 1.0, *)
 struct HookedWriter<Element: Sendable>: RPCWriterProtocol {
   private let writer: any RPCWriterProtocol<Element>
   private let afterEachWrite: @Sendable () -> Void

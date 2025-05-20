@@ -17,12 +17,14 @@
 internal import GRPCCore
 private import Synchronization
 
+@available(gRPCSwiftExtras 1.0, *)
 extension HealthService {
   internal struct Service: Grpc_Health_V1_Health.ServiceProtocol {
     private let state = Self.State()
   }
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 extension HealthService.Service {
   func check(
     request: ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
@@ -69,6 +71,7 @@ extension HealthService.Service {
   }
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 extension HealthService.Service {
   private final class State: Sendable {
     // The state of each service keyed by the fully qualified service name.

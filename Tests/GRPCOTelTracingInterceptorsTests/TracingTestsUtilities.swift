@@ -18,6 +18,7 @@ import GRPCCore
 import Synchronization
 import Tracing
 
+@available(gRPCSwiftExtras 1.0, *)
 final class TestTracer: Tracer {
   typealias Span = TestSpan
 
@@ -71,6 +72,7 @@ final class TestTracer: Tracer {
   }
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 final class TestSpan: Span, Sendable {
   private struct State {
     var context: ServiceContextModule.ServiceContext

@@ -24,6 +24,7 @@ package import struct FoundationEssentials.Data
 package import struct Foundation.Data
 #endif
 
+@available(gRPCSwiftExtras 1.0, *)
 package struct ReflectionServiceRegistry: Sendable {
   private struct SerializedFileDescriptor: Sendable {
     var bytes: Data

@@ -40,6 +40,7 @@ enum GRPCTracingKeys {
   fileprivate static let responseMetadataPrefix = "rpc.grpc.response.metadata."
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 extension Span {
   // See: https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans/
   func setOTelClientSpanGRPCAttributes(

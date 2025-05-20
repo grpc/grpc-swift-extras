@@ -23,17 +23,13 @@ import struct Foundation.UUID
 
 @Suite("OTel Tracing Client Interceptor Tests")
 struct OTelTracingClientInterceptorTests {
-  private let tracer: TestTracer
-
-  init() {
-    self.tracer = TestTracer()
-  }
-
   @Test(
     "Successful RPC is recorded correctly",
     arguments: OTelTracingInterceptorTestAddressType.allCases
   )
+  @available(gRPCSwiftExtras 1.0, *)
   func testSuccessfulRPC(addressType: OTelTracingInterceptorTestAddressType) async throws {
+    let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
     let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
@@ -57,7 +53,7 @@ struct OTelTracingClientInterceptorTests {
         methodDescriptor: methodDescriptor
       )
       let response = try await interceptor.intercept(
-        tracer: self.tracer,
+        tracer: tracer,
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
@@ -90,7 +86,7 @@ struct OTelTracingClientInterceptorTests {
       await assertStreamContentsEqual(["request1", "request2"], requestStream)
       try await assertStreamContentsEqual([["response"]], response.messages)
 
-      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         // No events are recorded
         #expect(events.isEmpty)
       } assertAttributes: { attributes in
@@ -104,7 +100,9 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("All events are recorded when traceEachMessage is true")
+  @available(gRPCSwiftExtras 1.0, *)
   func testAllEventsRecorded() async throws {
+    let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
 
@@ -126,7 +124,7 @@ struct OTelTracingClientInterceptorTests {
       )
       let testValues = self.getTestValues(addressType: .ipv4, methodDescriptor: methodDescriptor)
       let response = try await interceptor.intercept(
-        tracer: self.tracer,
+        tracer: tracer,
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request1"])
           try await writer.write(contentsOf: ["request2"])
@@ -159,7 +157,7 @@ struct OTelTracingClientInterceptorTests {
       await assertStreamContentsEqual(["request1", "request2"], requestStream)
       try await assertStreamContentsEqual([["response"]], response.messages)
 
-      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         #expect(
           events == [
             // Recorded when `request1` is sent
@@ -181,7 +179,9 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("All string-valued request metadata is included if opted-in")
+  @available(gRPCSwiftExtras 1.0, *)
   func testRequestMetadataOptIn() async throws {
+    let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
 
@@ -202,7 +202,7 @@ struct OTelTracingClientInterceptorTests {
         method: "testRequestMetadataOptIn"
       )
       let response = try await interceptor.intercept(
-        tracer: self.tracer,
+        tracer: tracer,
         request: .init(
           metadata: [
             "some-request-metadata": "some-request-value",
@@ -256,7 +256,7 @@ struct OTelTracingClientInterceptorTests {
       await assertStreamContentsEqual(["request1", "request2"], requestStream)
       try await assertStreamContentsEqual([["response"]], response.messages)
 
-      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         #expect(
           events == [
             // Recorded when `request1` is sent
@@ -295,7 +295,9 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("All string-valued response metadata is included if opted-in")
+  @available(gRPCSwiftExtras 1.0, *)
   func testResponseMetadataOptIn() async throws {
+    let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
 
@@ -316,7 +318,7 @@ struct OTelTracingClientInterceptorTests {
         method: "testResponseMetadataOptIn"
       )
       let response = try await interceptor.intercept(
-        tracer: self.tracer,
+        tracer: tracer,
         request: .init(
           metadata: [
             "some-request-metadata": "some-request-value",
@@ -370,7 +372,7 @@ struct OTelTracingClientInterceptorTests {
       await assertStreamContentsEqual(["request1", "request2"], requestStream)
       try await assertStreamContentsEqual([["response"]], response.messages)
 
-      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         #expect(
           events == [
             // Recorded when `request1` is sent
@@ -409,7 +411,9 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("RPC that throws is correctly recorded")
+  @available(gRPCSwiftExtras 1.0, *)
   func testThrowingRPC() async throws {
+    let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
     serviceContext.traceID = traceIDString
@@ -429,7 +433,7 @@ struct OTelTracingClientInterceptorTests {
       )
       do {
         let _: StreamingClientResponse<Void> = try await interceptor.intercept(
-          tracer: self.tracer,
+          tracer: tracer,
           request: StreamingClientRequest(of: Void.self, producer: { writer in }),
           context: ClientContext(
             descriptor: methodDescriptor,
@@ -444,7 +448,7 @@ struct OTelTracingClientInterceptorTests {
         }
         Issue.record("Should have thrown")
       } catch {
-        assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+        assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
           // No events are recorded
           #expect(events.isEmpty)
         } assertAttributes: { attributes in
@@ -472,7 +476,9 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("RPC with a failure response is correctly recorded")
+  @available(gRPCSwiftExtras 1.0, *)
   func testFailedRPC() async throws {
+    let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
     let (requestStream, requestStreamContinuation) = AsyncStream<String>.makeStream()
@@ -492,7 +498,7 @@ struct OTelTracingClientInterceptorTests {
         method: "testFailedRPC"
       )
       let response: StreamingClientResponse<Void> = try await interceptor.intercept(
-        tracer: self.tracer,
+        tracer: tracer,
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request"])
         }),
@@ -524,7 +530,7 @@ struct OTelTracingClientInterceptorTests {
         #expect(failure == RPCError(code: .unavailable, message: "This should not work"))
       }
 
-      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         // No events are recorded
         #expect(events.isEmpty)
       } assertAttributes: { attributes in
@@ -551,7 +557,9 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("Accepted server-streaming RPC that throws error during response is correctly recorded")
+  @available(gRPCSwiftExtras 1.0, *)
   func testAcceptedRPCWithError() async throws {
+    let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
     let traceIDString = UUID().uuidString
     serviceContext.traceID = traceIDString
@@ -570,7 +578,7 @@ struct OTelTracingClientInterceptorTests {
         method: "testAcceptedRPCWithError"
       )
       let response: StreamingClientResponse<String> = try await interceptor.intercept(
-        tracer: self.tracer,
+        tracer: tracer,
         request: .init(producer: { writer in
           try await writer.write(contentsOf: ["request"])
         }),
@@ -614,7 +622,7 @@ struct OTelTracingClientInterceptorTests {
         return
       }
 
-      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         // No events are recorded
         #expect(events.isEmpty)
       } assertAttributes: { attributes in
@@ -640,6 +648,7 @@ struct OTelTracingClientInterceptorTests {
     }
   }
 
+  @available(gRPCSwiftExtras 1.0, *)
   private func getTestValues(
     addressType: OTelTracingInterceptorTestAddressType,
     methodDescriptor: MethodDescriptor
@@ -701,17 +710,13 @@ struct OTelTracingClientInterceptorTests {
 
 @Suite("OTel Tracing Server Interceptor Tests")
 struct OTelTracingServerInterceptorTests {
-  private let tracer: TestTracer
-
-  init() {
-    self.tracer = TestTracer()
-  }
-
   @Test(
     "Successful RPC is recorded correctly",
     arguments: OTelTracingInterceptorTestAddressType.allCases
   )
+  @available(gRPCSwiftExtras 1.0, *)
   func testSuccessfulRPC(addressType: OTelTracingInterceptorTestAddressType) async throws {
+    let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
       fullyQualifiedService: "OTelTracingServerInterceptorTests",
       method: "testSuccessfulRPC"
@@ -729,7 +734,7 @@ struct OTelTracingServerInterceptorTests {
       methodDescriptor: methodDescriptor
     )
     let response = try await interceptor.intercept(
-      tracer: self.tracer,
+      tracer: tracer,
       request: .init(single: request),
       context: ServerContext(
         descriptor: methodDescriptor,
@@ -766,7 +771,7 @@ struct OTelTracingServerInterceptorTests {
     await assertStreamContentsEqual(["response1", "response2"], responseStream)
     #expect(trailingMetadata == ["Result": "Trailing metadata"])
 
-    assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+    assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
       #expect(events.isEmpty)
     } assertAttributes: { attributes in
       #expect(attributes == testValues.expectedSpanAttributes)
@@ -778,7 +783,9 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("All events are recorded when traceEachMessage is true")
+  @available(gRPCSwiftExtras 1.0, *)
   func testAllEventsRecorded() async throws {
+    let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
       fullyQualifiedService: "OTelTracingServerInterceptorTests",
       method: "testAllEventsRecorded"
@@ -792,7 +799,7 @@ struct OTelTracingServerInterceptorTests {
     let request = ServerRequest(metadata: ["trace-id": .string(traceIDString)], message: [UInt8]())
     let testValues = getTestValues(addressType: .ipv4, methodDescriptor: methodDescriptor)
     let response = try await interceptor.intercept(
-      tracer: self.tracer,
+      tracer: tracer,
       request: .init(single: request),
       context: ServerContext(
         descriptor: methodDescriptor,
@@ -833,7 +840,7 @@ struct OTelTracingServerInterceptorTests {
     #expect(trailingMetadata == ["Result": "Trailing metadata"])
     await assertStreamContentsEqual(["response1", "response2"], responseStream)
 
-    assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+    assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
       #expect(
         events == [
           // Recorded when request is received
@@ -854,7 +861,9 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("All string-valued request metadata is included if opted-in")
+  @available(gRPCSwiftExtras 1.0, *)
   func testRequestMetadataOptIn() async throws {
+    let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
       fullyQualifiedService: "OTelTracingServerInterceptorTests",
       method: "testRequestMetadataOptIn"
@@ -874,7 +883,7 @@ struct OTelTracingServerInterceptorTests {
       message: [UInt8]()
     )
     let response = try await interceptor.intercept(
-      tracer: self.tracer,
+      tracer: tracer,
       request: .init(single: request),
       context: ServerContext(
         descriptor: methodDescriptor,
@@ -923,7 +932,7 @@ struct OTelTracingServerInterceptorTests {
     )
     await assertStreamContentsEqual(["response1", "response2"], responseStream)
 
-    assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+    assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
       #expect(
         events == [
           // Recorded when request is received
@@ -962,7 +971,9 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("All string-valued response metadata is included if opted-in")
+  @available(gRPCSwiftExtras 1.0, *)
   func testResponseMetadataOptIn() async throws {
+    let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
       fullyQualifiedService: "OTelTracingServerInterceptorTests",
       method: "testResponseMetadataOptIn"
@@ -982,7 +993,7 @@ struct OTelTracingServerInterceptorTests {
       message: [UInt8]()
     )
     let response = try await interceptor.intercept(
-      tracer: self.tracer,
+      tracer: tracer,
       request: .init(single: request),
       context: ServerContext(
         descriptor: methodDescriptor,
@@ -1031,7 +1042,7 @@ struct OTelTracingServerInterceptorTests {
     )
     await assertStreamContentsEqual(["response1", "response2"], responseStream)
 
-    assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+    assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
       #expect(
         events == [
           // Recorded when request is received
@@ -1070,7 +1081,9 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("RPC that throws is correctly recorded")
+  @available(gRPCSwiftExtras 1.0, *)
   func testThrowingRPC() async throws {
+    let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
       fullyQualifiedService: "TracingInterceptorTests",
       method: "testServerInterceptorErrorEncountered"
@@ -1085,7 +1098,7 @@ struct OTelTracingServerInterceptorTests {
     let testValues = getTestValues(addressType: .ipv4, methodDescriptor: methodDescriptor)
     do {
       let _: StreamingServerResponse<String> = try await interceptor.intercept(
-        tracer: self.tracer,
+        tracer: tracer,
         request: .init(single: request),
         context: ServerContext(
           descriptor: methodDescriptor,
@@ -1101,7 +1114,7 @@ struct OTelTracingServerInterceptorTests {
       }
       Issue.record("Should have thrown")
     } catch {
-      assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+      assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         #expect(events.isEmpty)
       } assertAttributes: { attributes in
         // The attributes should not contain a grpc status code, as the request was never even sent.
@@ -1115,7 +1128,9 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("RPC with a failure response is correctly recorded")
+  @available(gRPCSwiftExtras 1.0, *)
   func testFailedRPC() async throws {
+    let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
       fullyQualifiedService: "TracingInterceptorTests",
       method: "testServerInterceptorErrorResponse"
@@ -1129,7 +1144,7 @@ struct OTelTracingServerInterceptorTests {
     let request = ServerRequest(metadata: ["trace-id": .string(traceIDString)], message: [UInt8]())
     let testValues = getTestValues(addressType: .ipv4, methodDescriptor: methodDescriptor)
     let response = try await interceptor.intercept(
-      tracer: self.tracer,
+      tracer: tracer,
       request: .init(single: request),
       context: ServerContext(
         descriptor: methodDescriptor,
@@ -1150,7 +1165,7 @@ struct OTelTracingServerInterceptorTests {
       try response.accepted.get()
     }
 
-    assertTestSpanComponents(forMethod: methodDescriptor, tracer: self.tracer) { events in
+    assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
       #expect(events.isEmpty)
     } assertAttributes: { attributes in
       #expect(
@@ -1176,6 +1191,7 @@ struct OTelTracingServerInterceptorTests {
     }
   }
 
+  @available(gRPCSwiftExtras 1.0, *)
   private func getTestValues(
     addressType: OTelTracingInterceptorTestAddressType,
     methodDescriptor: MethodDescriptor
@@ -1239,6 +1255,7 @@ struct OTelTracingServerInterceptorTests {
 
 // -  MARK: Utilities
 
+@available(gRPCSwiftExtras 1.0, *)
 private func getTestSpanForMethod(
   tracer: TestTracer,
   methodDescriptor: MethodDescriptor
@@ -1246,6 +1263,7 @@ private func getTestSpanForMethod(
   tracer.getSpan(ofOperation: methodDescriptor.fullyQualifiedMethod)!
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 private func assertTestSpanComponents(
   forMethod method: MethodDescriptor,
   tracer: TestTracer,
@@ -1261,6 +1279,7 @@ private func assertTestSpanComponents(
   assertErrors(span.errors)
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 private func assertStreamContentsEqual<T: Equatable>(
   _ array: [T],
   _ stream: any AsyncSequence<T, any Error>
@@ -1272,6 +1291,7 @@ private func assertStreamContentsEqual<T: Equatable>(
   #expect(streamElements == array)
 }
 
+@available(gRPCSwiftExtras 1.0, *)
 private func assertStreamContentsEqual<T: Equatable>(
   _ array: [T],
   _ stream: any AsyncSequence<T, Never>

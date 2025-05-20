@@ -28,6 +28,7 @@ package import Tracing
 /// OpenTelemetry's documentation on:
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
+@available(gRPCSwiftExtras 1.0, *)
 public struct ServerOTelTracingInterceptor: ServerInterceptor {
   private let extractor: ServerRequestExtractor
   private var serverHostname: String
@@ -217,6 +218,7 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
 }
 
 /// An extractor responsible for extracting the required instrumentation keys from request metadata.
+@available(gRPCSwiftExtras 1.0, *)
 struct ServerRequestExtractor: Instrumentation.Extractor {
   typealias Carrier = Metadata
 
