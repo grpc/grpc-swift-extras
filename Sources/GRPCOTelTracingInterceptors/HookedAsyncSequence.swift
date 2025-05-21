@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 internal struct HookedRPCAsyncSequence<Wrapped: AsyncSequence & Sendable>: AsyncSequence, Sendable
 where Wrapped.Element: Sendable {
   private let wrapped: Wrapped

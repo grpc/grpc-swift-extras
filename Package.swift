@@ -42,12 +42,12 @@ let products: [Product] = [
 
 let dependencies: [Package.Dependency] = [
   .package(
-    url: "https://github.com/grpc/grpc-swift.git",
-    from: "2.2.0"
+    url: "https://github.com/grpc/grpc-swift-2.git",
+    from: "2.0.0"
   ),
   .package(
     url: "https://github.com/grpc/grpc-swift-protobuf.git",
-    from: "1.3.0"
+    from: "2.0.0"
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
@@ -65,12 +65,12 @@ let dependencies: [Package.Dependency] = [
 
 // -------------------------------------------------------------------------------------------------
 
-// This adds some build settings which allow us to map "@available(gRPCSwiftExtras 1.x, *)" to
+// This adds some build settings which allow us to map "@available(gRPCSwiftExtras 2.x, *)" to
 // the appropriate OS platforms.
 let nextMinorVersion = 1
 let availabilitySettings: [SwiftSetting] = (0 ... nextMinorVersion).map { minor in
   let name = "gRPCSwiftExtras"
-  let version = "1.\(minor)"
+  let version = "2.\(minor)"
   let platforms = "macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"
   let setting = "AvailabilityMacro=\(name) \(version):\(platforms)"
   return .enableExperimentalFeature(setting)
@@ -91,7 +91,7 @@ let targets: [Target] = [
   .target(
     name: "GRPCHealthService",
     dependencies: [
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
     ],
@@ -101,8 +101,8 @@ let targets: [Target] = [
     name: "GRPCHealthServiceTests",
     dependencies: [
       .target(name: "GRPCHealthService"),
-      .product(name: "GRPCCore", package: "grpc-swift"),
-      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift-2"),
     ],
     swiftSettings: defaultSwiftSettings
   ),
@@ -111,7 +111,7 @@ let targets: [Target] = [
   .target(
     name: "GRPCReflectionService",
     dependencies: [
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
     ],
@@ -121,8 +121,8 @@ let targets: [Target] = [
     name: "GRPCReflectionServiceTests",
     dependencies: [
       .target(name: "GRPCReflectionService"),
-      .product(name: "GRPCCore", package: "grpc-swift"),
-      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift-2"),
       .product(name: "SwiftProtobuf", package: "swift-protobuf"),
     ],
     resources: [
@@ -135,7 +135,7 @@ let targets: [Target] = [
   .target(
     name: "GRPCOTelTracingInterceptors",
     dependencies: [
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
     ],
     swiftSettings: defaultSwiftSettings
@@ -144,7 +144,7 @@ let targets: [Target] = [
     name: "GRPCOTelTracingInterceptorsTests",
     dependencies: [
       .target(name: "GRPCOTelTracingInterceptors"),
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
     ],
     swiftSettings: defaultSwiftSettings
@@ -154,7 +154,7 @@ let targets: [Target] = [
   .target(
     name: "GRPCServiceLifecycle",
     dependencies: [
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
     ],
     swiftSettings: defaultSwiftSettings
@@ -163,9 +163,9 @@ let targets: [Target] = [
     name: "GRPCServiceLifecycleTests",
     dependencies: [
       .target(name: "GRPCServiceLifecycle"),
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "ServiceLifecycleTestKit", package: "swift-service-lifecycle"),
-      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift-2"),
     ],
     swiftSettings: defaultSwiftSettings
   ),
@@ -174,7 +174,7 @@ let targets: [Target] = [
   .target(
     name: "GRPCInteropTests",
     dependencies: [
-      .product(name: "GRPCCore", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
     ],
     swiftSettings: defaultSwiftSettings
@@ -184,8 +184,8 @@ let targets: [Target] = [
     name: "InProcessInteropTests",
     dependencies: [
       .target(name: "GRPCInteropTests"),
-      .product(name: "GRPCCore", package: "grpc-swift"),
-      .product(name: "GRPCInProcessTransport", package: "grpc-swift"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift-2"),
     ],
     swiftSettings: defaultSwiftSettings
   ),

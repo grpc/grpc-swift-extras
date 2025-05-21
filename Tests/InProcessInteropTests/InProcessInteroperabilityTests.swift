@@ -19,7 +19,7 @@ import GRPCInProcessTransport
 import GRPCInteropTests
 import XCTest
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 final class InProcessInteroperabilityTests: XCTestCase {
   func runInProcessTransport(
     interopTestCase: InteroperabilityTestCase

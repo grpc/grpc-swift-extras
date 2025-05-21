@@ -41,7 +41,7 @@ public import GRPCCore
 ///   // ...
 /// }
 /// ```
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 public struct HealthService: Sendable, RegistrableRPCService {
   /// An implementation of the `grpc.health.v1.Health` service.
   private let service: Service
@@ -63,7 +63,7 @@ public struct HealthService: Sendable, RegistrableRPCService {
   }
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 extension HealthService {
   /// Provides status updates to ``HealthService``.
   public struct Provider: Sendable {
@@ -107,7 +107,7 @@ extension HealthService {
   }
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 extension Grpc_Health_V1_HealthCheckResponse.ServingStatus {
   package init(_ status: ServingStatus) {
     switch status.value {

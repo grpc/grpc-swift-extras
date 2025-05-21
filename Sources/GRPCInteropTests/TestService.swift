@@ -23,7 +23,7 @@ private import struct FoundationEssentials.Data
 private import struct Foundation.Data
 #endif
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   public init() {}
 
@@ -234,7 +234,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   }
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 extension Metadata {
   fileprivate func makeInitialAndTrailingMetadata() -> (Metadata, Metadata) {
     var initialMetadata = Metadata()

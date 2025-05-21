@@ -27,7 +27,7 @@ struct OTelTracingClientInterceptorTests {
     "Successful RPC is recorded correctly",
     arguments: OTelTracingInterceptorTestAddressType.allCases
   )
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testSuccessfulRPC(addressType: OTelTracingInterceptorTestAddressType) async throws {
     let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
@@ -100,7 +100,7 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("All events are recorded when traceEachMessage is true")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testAllEventsRecorded() async throws {
     let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
@@ -179,7 +179,7 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("All string-valued request metadata is included if opted-in")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testRequestMetadataOptIn() async throws {
     let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
@@ -295,7 +295,7 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("All string-valued response metadata is included if opted-in")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testResponseMetadataOptIn() async throws {
     let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
@@ -411,7 +411,7 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("RPC that throws is correctly recorded")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testThrowingRPC() async throws {
     let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
@@ -476,7 +476,7 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("RPC with a failure response is correctly recorded")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testFailedRPC() async throws {
     let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
@@ -557,7 +557,7 @@ struct OTelTracingClientInterceptorTests {
   }
 
   @Test("Accepted server-streaming RPC that throws error during response is correctly recorded")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testAcceptedRPCWithError() async throws {
     let tracer = TestTracer()
     var serviceContext = ServiceContext.topLevel
@@ -648,7 +648,7 @@ struct OTelTracingClientInterceptorTests {
     }
   }
 
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   private func getTestValues(
     addressType: OTelTracingInterceptorTestAddressType,
     methodDescriptor: MethodDescriptor
@@ -714,7 +714,7 @@ struct OTelTracingServerInterceptorTests {
     "Successful RPC is recorded correctly",
     arguments: OTelTracingInterceptorTestAddressType.allCases
   )
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testSuccessfulRPC(addressType: OTelTracingInterceptorTestAddressType) async throws {
     let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
@@ -783,7 +783,7 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("All events are recorded when traceEachMessage is true")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testAllEventsRecorded() async throws {
     let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
@@ -861,7 +861,7 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("All string-valued request metadata is included if opted-in")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testRequestMetadataOptIn() async throws {
     let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
@@ -971,7 +971,7 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("All string-valued response metadata is included if opted-in")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testResponseMetadataOptIn() async throws {
     let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
@@ -1081,7 +1081,7 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("RPC that throws is correctly recorded")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testThrowingRPC() async throws {
     let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
@@ -1128,7 +1128,7 @@ struct OTelTracingServerInterceptorTests {
   }
 
   @Test("RPC with a failure response is correctly recorded")
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   func testFailedRPC() async throws {
     let tracer = TestTracer()
     let methodDescriptor = MethodDescriptor(
@@ -1191,7 +1191,7 @@ struct OTelTracingServerInterceptorTests {
     }
   }
 
-  @available(gRPCSwiftExtras 1.0, *)
+  @available(gRPCSwiftExtras 2.0, *)
   private func getTestValues(
     addressType: OTelTracingInterceptorTestAddressType,
     methodDescriptor: MethodDescriptor
@@ -1255,7 +1255,7 @@ struct OTelTracingServerInterceptorTests {
 
 // -  MARK: Utilities
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 private func getTestSpanForMethod(
   tracer: TestTracer,
   methodDescriptor: MethodDescriptor
@@ -1263,7 +1263,7 @@ private func getTestSpanForMethod(
   tracer.getSpan(ofOperation: methodDescriptor.fullyQualifiedMethod)!
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 private func assertTestSpanComponents(
   forMethod method: MethodDescriptor,
   tracer: TestTracer,
@@ -1279,7 +1279,7 @@ private func assertTestSpanComponents(
   assertErrors(span.errors)
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 private func assertStreamContentsEqual<T: Equatable>(
   _ array: [T],
   _ stream: any AsyncSequence<T, any Error>
@@ -1291,7 +1291,7 @@ private func assertStreamContentsEqual<T: Equatable>(
   #expect(streamElements == array)
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 private func assertStreamContentsEqual<T: Equatable>(
   _ array: [T],
   _ stream: any AsyncSequence<T, Never>

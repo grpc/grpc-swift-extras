@@ -17,7 +17,7 @@
 /// Failure assertion for interoperability testing.
 ///
 /// This is required because the tests must be able to run without XCTest.
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 public struct AssertionFailure: Error {
   public var message: String
   public var file: String
@@ -31,7 +31,7 @@ public struct AssertionFailure: Error {
 }
 
 /// Asserts that the value of an expression is `true`.
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 public func assertTrue(
   _ expression: @autoclosure () throws -> Bool,
   _ message: String = "The statement is not true.",
@@ -44,7 +44,7 @@ public func assertTrue(
 }
 
 /// Asserts that the two given values are equal.
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 public func assertEqual<T: Equatable>(
   _ value1: T,
   _ value2: T,
