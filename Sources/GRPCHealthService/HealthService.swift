@@ -42,6 +42,7 @@ public import GRPCCore
 /// }
 /// ```
 @available(gRPCSwiftExtras 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public struct HealthService: Sendable, RegistrableRPCService {
   /// An implementation of the `grpc.health.v1.Health` service.
   private let service: Service

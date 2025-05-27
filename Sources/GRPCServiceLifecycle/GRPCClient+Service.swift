@@ -20,6 +20,7 @@ public import ServiceLifecycle
 // A `@retroactive` conformance here is okay because this project is also owned by the owners of
 // `GRPCCore`, and thus, the owners of `GRPCClient`. A conflicting conformance won't be added.
 @available(gRPCSwiftExtras 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 extension GRPCClient: @retroactive Service {
   public func run() async throws {
     try await withGracefulShutdownHandler {
