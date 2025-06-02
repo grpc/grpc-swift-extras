@@ -29,7 +29,7 @@ package import Tracing
 /// OpenTelemetry's documentation on:
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 public struct ClientOTelTracingInterceptor: ClientInterceptor {
   private let injector: ClientRequestInjector
   private var serverHostname: String
@@ -242,7 +242,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
 
 /// An injector responsible for injecting the required instrumentation keys from the `ServiceContext` into
 /// the request metadata.
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 struct ClientRequestInjector: Instrumentation.Injector {
   typealias Carrier = Metadata
 
@@ -251,7 +251,7 @@ struct ClientRequestInjector: Instrumentation.Injector {
   }
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 extension Error {
   var grpcErrorCode: RPCError.Code? {
     if let rpcError = self as? RPCError {

@@ -19,7 +19,7 @@ import GRPCInProcessTransport
 import GRPCReflectionService
 import SwiftProtobuf
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 struct ReflectionClient: Sendable {
   private typealias Request = Grpc_Reflection_V1_ServerReflectionRequest
   private let stub: Grpc_Reflection_V1_ServerReflection.Client<InProcessTransport.Client>

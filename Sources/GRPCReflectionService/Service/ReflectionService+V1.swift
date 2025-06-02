@@ -17,7 +17,7 @@
 internal import GRPCCore
 internal import SwiftProtobuf
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 extension ReflectionService {
   struct V1: Grpc_Reflection_V1_ServerReflection.SimpleServiceProtocol {
     private typealias Response = Grpc_Reflection_V1_ServerReflectionResponse
@@ -32,7 +32,7 @@ extension ReflectionService {
   }
 }
 
-@available(gRPCSwiftExtras 1.0, *)
+@available(gRPCSwiftExtras 2.0, *)
 extension ReflectionService.V1 {
   private func findFileByFileName(_ fileName: String) throws(RPCError) -> FileDescriptorResponse {
     let data = try self.registry.serialisedFileDescriptorForDependenciesOfFile(named: fileName)

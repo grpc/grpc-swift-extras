@@ -21,12 +21,12 @@ protoc=$(which protoc)
 
 # Build the protoc plugins.
 swift build -c release --product protoc-gen-swift
-swift build -c release --product protoc-gen-grpc-swift
+swift build -c release --product protoc-gen-grpc-swift-2
 
 # Grab the plugin paths.
 bin_path=$(swift build -c release --show-bin-path)
 protoc_gen_swift="$bin_path/protoc-gen-swift"
-protoc_generate_grpc_swift="$bin_path/protoc-gen-grpc-swift"
+protoc_generate_grpc_swift="$bin_path/protoc-gen-grpc-swift-2"
 
 # Generates gRPC by invoking protoc with the gRPC Swift plugin.
 # Parameters:
@@ -36,10 +36,10 @@ protoc_generate_grpc_swift="$bin_path/protoc-gen-grpc-swift"
 # - $4 onwards: options to forward to the plugin
 function generate_grpc {
   local proto=$1
-  local args=("--plugin=$protoc_generate_grpc_swift" "--proto_path=${2}" "--grpc-swift_out=${3}")
+  local args=("--plugin=$protoc_generate_grpc_swift" "--proto_path=${2}" "--grpc-swift-2_out=${3}")
 
   for option in "${@:4}"; do
-    args+=("--grpc-swift_opt=$option")
+    args+=("--grpc-swift-2_opt=$option")
   done
 
   invoke_protoc "${args[@]}" "$proto"
