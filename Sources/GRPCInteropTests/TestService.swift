@@ -24,6 +24,7 @@ private import struct Foundation.Data
 #endif
 
 @available(gRPCSwiftExtras 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
   public init() {}
 

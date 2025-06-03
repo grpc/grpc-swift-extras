@@ -34,6 +34,7 @@ public import struct Foundation.Data
 /// The service will offer information to clients about any registered services. You can register
 /// a service by providing its descriptor set to the service.
 @available(gRPCSwiftExtras 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public struct ReflectionService: Sendable {
   private let service: ReflectionService.V1
 

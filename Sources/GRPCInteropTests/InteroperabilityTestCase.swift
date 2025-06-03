@@ -16,6 +16,7 @@
 public import GRPCCore
 
 @available(gRPCSwiftExtras 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public protocol InteroperabilityTest {
   /// Run a test case using the given connection.
   ///

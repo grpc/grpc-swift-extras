@@ -29,6 +29,7 @@ package import Tracing
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
 @available(gRPCSwiftExtras 1.0, *)
+@available(*, deprecated, message: "See https://forums.swift.org/t/80177")
 public struct ServerOTelTracingInterceptor: ServerInterceptor {
   private let extractor: ServerRequestExtractor
   private var serverHostname: String
