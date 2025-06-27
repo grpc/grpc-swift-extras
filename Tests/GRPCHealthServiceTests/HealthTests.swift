@@ -303,7 +303,7 @@ final class HealthTests: XCTestCase {
           Int.random(in: 0 ... 1) == 0 ? .notServing : .serving
         )
       }
-      
+
       for i in 0 ..< 10 {
         healthProvider.updateStatus(
           testServiceDescriptors[i].1,
@@ -317,39 +317,39 @@ final class HealthTests: XCTestCase {
           for j in 0 ... i {
             let receivedStatus = statuses[testServiceDescriptors[j].0.fullyQualifiedService]?.status
             XCTAssertNotNil(receivedStatus)
-            
+
             let expectedStatus = Grpc_Health_V1_HealthCheckResponse.ServingStatus(
               testServiceDescriptors[j].1
             )
-            
+
             XCTAssertEqual(receivedStatus!, expectedStatus)
           }
         }
       }
     }
   }
-  
+
   func testListOnServer() async throws {
     try await withHealthClient { (healthClient, healthProvider) in
       let message = Grpc_Health_V1_HealthListRequest()
 
       healthProvider.updateStatus(.notServing, forService: "")
-      
+
       try await healthClient.list(message) { response in
         let statuses = try response.message.statuses
         let receivedServerStatus = statuses[""]?.status
         XCTAssertNotNil(receivedServerStatus)
-        
+
         XCTAssertEqual(receivedServerStatus!, .notServing)
       }
-      
+
       healthProvider.updateStatus(.serving, forService: "")
-      
+
       try await healthClient.list(message) { response in
         let statuses = try response.message.statuses
         let receivedServerStatus = statuses[""]?.status
         XCTAssertNotNil(receivedServerStatus)
-        
+
         XCTAssertEqual(receivedServerStatus!, .serving)
       }
     }

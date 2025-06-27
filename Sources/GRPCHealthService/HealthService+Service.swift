@@ -47,16 +47,16 @@ extension HealthService.Service {
     context: ServerContext
   ) async throws -> ServerResponse<Grpc_Health_V1_HealthListResponse> {
     let serviceStatuses = self.state.listStatuses()
-    
+
     var listResponse = Grpc_Health_V1_HealthListResponse()
-    
+
     for (service, status) in serviceStatuses {
       var checkResponse = Grpc_Health_V1_HealthCheckResponse()
       checkResponse.status = status
-      
+
       listResponse.statuses[service] = checkResponse
     }
-    
+
     return ServerResponse(message: listResponse)
   }
 
@@ -109,7 +109,7 @@ extension HealthService.Service {
         storage[service, default: ServiceState(status: status)].updateStatus(status)
       }
     }
-    
+
     fileprivate func listStatuses() -> [String: Grpc_Health_V1_HealthCheckResponse.ServingStatus] {
       self.lockedStorage.withLock { $0.mapValues(\.currentStatus) }
     }
