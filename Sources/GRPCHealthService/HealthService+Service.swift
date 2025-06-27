@@ -15,6 +15,7 @@
  */
 
 internal import GRPCCore
+internal import SwiftProtobuf
 private import Synchronization
 
 @available(gRPCSwiftExtras 2.0, *)
