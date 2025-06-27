@@ -286,15 +286,18 @@ final class HealthTests: XCTestCase {
     }
   }
 
-  func testListServices() async throws {
+  func testListServicesEmpty() async throws {
     try await withHealthClient { (healthClient, healthProvider) in
       let message = Grpc_Health_V1_HealthListRequest()
 
-      // Empty case
-      try await healthClient.list(request: ClientRequest(message: message)) { response in
-        let statuses = try response.message.statuses
-        XCTAssertEqual(statuses, [:])
-      }
+      let response = try await healthClient.list(message)
+      XCTAssertEqual(response.statuses, [:])
+    }
+  }
+
+  func testListServices() async throws {
+    try await withHealthClient { (healthClient, healthProvider) in
+      let message = Grpc_Health_V1_HealthListRequest()
 
       // Service descriptors and their randomly generated status.
       let testServiceDescriptors: [(ServiceDescriptor, ServingStatus)] = (0 ..< 10).map { i in
@@ -304,26 +307,23 @@ final class HealthTests: XCTestCase {
         )
       }
 
-      for i in 0 ..< 10 {
+      for (index, (descriptor, status)) in testServiceDescriptors.enumerated() {
         healthProvider.updateStatus(
-          testServiceDescriptors[i].1,
-          forService: testServiceDescriptors[i].0
+          status,
+          forService: descriptor
         )
 
-        try await healthClient.list(message) { response in
-          let statuses = try response.message.statuses
-          XCTAssertTrue(statuses.count == i + 1)
+        let response = try await healthClient.list(message)
+        let statuses = response.statuses
+        XCTAssertTrue(statuses.count == index + 1)
 
-          for j in 0 ... i {
-            let receivedStatus = statuses[testServiceDescriptors[j].0.fullyQualifiedService]?.status
-            XCTAssertNotNil(receivedStatus)
+        for (descriptor, status) in testServiceDescriptors.prefix(index + 1) {
+          let receivedStatus = try XCTUnwrap(statuses[descriptor.fullyQualifiedService]?.status)
+          let expectedStatus = Grpc_Health_V1_HealthCheckResponse.ServingStatus(
+            status
+          )
 
-            let expectedStatus = Grpc_Health_V1_HealthCheckResponse.ServingStatus(
-              testServiceDescriptors[j].1
-            )
-
-            XCTAssertEqual(receivedStatus!, expectedStatus)
-          }
+          XCTAssertEqual(receivedStatus, expectedStatus)
         }
       }
     }
@@ -335,23 +335,13 @@ final class HealthTests: XCTestCase {
 
       healthProvider.updateStatus(.notServing, forService: "")
 
-      try await healthClient.list(message) { response in
-        let statuses = try response.message.statuses
-        let receivedServerStatus = statuses[""]?.status
-        XCTAssertNotNil(receivedServerStatus)
-
-        XCTAssertEqual(receivedServerStatus!, .notServing)
-      }
+      var response = try await healthClient.list(message)
+      XCTAssertEqual(try XCTUnwrap(response.statuses[""]?.status), .notServing)
 
       healthProvider.updateStatus(.serving, forService: "")
 
-      try await healthClient.list(message) { response in
-        let statuses = try response.message.statuses
-        let receivedServerStatus = statuses[""]?.status
-        XCTAssertNotNil(receivedServerStatus)
-
-        XCTAssertEqual(receivedServerStatus!, .serving)
-      }
+      response = try await healthClient.list(message)
+      XCTAssertEqual(try XCTUnwrap(response.statuses[""]?.status), .serving)
     }
   }
 }
