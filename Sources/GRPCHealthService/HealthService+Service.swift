@@ -110,7 +110,7 @@ extension HealthService.Service {
     }
 
     fileprivate func listStatuses() -> [String: Grpc_Health_V1_HealthCheckResponse.ServingStatus] {
-      self.lockedStorage.withLock { $0.mapValues(\.currentStatus) }
+      self.lockedStorage.withLock { $0.mapValues { $0.currentStatus } }
     }
 
     fileprivate func addContinuation(
