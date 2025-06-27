@@ -51,10 +51,9 @@ extension HealthService.Service {
     var listResponse = Grpc_Health_V1_HealthListResponse()
 
     for (service, status) in serviceStatuses {
-      var checkResponse = Grpc_Health_V1_HealthCheckResponse()
-      checkResponse.status = status
-
-      listResponse.statuses[service] = checkResponse
+      listResponse.statuses[service] = .with { response in
+        response.status = status
+      }
     }
 
     return ServerResponse(message: listResponse)
