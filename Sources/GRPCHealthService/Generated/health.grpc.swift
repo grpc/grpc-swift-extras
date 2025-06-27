@@ -49,6 +49,18 @@ package enum Grpc_Health_V1_Health {
                 method: "Check"
             )
         }
+        /// Namespace for "List" metadata.
+        package enum List {
+            /// Request type for "List".
+            package typealias Input = Grpc_Health_V1_HealthListRequest
+            /// Response type for "List".
+            package typealias Output = Grpc_Health_V1_HealthListResponse
+            /// Descriptor for "List".
+            package static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.health.v1.Health"),
+                method: "List"
+            )
+        }
         /// Namespace for "Watch" metadata.
         package enum Watch {
             /// Request type for "Watch".
@@ -64,6 +76,7 @@ package enum Grpc_Health_V1_Health {
         /// Descriptors for all methods in the "grpc.health.v1.Health" service.
         package static let descriptors: [GRPCCore.MethodDescriptor] = [
             Check.descriptor,
+            List.descriptor,
             Watch.descriptor
         ]
     }
@@ -107,8 +120,6 @@ extension Grpc_Health_V1_Health {
         /// > 
         /// > Clients should set a deadline when calling Check, and can declare the
         /// > server unhealthy if they do not receive a timely response.
-        /// > 
-        /// > Check implementations should be idempotent and side effect free.
         ///
         /// - Parameters:
         ///   - request: A streaming request of `Grpc_Health_V1_HealthCheckRequest` messages.
@@ -121,6 +132,34 @@ extension Grpc_Health_V1_Health {
             request: GRPCCore.StreamingServerRequest<Grpc_Health_V1_HealthCheckRequest>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Health_V1_HealthCheckResponse>
+
+        /// Handle the "List" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > List provides a non-atomic snapshot of the health of all the available
+        /// > services.
+        /// > 
+        /// > The server may respond with a RESOURCE_EXHAUSTED error if too many services
+        /// > exist.
+        /// > 
+        /// > Clients should set a deadline when calling List, and can declare the server
+        /// > unhealthy if they do not receive a timely response.
+        /// > 
+        /// > Clients should keep in mind that the list of health services exposed by an
+        /// > application can change over the lifetime of the process.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Grpc_Health_V1_HealthListRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Grpc_Health_V1_HealthListResponse` messages.
+        func list(
+            request: GRPCCore.StreamingServerRequest<Grpc_Health_V1_HealthListRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Health_V1_HealthListResponse>
 
         /// Handle the "Watch" method.
         ///
@@ -180,8 +219,6 @@ extension Grpc_Health_V1_Health {
         /// > 
         /// > Clients should set a deadline when calling Check, and can declare the
         /// > server unhealthy if they do not receive a timely response.
-        /// > 
-        /// > Check implementations should be idempotent and side effect free.
         ///
         /// - Parameters:
         ///   - request: A request containing a single `Grpc_Health_V1_HealthCheckRequest` message.
@@ -194,6 +231,34 @@ extension Grpc_Health_V1_Health {
             request: GRPCCore.ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.ServerResponse<Grpc_Health_V1_HealthCheckResponse>
+
+        /// Handle the "List" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > List provides a non-atomic snapshot of the health of all the available
+        /// > services.
+        /// > 
+        /// > The server may respond with a RESOURCE_EXHAUSTED error if too many services
+        /// > exist.
+        /// > 
+        /// > Clients should set a deadline when calling List, and can declare the server
+        /// > unhealthy if they do not receive a timely response.
+        /// > 
+        /// > Clients should keep in mind that the list of health services exposed by an
+        /// > application can change over the lifetime of the process.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Health_V1_HealthListRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Grpc_Health_V1_HealthListResponse` message.
+        func list(
+            request: GRPCCore.ServerRequest<Grpc_Health_V1_HealthListRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Grpc_Health_V1_HealthListResponse>
 
         /// Handle the "Watch" method.
         ///
@@ -251,8 +316,6 @@ extension Grpc_Health_V1_Health {
         /// > 
         /// > Clients should set a deadline when calling Check, and can declare the
         /// > server unhealthy if they do not receive a timely response.
-        /// > 
-        /// > Check implementations should be idempotent and side effect free.
         ///
         /// - Parameters:
         ///   - request: A `Grpc_Health_V1_HealthCheckRequest` message.
@@ -265,6 +328,34 @@ extension Grpc_Health_V1_Health {
             request: Grpc_Health_V1_HealthCheckRequest,
             context: GRPCCore.ServerContext
         ) async throws -> Grpc_Health_V1_HealthCheckResponse
+
+        /// Handle the "List" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > List provides a non-atomic snapshot of the health of all the available
+        /// > services.
+        /// > 
+        /// > The server may respond with a RESOURCE_EXHAUSTED error if too many services
+        /// > exist.
+        /// > 
+        /// > Clients should set a deadline when calling List, and can declare the server
+        /// > unhealthy if they do not receive a timely response.
+        /// > 
+        /// > Clients should keep in mind that the list of health services exposed by an
+        /// > application can change over the lifetime of the process.
+        ///
+        /// - Parameters:
+        ///   - request: A `Grpc_Health_V1_HealthListRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Grpc_Health_V1_HealthListResponse` to respond with.
+        func list(
+            request: Grpc_Health_V1_HealthListRequest,
+            context: GRPCCore.ServerContext
+        ) async throws -> Grpc_Health_V1_HealthListResponse
 
         /// Handle the "Watch" method.
         ///
@@ -317,6 +408,17 @@ extension Grpc_Health_V1_Health.StreamingServiceProtocol {
             }
         )
         router.registerHandler(
+            forMethod: Grpc_Health_V1_Health.Method.List.descriptor,
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Health_V1_HealthListRequest>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Health_V1_HealthListResponse>(),
+            handler: { request, context in
+                try await self.list(
+                    request: request,
+                    context: context
+                )
+            }
+        )
+        router.registerHandler(
             forMethod: Grpc_Health_V1_Health.Method.Watch.descriptor,
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Health_V1_HealthCheckRequest>(),
             serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Health_V1_HealthCheckResponse>(),
@@ -344,6 +446,17 @@ extension Grpc_Health_V1_Health.ServiceProtocol {
         return GRPCCore.StreamingServerResponse(single: response)
     }
 
+    package func list(
+        request: GRPCCore.StreamingServerRequest<Grpc_Health_V1_HealthListRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Grpc_Health_V1_HealthListResponse> {
+        let response = try await self.list(
+            request: GRPCCore.ServerRequest(stream: request),
+            context: context
+        )
+        return GRPCCore.StreamingServerResponse(single: response)
+    }
+
     package func watch(
         request: GRPCCore.StreamingServerRequest<Grpc_Health_V1_HealthCheckRequest>,
         context: GRPCCore.ServerContext
@@ -365,6 +478,19 @@ extension Grpc_Health_V1_Health.SimpleServiceProtocol {
     ) async throws -> GRPCCore.ServerResponse<Grpc_Health_V1_HealthCheckResponse> {
         return GRPCCore.ServerResponse<Grpc_Health_V1_HealthCheckResponse>(
             message: try await self.check(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
+
+    package func list(
+        request: GRPCCore.ServerRequest<Grpc_Health_V1_HealthListRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Grpc_Health_V1_HealthListResponse> {
+        return GRPCCore.ServerResponse<Grpc_Health_V1_HealthListResponse>(
+            message: try await self.list(
                 request: request.message,
                 context: context
             ),
@@ -416,8 +542,6 @@ extension Grpc_Health_V1_Health {
         /// > 
         /// > Clients should set a deadline when calling Check, and can declare the
         /// > server unhealthy if they do not receive a timely response.
-        /// > 
-        /// > Check implementations should be idempotent and side effect free.
         ///
         /// - Parameters:
         ///   - request: A request containing a single `Grpc_Health_V1_HealthCheckRequest` message.
@@ -434,6 +558,39 @@ extension Grpc_Health_V1_Health {
             deserializer: some GRPCCore.MessageDeserializer<Grpc_Health_V1_HealthCheckResponse>,
             options: GRPCCore.CallOptions,
             onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Health_V1_HealthCheckResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "List" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > List provides a non-atomic snapshot of the health of all the available
+        /// > services.
+        /// > 
+        /// > The server may respond with a RESOURCE_EXHAUSTED error if too many services
+        /// > exist.
+        /// > 
+        /// > Clients should set a deadline when calling List, and can declare the server
+        /// > unhealthy if they do not receive a timely response.
+        /// > 
+        /// > Clients should keep in mind that the list of health services exposed by an
+        /// > application can change over the lifetime of the process.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Health_V1_HealthListRequest` message.
+        ///   - serializer: A serializer for `Grpc_Health_V1_HealthListRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Health_V1_HealthListResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func list<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Health_V1_HealthListRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Health_V1_HealthListRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Health_V1_HealthListResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Health_V1_HealthListResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "Watch" method.
@@ -507,8 +664,6 @@ extension Grpc_Health_V1_Health {
         /// > 
         /// > Clients should set a deadline when calling Check, and can declare the
         /// > server unhealthy if they do not receive a timely response.
-        /// > 
-        /// > Check implementations should be idempotent and side effect free.
         ///
         /// - Parameters:
         ///   - request: A request containing a single `Grpc_Health_V1_HealthCheckRequest` message.
@@ -531,6 +686,50 @@ extension Grpc_Health_V1_Health {
             try await self.client.unary(
                 request: request,
                 descriptor: Grpc_Health_V1_Health.Method.Check.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "List" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > List provides a non-atomic snapshot of the health of all the available
+        /// > services.
+        /// > 
+        /// > The server may respond with a RESOURCE_EXHAUSTED error if too many services
+        /// > exist.
+        /// > 
+        /// > Clients should set a deadline when calling List, and can declare the server
+        /// > unhealthy if they do not receive a timely response.
+        /// > 
+        /// > Clients should keep in mind that the list of health services exposed by an
+        /// > application can change over the lifetime of the process.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Grpc_Health_V1_HealthListRequest` message.
+        ///   - serializer: A serializer for `Grpc_Health_V1_HealthListRequest` messages.
+        ///   - deserializer: A deserializer for `Grpc_Health_V1_HealthListResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        package func list<Result>(
+            request: GRPCCore.ClientRequest<Grpc_Health_V1_HealthListRequest>,
+            serializer: some GRPCCore.MessageSerializer<Grpc_Health_V1_HealthListRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Grpc_Health_V1_HealthListResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Health_V1_HealthListResponse>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Grpc_Health_V1_Health.Method.List.descriptor,
                 serializer: serializer,
                 deserializer: deserializer,
                 options: options,
@@ -600,8 +799,6 @@ extension Grpc_Health_V1_Health.ClientProtocol {
     /// > 
     /// > Clients should set a deadline when calling Check, and can declare the
     /// > server unhealthy if they do not receive a timely response.
-    /// > 
-    /// > Check implementations should be idempotent and side effect free.
     ///
     /// - Parameters:
     ///   - request: A request containing a single `Grpc_Health_V1_HealthCheckRequest` message.
@@ -621,6 +818,45 @@ extension Grpc_Health_V1_Health.ClientProtocol {
             request: request,
             serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Health_V1_HealthCheckRequest>(),
             deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Health_V1_HealthCheckResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "List" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > List provides a non-atomic snapshot of the health of all the available
+    /// > services.
+    /// > 
+    /// > The server may respond with a RESOURCE_EXHAUSTED error if too many services
+    /// > exist.
+    /// > 
+    /// > Clients should set a deadline when calling List, and can declare the server
+    /// > unhealthy if they do not receive a timely response.
+    /// > 
+    /// > Clients should keep in mind that the list of health services exposed by an
+    /// > application can change over the lifetime of the process.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Grpc_Health_V1_HealthListRequest` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    package func list<Result>(
+        request: GRPCCore.ClientRequest<Grpc_Health_V1_HealthListRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Health_V1_HealthListResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.list(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Grpc_Health_V1_HealthListRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Grpc_Health_V1_HealthListResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -682,8 +918,6 @@ extension Grpc_Health_V1_Health.ClientProtocol {
     /// > 
     /// > Clients should set a deadline when calling Check, and can declare the
     /// > server unhealthy if they do not receive a timely response.
-    /// > 
-    /// > Check implementations should be idempotent and side effect free.
     ///
     /// - Parameters:
     ///   - message: request message to send.
@@ -706,6 +940,49 @@ extension Grpc_Health_V1_Health.ClientProtocol {
             metadata: metadata
         )
         return try await self.check(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "List" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > List provides a non-atomic snapshot of the health of all the available
+    /// > services.
+    /// > 
+    /// > The server may respond with a RESOURCE_EXHAUSTED error if too many services
+    /// > exist.
+    /// > 
+    /// > Clients should set a deadline when calling List, and can declare the server
+    /// > unhealthy if they do not receive a timely response.
+    /// > 
+    /// > Clients should keep in mind that the list of health services exposed by an
+    /// > application can change over the lifetime of the process.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    package func list<Result>(
+        _ message: Grpc_Health_V1_HealthListRequest,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Grpc_Health_V1_HealthListResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Grpc_Health_V1_HealthListRequest>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.list(
             request: request,
             options: options,
             onResponse: handleResponse

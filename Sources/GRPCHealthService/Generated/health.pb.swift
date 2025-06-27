@@ -105,6 +105,29 @@ package struct Grpc_Health_V1_HealthCheckResponse: Sendable {
   package init() {}
 }
 
+package struct Grpc_Health_V1_HealthListRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  package var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  package init() {}
+}
+
+package struct Grpc_Health_V1_HealthListResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// statuses contains all the services and their respective status.
+  package var statuses: Dictionary<String,Grpc_Health_V1_HealthCheckResponse> = [:]
+
+  package var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  package init() {}
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "grpc.health.v1"
@@ -180,4 +203,55 @@ extension Grpc_Health_V1_HealthCheckResponse.ServingStatus: SwiftProtobuf._Proto
     2: .same(proto: "NOT_SERVING"),
     3: .same(proto: "SERVICE_UNKNOWN"),
   ]
+}
+
+extension Grpc_Health_V1_HealthListRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  package static let protoMessageName: String = _protobuf_package + ".HealthListRequest"
+  package static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  package mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  package func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  package static func ==(lhs: Grpc_Health_V1_HealthListRequest, rhs: Grpc_Health_V1_HealthListRequest) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Grpc_Health_V1_HealthListResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  package static let protoMessageName: String = _protobuf_package + ".HealthListResponse"
+  package static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "statuses"),
+  ]
+
+  package mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Grpc_Health_V1_HealthCheckResponse>.self, value: &self.statuses) }()
+      default: break
+      }
+    }
+  }
+
+  package func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.statuses.isEmpty {
+      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Grpc_Health_V1_HealthCheckResponse>.self, value: self.statuses, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  package static func ==(lhs: Grpc_Health_V1_HealthListResponse, rhs: Grpc_Health_V1_HealthListResponse) -> Bool {
+    if lhs.statuses != rhs.statuses {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
 }

@@ -42,6 +42,24 @@ extension HealthService.Service {
     return ServerResponse(message: response)
   }
 
+  func list(
+    request: ServerRequest<Grpc_Health_V1_HealthListRequest>,
+    context: ServerContext
+  ) async throws -> ServerResponse<Grpc_Health_V1_HealthListResponse> {
+    let serviceStatuses = self.state.listStatuses()
+    
+    var listResponse = Grpc_Health_V1_HealthListResponse()
+    
+    for (service, status) in serviceStatuses {
+      var checkResponse = Grpc_Health_V1_HealthCheckResponse()
+      checkResponse.status = status
+      
+      listResponse.statuses[service] = checkResponse
+    }
+    
+    return ServerResponse(message: listResponse)
+  }
+
   func watch(
     request: ServerRequest<Grpc_Health_V1_HealthCheckRequest>,
     context: ServerContext
@@ -90,6 +108,10 @@ extension HealthService.Service {
       self.lockedStorage.withLock { storage in
         storage[service, default: ServiceState(status: status)].updateStatus(status)
       }
+    }
+    
+    fileprivate func listStatuses() -> [String: Grpc_Health_V1_HealthCheckResponse.ServingStatus] {
+      self.lockedStorage.withLock { $0.mapValues(\.currentStatus) }
     }
 
     fileprivate func addContinuation(
