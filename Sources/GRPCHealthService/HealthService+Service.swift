@@ -15,12 +15,16 @@
  */
 
 internal import GRPCCore
+internal import SwiftProtobuf
 private import Synchronization
 
 @available(gRPCSwiftExtras 2.0, *)
 extension HealthService {
   internal struct Service: Grpc_Health_V1_Health.ServiceProtocol {
     private let state = Self.State()
+    /// Defines the maximum number of resources a `List` request can return.
+    /// An `RPCError` with the code `ResourceExhaused` is thrown if this limit is exceeded.
+    private let listMaxAllowedServices = 100
   }
 }
 
@@ -40,6 +44,30 @@ extension HealthService.Service {
     response.status = status
 
     return ServerResponse(message: response)
+  }
+
+  func list(
+    request: ServerRequest<Grpc_Health_V1_HealthListRequest>,
+    context: ServerContext
+  ) async throws -> ServerResponse<Grpc_Health_V1_HealthListResponse> {
+    let serviceStatuses = self.state.listStatuses()
+
+    guard serviceStatuses.count <= listMaxAllowedServices else {
+      throw RPCError(
+        code: .resourceExhausted,
+        message: "Server health list exceeds maximum capacity: \(listMaxAllowedServices)."
+      )
+    }
+
+    var listResponse = Grpc_Health_V1_HealthListResponse()
+
+    for (service, status) in serviceStatuses {
+      listResponse.statuses[service] = .with { response in
+        response.status = status
+      }
+    }
+
+    return ServerResponse(message: listResponse)
   }
 
   func watch(
@@ -90,6 +118,10 @@ extension HealthService.Service {
       self.lockedStorage.withLock { storage in
         storage[service, default: ServiceState(status: status)].updateStatus(status)
       }
+    }
+
+    fileprivate func listStatuses() -> [String: Grpc_Health_V1_HealthCheckResponse.ServingStatus] {
+      self.lockedStorage.withLock { $0.mapValues { $0.currentStatus } }
     }
 
     fileprivate func addContinuation(

@@ -285,6 +285,95 @@ final class HealthTests: XCTestCase {
       }
     }
   }
+
+  func testListServicesEmpty() async throws {
+    try await withHealthClient { (healthClient, healthProvider) in
+      let message = Grpc_Health_V1_HealthListRequest()
+
+      let response = try await healthClient.list(message)
+      XCTAssertEqual(response.statuses, [:])
+    }
+  }
+
+  func testListServices() async throws {
+    try await withHealthClient { (healthClient, healthProvider) in
+      let message = Grpc_Health_V1_HealthListRequest()
+
+      // Service descriptors and their randomly generated status.
+      let testServiceDescriptors: [(ServiceDescriptor, ServingStatus)] = (0 ..< 10).map { i in
+        (
+          ServiceDescriptor(package: "test", service: "Service\(i)"),
+          Bool.random() ? .notServing : .serving
+        )
+      }
+
+      for (index, (descriptor, status)) in testServiceDescriptors.enumerated() {
+        healthProvider.updateStatus(
+          status,
+          forService: descriptor
+        )
+
+        let response = try await healthClient.list(message)
+        let statuses = response.statuses
+        XCTAssertTrue(statuses.count == index + 1)
+
+        for (descriptor, status) in testServiceDescriptors.prefix(index + 1) {
+          let receivedStatus = try XCTUnwrap(statuses[descriptor.fullyQualifiedService]?.status)
+          let expectedStatus = Grpc_Health_V1_HealthCheckResponse.ServingStatus(
+            status
+          )
+
+          XCTAssertEqual(receivedStatus, expectedStatus)
+        }
+      }
+    }
+  }
+
+  func testListOnServer() async throws {
+    try await withHealthClient { (healthClient, healthProvider) in
+      let message = Grpc_Health_V1_HealthListRequest()
+
+      healthProvider.updateStatus(.notServing, forService: "")
+
+      var response = try await healthClient.list(message)
+      XCTAssertEqual(try XCTUnwrap(response.statuses[""]?.status), .notServing)
+
+      healthProvider.updateStatus(.serving, forService: "")
+
+      response = try await healthClient.list(message)
+      XCTAssertEqual(try XCTUnwrap(response.statuses[""]?.status), .serving)
+    }
+  }
+
+  func testListExceedingMaxAllowedServices() async throws {
+    try await withHealthClient { (healthClient, healthProvider) in
+      let message = Grpc_Health_V1_HealthListRequest()
+      let listMaxAllowedServices = 100
+
+      for index in 1 ... listMaxAllowedServices {
+        healthProvider.updateStatus(
+          .notServing,
+          forService: ServiceDescriptor(package: "test", service: "Service\(index)")
+        )
+
+        let response = try await healthClient.list(message)
+        XCTAssertTrue(response.statuses.count == index)
+      }
+
+      healthProvider.updateStatus(.notServing, forService: ServiceDescriptor.testService)
+
+      do {
+        _ = try await healthClient.list(message)
+        XCTFail("should error")
+      } catch {
+        let resolvedError = try XCTUnwrap(
+          error as? RPCError,
+          "health client list throws unexpected error: \(error)"
+        )
+        XCTAssertEqual(resolvedError.code, .resourceExhausted)
+      }
+    }
+  }
 }
 
 @available(gRPCSwiftExtras 2.0, *)
