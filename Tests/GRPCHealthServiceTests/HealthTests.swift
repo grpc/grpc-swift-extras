@@ -300,7 +300,7 @@ final class HealthTests: XCTestCase {
       let testServiceDescriptors: [(ServiceDescriptor, ServingStatus)] = (0 ..< 10).map { i in
         (
           ServiceDescriptor(package: "test", service: "Service\(i)"),
-          Int.random(in: 0 ... 1) == 0 ? .notServing : .serving
+          Bool.random() ? .notServing : .serving
         )
       }
 
