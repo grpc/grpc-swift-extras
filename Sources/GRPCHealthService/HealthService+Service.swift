@@ -22,6 +22,9 @@ private import Synchronization
 extension HealthService {
   internal struct Service: Grpc_Health_V1_Health.ServiceProtocol {
     private let state = Self.State()
+    /// Defines the maximum number of resources a `List` request can return.
+    /// An `RPCError` with the code `ResourceExhaused` is thrown if this limit is exceeded.
+    private let listMaxAllowedServices = 100
   }
 }
 
@@ -48,6 +51,13 @@ extension HealthService.Service {
     context: ServerContext
   ) async throws -> ServerResponse<Grpc_Health_V1_HealthListResponse> {
     let serviceStatuses = self.state.listStatuses()
+
+    guard serviceStatuses.count <= listMaxAllowedServices else {
+      throw RPCError(
+        code: .resourceExhausted,
+        message: "Server health list exceeds maximum capacity: \(listMaxAllowedServices)."
+      )
+    }
 
     var listResponse = Grpc_Health_V1_HealthListResponse()
 

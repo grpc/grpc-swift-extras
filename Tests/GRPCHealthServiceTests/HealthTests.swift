@@ -344,6 +344,36 @@ final class HealthTests: XCTestCase {
       XCTAssertEqual(try XCTUnwrap(response.statuses[""]?.status), .serving)
     }
   }
+
+  func testListExceedingMaxAllowedServices() async throws {
+    try await withHealthClient { (healthClient, healthProvider) in
+      let message = Grpc_Health_V1_HealthListRequest()
+      let listMaxAllowedServices = 100
+
+      for index in 1 ... listMaxAllowedServices {
+        healthProvider.updateStatus(
+          .notServing,
+          forService: ServiceDescriptor(package: "test", service: "Service\(index)")
+        )
+
+        let response = try await healthClient.list(message)
+        XCTAssertTrue(response.statuses.count == index)
+      }
+
+      healthProvider.updateStatus(.notServing, forService: ServiceDescriptor.testService)
+
+      do {
+        _ = try await healthClient.list(message)
+        XCTFail("should error")
+      } catch {
+        let resolvedError = try XCTUnwrap(
+          error as? RPCError,
+          "health client list throws unexpected error: \(error)"
+        )
+        XCTAssertEqual(resolvedError.code, .resourceExhausted)
+      }
+    }
+  }
 }
 
 @available(gRPCSwiftExtras 2.0, *)
