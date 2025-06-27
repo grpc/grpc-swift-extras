@@ -297,7 +297,7 @@ final class HealthTests: XCTestCase {
       }
 
       // Service descriptors and their randomly generated status.
-      let testServiceDescriptors: [(ServiceDescriptor, ServingStatus)] = Array(0 ..< 10).map { i in
+      let testServiceDescriptors: [(ServiceDescriptor, ServingStatus)] = (0 ..< 10).map { i in
         (
           ServiceDescriptor(package: "test", service: "Service\(i)"),
           Int.random(in: 0 ... 1) == 0 ? .notServing : .serving
