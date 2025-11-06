@@ -102,7 +102,8 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
   public func intercept<Input, Output>(
     request: StreamingServerRequest<Input>,
     context: ServerContext,
-    next: @Sendable (StreamingServerRequest<Input>, ServerContext) async throws ->
+    next:
+      @Sendable (StreamingServerRequest<Input>, ServerContext) async throws ->
       StreamingServerResponse<Output>
   ) async throws -> StreamingServerResponse<Output> where Input: Sendable, Output: Sendable {
     try await self.intercept(
@@ -118,7 +119,8 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
     tracer: any Tracer,
     request: StreamingServerRequest<Input>,
     context: ServerContext,
-    next: @Sendable (StreamingServerRequest<Input>, ServerContext) async throws ->
+    next:
+      @Sendable (StreamingServerRequest<Input>, ServerContext) async throws ->
       StreamingServerResponse<Output>
   ) async throws -> StreamingServerResponse<Output> where Input: Sendable, Output: Sendable {
     var serviceContext = ServiceContext.topLevel
