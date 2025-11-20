@@ -92,7 +92,7 @@ struct OTelTracingClientInterceptorTests {
       } assertAttributes: { attributes in
         #expect(attributes == testValues.expectedSpanAttributes)
       } assertStatus: { status in
-        #expect(status == nil)
+        #expect(status == SpanStatus(code: .ok))
       } assertErrors: { errors in
         #expect(errors == [])
       }
@@ -171,7 +171,7 @@ struct OTelTracingClientInterceptorTests {
       } assertAttributes: { attributes in
         #expect(attributes == testValues.expectedSpanAttributes)
       } assertStatus: { status in
-        #expect(status == nil)
+        #expect(status == SpanStatus(code: .ok))
       } assertErrors: { errors in
         #expect(errors == [])
       }
@@ -287,7 +287,7 @@ struct OTelTracingClientInterceptorTests {
           ]
         )
       } assertStatus: { status in
-        #expect(status == nil)
+        #expect(status == SpanStatus(code: .ok))
       } assertErrors: { errors in
         #expect(errors == [])
       }
@@ -403,7 +403,7 @@ struct OTelTracingClientInterceptorTests {
           ]
         )
       } assertStatus: { status in
-        #expect(status == nil)
+        #expect(status == SpanStatus(code: .ok))
       } assertErrors: { errors in
         #expect(errors == [])
       }
@@ -458,6 +458,7 @@ struct OTelTracingClientInterceptorTests {
               "rpc.system": "grpc",
               "rpc.method": .string(methodDescriptor.method),
               "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+              "rpc.grpc.status_code": .int64(Int64(RPCError.Code.unknown.rawValue)),
               "server.address": "someserver.com",
               "server.port": 567,
               "network.peer.address": "10.1.2.80",
@@ -467,7 +468,7 @@ struct OTelTracingClientInterceptorTests {
             ]
           )
         } assertStatus: { status in
-          #expect(status == nil)
+          #expect(status == SpanStatus(code: .error))
         } assertErrors: { errors in
           #expect(errors == [.testError])
         }
@@ -776,7 +777,7 @@ struct OTelTracingServerInterceptorTests {
     } assertAttributes: { attributes in
       #expect(attributes == testValues.expectedSpanAttributes)
     } assertStatus: { status in
-      #expect(status == nil)
+      #expect(status == SpanStatus(code: .ok))
     } assertErrors: { errors in
       #expect(errors.isEmpty)
     }
@@ -854,7 +855,7 @@ struct OTelTracingServerInterceptorTests {
     } assertAttributes: { attributes in
       #expect(attributes == testValues.expectedSpanAttributes)
     } assertStatus: { status in
-      #expect(status == nil)
+      #expect(status == SpanStatus(code: .ok))
     } assertErrors: { errors in
       #expect(errors.isEmpty)
     }
@@ -949,6 +950,7 @@ struct OTelTracingServerInterceptorTests {
           "rpc.system": "grpc",
           "rpc.method": .string(methodDescriptor.method),
           "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": 0,
           "server.address": "someserver.com",
           "server.port": 123,
           "network.peer.address": "10.1.2.90",
@@ -964,7 +966,7 @@ struct OTelTracingServerInterceptorTests {
         ]
       )
     } assertStatus: { status in
-      #expect(status == nil)
+      #expect(status == SpanStatus(code: .ok))
     } assertErrors: { errors in
       #expect(errors.isEmpty)
     }
@@ -1059,6 +1061,7 @@ struct OTelTracingServerInterceptorTests {
           "rpc.system": "grpc",
           "rpc.method": .string(methodDescriptor.method),
           "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": 0,
           "server.address": "someserver.com",
           "server.port": 123,
           "network.peer.address": "10.1.2.90",
@@ -1074,7 +1077,7 @@ struct OTelTracingServerInterceptorTests {
         ]
       )
     } assertStatus: { status in
-      #expect(status == nil)
+      #expect(status == SpanStatus(code: .ok))
     } assertErrors: { errors in
       #expect(errors.isEmpty)
     }
@@ -1095,7 +1098,11 @@ struct OTelTracingServerInterceptorTests {
     )
     let traceIDString = UUID().uuidString
     let request = ServerRequest(metadata: ["trace-id": .string(traceIDString)], message: [UInt8]())
-    let testValues = getTestValues(addressType: .ipv4, methodDescriptor: methodDescriptor)
+    let testValues = getTestValues(
+      addressType: .ipv4,
+      methodDescriptor: methodDescriptor,
+      statusCode: RPCError.Code.unknown.rawValue
+    )
     do {
       let _: StreamingServerResponse<String> = try await interceptor.intercept(
         tracer: tracer,
@@ -1117,10 +1124,9 @@ struct OTelTracingServerInterceptorTests {
       assertTestSpanComponents(forMethod: methodDescriptor, tracer: tracer) { events in
         #expect(events.isEmpty)
       } assertAttributes: { attributes in
-        // The attributes should not contain a grpc status code, as the request was never even sent.
         #expect(attributes == testValues.expectedSpanAttributes)
       } assertStatus: { status in
-        #expect(status == nil)
+        #expect(status == SpanStatus(code: .error))
       } assertErrors: { errors in
         #expect(errors == [.testError])
       }
@@ -1194,7 +1200,8 @@ struct OTelTracingServerInterceptorTests {
   @available(gRPCSwiftExtras 2.0, *)
   private func getTestValues(
     addressType: OTelTracingInterceptorTestAddressType,
-    methodDescriptor: MethodDescriptor
+    methodDescriptor: MethodDescriptor,
+    statusCode: Int = 0,
   ) -> OTelTracingInterceptorTestCaseValues {
     switch addressType {
     case .ipv4:
@@ -1205,6 +1212,7 @@ struct OTelTracingServerInterceptorTests {
           "rpc.system": "grpc",
           "rpc.method": .string(methodDescriptor.method),
           "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": .int64(Int64(statusCode)),
           "server.address": "someserver.com",
           "server.port": 123,
           "network.peer.address": "10.1.2.90",
@@ -1224,6 +1232,7 @@ struct OTelTracingServerInterceptorTests {
           "rpc.system": "grpc",
           "rpc.method": .string(methodDescriptor.method),
           "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": .int64(Int64(statusCode)),
           "server.address": "someserver.com",
           "server.port": 5678,
           "network.peer.address": "ff06:0:0:0:0:0:0:c3",
@@ -1243,6 +1252,7 @@ struct OTelTracingServerInterceptorTests {
           "rpc.system": "grpc",
           "rpc.method": .string(methodDescriptor.method),
           "rpc.service": .string(methodDescriptor.service.fullyQualifiedService),
+          "rpc.grpc.status_code": .int64(Int64(statusCode)),
           "server.address": "someserver.com",
           "network.peer.address": "some-path",
           "network.transport": "tcp",

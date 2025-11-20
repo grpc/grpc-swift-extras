@@ -87,7 +87,7 @@ struct OTelTracingIntegrationTests {
   }
 
   @available(gRPCSwiftExtras 2.0, *)
-  @Test(.disabled("known issues with tracing interceptors"), arguments: TracingLevel.allCases)
+  @Test(arguments: TracingLevel.allCases)
   func unary(level: TracingLevel) async throws {
     let tracer = try await withEchoService(clientTracing: level, serverTracing: level) { echo in
       let reply = try await echo.get(.with { $0.text = "Hello!" })
@@ -119,7 +119,7 @@ struct OTelTracingIntegrationTests {
   }
 
   @available(gRPCSwiftExtras 2.0, *)
-  @Test(.disabled("known issues with tracing interceptors"), arguments: TracingLevel.allCases)
+  @Test(arguments: TracingLevel.allCases)
   func serverStreaming(level: TracingLevel) async throws {
     let tracer = try await withEchoService(clientTracing: level, serverTracing: level) { echo in
       try await echo.expand(.with { $0.text = "Foo Bar Baz" }) { response in
@@ -153,7 +153,7 @@ struct OTelTracingIntegrationTests {
   }
 
   @available(gRPCSwiftExtras 2.0, *)
-  @Test(.disabled("known issues with tracing interceptors"), arguments: TracingLevel.allCases)
+  @Test(arguments: TracingLevel.allCases)
   func clientStreaming(level: TracingLevel) async throws {
     let tracer = try await withEchoService(clientTracing: level, serverTracing: level) { echo in
       let reply = try await echo.collect { writer in
@@ -189,7 +189,7 @@ struct OTelTracingIntegrationTests {
   }
 
   @available(gRPCSwiftExtras 2.0, *)
-  @Test(.disabled("known issues with tracing interceptors"), arguments: TracingLevel.allCases)
+  @Test(arguments: TracingLevel.allCases)
   func bidirectionalStreaming(level: TracingLevel) async throws {
     let tracer = try await withEchoService(clientTracing: level, serverTracing: level) { echo in
       try await echo.update { writer in
@@ -233,7 +233,6 @@ struct OTelTracingIntegrationTests {
 
   @available(gRPCSwiftExtras 2.0, *)
   @Test(
-    .disabled("known issues with tracing interceptors"),
     arguments: [
       (.immediately(RPCError(code: .aborted, message: "")), .aborted),
       (.immediately(ConvertibleError(.aborted)), .aborted),

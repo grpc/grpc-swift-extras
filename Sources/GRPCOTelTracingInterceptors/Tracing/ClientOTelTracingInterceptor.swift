@@ -146,117 +146,59 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
     ) async throws -> StreamingClientResponse<Output>
   ) async throws -> StreamingClientResponse<Output> where Input: Sendable, Output: Sendable {
     var request = request
-    let serviceContext = ServiceContext.current ?? .topLevel
+    let span = tracer.startSpan(context.descriptor.fullyQualifiedMethod, ofKind: .client)
 
-    return try await tracer.withSpan(
-      context.descriptor.fullyQualifiedMethod,
-      context: serviceContext,
-      ofKind: .client
-    ) { span in
-      span.setOTelClientSpanGRPCAttributes(
-        context: context,
-        serverHostname: self.serverHostname,
-        networkTransportMethod: self.networkTransportMethod
-      )
+    span.setOTelClientSpanGRPCAttributes(
+      context: context,
+      serverHostname: self.serverHostname,
+      networkTransportMethod: self.networkTransportMethod
+    )
 
-      if self.includeRequestMetadata {
-        span.setMetadataStringAttributesAsRequestSpanAttributes(request.metadata)
-      }
-
-      tracer.inject(
-        serviceContext,
-        into: &request.metadata,
-        using: self.injector
-      )
-
-      if self.traceEachMessage {
-        let wrappedProducer = request.producer
-        request.producer = { writer in
-          let messageSentCounter = Atomic(1)
-          let eventEmittingWriter = HookedWriter(
-            wrapping: writer,
-            afterEachWrite: {
-              var event = SpanEvent(name: "rpc.message")
-              event.attributes[GRPCTracingKeys.rpcMessageType] = "SENT"
-              event.attributes[GRPCTracingKeys.rpcMessageID] =
-                messageSentCounter
-                .wrappingAdd(1, ordering: .sequentiallyConsistent)
-                .oldValue
-              span.addEvent(event)
-            }
-          )
-          try await wrappedProducer(RPCWriter(wrapping: eventEmittingWriter))
-        }
-      }
-
-      var response = try await next(request, context)
-
-      if self.includeResponseMetadata {
-        span.setMetadataStringAttributesAsResponseSpanAttributes(response.metadata)
-      }
-
-      switch response.accepted {
-      case .success(var success):
-        let hookedSequence:
-          HookedRPCAsyncSequence<
-            RPCAsyncSequence<StreamingClientResponse<Output>.Contents.BodyPart, any Error>
-          >
-        if self.traceEachMessage {
-          let messageReceivedCounter = Atomic(1)
-          hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { part in
-            switch part {
-            case .message:
-              var event = SpanEvent(name: "rpc.message")
-              event.attributes[GRPCTracingKeys.rpcMessageType] = "RECEIVED"
-              event.attributes[GRPCTracingKeys.rpcMessageID] =
-                messageReceivedCounter
-                .wrappingAdd(1, ordering: .sequentiallyConsistent)
-                .oldValue
-              span.addEvent(event)
-
-            case .trailingMetadata(let trailingMetadata):
-              if self.includeResponseMetadata {
-                span.setMetadataStringAttributesAsResponseSpanAttributes(trailingMetadata)
-              }
-            }
-          } onFinish: { error in
-            if let error {
-              if let errorCode = error.grpcErrorCode {
-                span.attributes[GRPCTracingKeys.grpcStatusCode] = errorCode.rawValue
-              }
-              span.setStatus(SpanStatus(code: .error))
-              span.recordError(error)
-            } else {
-              span.attributes[GRPCTracingKeys.grpcStatusCode] = 0
-            }
-          }
-        } else {
-          hookedSequence = HookedRPCAsyncSequence(wrapping: success.bodyParts) { _ in
-            // Nothing to do if traceEachMessage is false
-          } onFinish: { error in
-            if let error {
-              if let errorCode = error.grpcErrorCode {
-                span.attributes[GRPCTracingKeys.grpcStatusCode] = errorCode.rawValue
-              }
-              span.setStatus(SpanStatus(code: .error))
-              span.recordError(error)
-            } else {
-              span.attributes[GRPCTracingKeys.grpcStatusCode] = 0
-            }
-          }
-        }
-
-        success.bodyParts = RPCAsyncSequence(wrapping: hookedSequence)
-        response.accepted = .success(success)
-
-      case .failure(let error):
-        span.attributes[GRPCTracingKeys.grpcStatusCode] = error.code.rawValue
-        span.setStatus(SpanStatus(code: .error))
-        span.recordError(error)
-      }
-
-      return response
+    if self.includeRequestMetadata {
+      span.setMetadataStringAttributesAsRequestSpanAttributes(request.metadata)
     }
+
+    tracer.inject(span.context, into: &request.metadata, using: self.injector)
+
+    if self.traceEachMessage {
+      let originalProducer = request.producer
+      request.producer = { writer in
+        let tracingWriter = TracedMessageWriter(wrapping: writer, span: span)
+        return try await originalProducer(RPCWriter(wrapping: tracingWriter))
+      }
+    }
+
+    var response: StreamingClientResponse<Output>
+
+    do {
+      response = try await ServiceContext.$current.withValue(span.context) {
+        try await next(request, context)
+      }
+    } catch {
+      span.endRPC(withError: error)
+      throw error
+    }
+
+    if self.includeResponseMetadata {
+      span.setMetadataStringAttributesAsResponseSpanAttributes(response.metadata)
+    }
+
+    switch response.accepted {
+    case .success(var success):
+      let tracedResponse = TracedClientResponseBodyParts(
+        wrapping: success.bodyParts,
+        span: span,
+        eventPerMessage: self.traceEachMessage,
+        includeMetadata: self.includeResponseMetadata
+      )
+      success.bodyParts = RPCAsyncSequence(wrapping: tracedResponse)
+      response.accepted = .success(success)
+
+    case .failure(let error):
+      span.endRPC(withError: error)
+    }
+
+    return response
   }
 }
 
@@ -272,14 +214,94 @@ struct ClientRequestInjector: Instrumentation.Injector {
 }
 
 @available(gRPCSwiftExtras 2.0, *)
-extension Error {
-  var grpcErrorCode: RPCError.Code? {
-    if let rpcError = self as? RPCError {
-      return rpcError.code
-    } else if let rpcError = self as? any RPCErrorConvertible {
-      return rpcError.rpcErrorCode
-    } else {
-      return nil
+internal struct TracedClientResponseBodyParts<Output>: AsyncSequence, Sendable
+where Output: Sendable {
+  typealias Base = RPCAsyncSequence<StreamingClientResponse<Output>.Contents.BodyPart, any Error>
+  typealias Element = Base.Element
+
+  private let base: Base
+  private var span: any Span
+  private var eventPerMessage: Bool
+  private var includeMetadata: Bool
+
+  init(
+    wrapping base: Base,
+    span: any Span,
+    eventPerMessage: Bool,
+    includeMetadata: Bool
+  ) {
+    self.base = base
+    self.span = span
+    self.eventPerMessage = eventPerMessage
+    self.includeMetadata = includeMetadata
+  }
+
+  func makeAsyncIterator() -> AsyncIterator {
+    AsyncIterator(
+      wrapping: self.base.makeAsyncIterator(),
+      span: self.span,
+      eventPerMessage: self.eventPerMessage,
+      includeMetadata: self.includeMetadata
+    )
+  }
+
+  struct AsyncIterator: AsyncIteratorProtocol {
+    typealias Element = Base.Element
+
+    private var wrapped: Base.AsyncIterator
+    private var span: any Span
+    private var messageID: Int
+    private var eventPerMessage: Bool
+    private var includeMetadata: Bool
+
+    init(
+      wrapping iterator: Base.AsyncIterator,
+      span: any Span,
+      eventPerMessage: Bool,
+      includeMetadata: Bool
+    ) {
+      self.wrapped = iterator
+      self.span = span
+      self.eventPerMessage = eventPerMessage
+      self.includeMetadata = includeMetadata
+      self.messageID = 1
+    }
+
+    private mutating func nextMessageID() -> Int {
+      defer { self.messageID += 1 }
+      return self.messageID
+    }
+
+    mutating func next(
+      isolation actor: isolated (any Actor)?
+    ) async throws(any Error) -> Element? {
+      do {
+        if let element = try await self.wrapped.next(isolation: actor) {
+          if self.eventPerMessage {
+            switch element {
+            case .message:
+              self.span.addEvent(.messageReceived(id: self.nextMessageID()))
+
+            case .trailingMetadata(let metadata):
+              if self.includeMetadata {
+                self.span.setMetadataStringAttributesAsResponseSpanAttributes(metadata)
+              }
+            }
+          }
+
+          return element
+        } else {
+          self.span.endRPC()
+          return nil
+        }
+      } catch {
+        self.span.endRPC(withError: error)
+        throw error
+      }
+    }
+
+    mutating func next() async throws -> Element? {
+      try await self.next(isolation: nil)
     }
   }
 }
