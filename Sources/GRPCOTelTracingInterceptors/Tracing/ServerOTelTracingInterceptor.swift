@@ -38,6 +38,8 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
   private var includeRequestMetadata: Bool
   private var includeResponseMetadata: Bool
 
+  private var tracerOverride: (any Tracer)?
+
   /// Create a new instance of a ``ServerOTelTracingInterceptor``.
   ///
   /// - Parameters:
@@ -80,12 +82,31 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
     includeRequestMetadata: Bool = false,
     includeResponseMetadata: Bool = false
   ) {
+    self.init(
+      serverHostname: serverHostname,
+      networkTransportMethod: networkTransportMethod,
+      traceEachMessage: traceEachMessage,
+      includeRequestMetadata: includeRequestMetadata,
+      includeResponseMetadata: includeResponseMetadata,
+      tracerOverride: nil
+    )
+  }
+
+  package init(
+    serverHostname: String,
+    networkTransportMethod: String,
+    traceEachMessage: Bool,
+    includeRequestMetadata: Bool,
+    includeResponseMetadata: Bool,
+    tracerOverride: (any Tracer)?
+  ) {
     self.extractor = ServerRequestExtractor()
     self.traceEachMessage = traceEachMessage
     self.serverHostname = serverHostname
     self.networkTransportMethod = networkTransportMethod
     self.includeRequestMetadata = includeRequestMetadata
     self.includeResponseMetadata = includeResponseMetadata
+    self.tracerOverride = tracerOverride
   }
 
   /// This interceptor will extract whatever `ServiceContext` key-value pairs have been inserted into the
@@ -107,7 +128,7 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
       StreamingServerResponse<Output>
   ) async throws -> StreamingServerResponse<Output> where Input: Sendable, Output: Sendable {
     try await self.intercept(
-      tracer: InstrumentationSystem.tracer,
+      tracer: self.tracerOverride ?? InstrumentationSystem.tracer,
       request: request,
       context: context,
       next: next

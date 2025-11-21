@@ -43,7 +43,7 @@ struct EchoService: Echo_Echo.ServiceProtocol {
       let parts = request.message.text.split(separator: " ")
       let messages = parts.map { part in Echo_EchoResponse.with { $0.text = String(part) } }
       try await response.write(contentsOf: messages)
-      
+
       return [:]
     }
   }
