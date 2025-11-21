@@ -73,7 +73,7 @@ struct OTelTracingIntegrationTests {
     try await withGRPCServer(
       transport: transport.server,
       services: [echo],
-      interceptors: serverInterceptors,
+      interceptors: serverInterceptors
     ) { server in
       try await withGRPCClient(
         transport: transport.client,
