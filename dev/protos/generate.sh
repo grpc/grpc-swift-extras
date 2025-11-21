@@ -102,6 +102,14 @@ function generate_reflection_service {
   generate_grpc "$proto" "$(dirname "$proto")" "$output" "Visibility=Package" "UseAccessLevelOnImports=true"
 }
 
+function generate_echo_service {
+  local proto="$here/examples/echo/echo.proto"
+  local output="$root/Tests/GRPCOTelTracingInterceptorsTests/Echo/Generated"
+
+  generate_message "$proto" "$(dirname "$proto")" "$output" "UseAccessLevelOnImports=true"
+  generate_grpc "$proto" "$(dirname "$proto")" "$output" "UseAccessLevelOnImports=true"
+}
+
 #- TEST DATA ------------------------------------------------------------------
 
 function generate_reflection_service_descriptor_set {
@@ -149,6 +157,7 @@ function generate_message_with_dependency_descriptor_set {
 generate_interop_test_service
 generate_health_service
 generate_reflection_service
+generate_echo_service
 
 generate_reflection_service_descriptor_set
 generate_health_service_descriptor_set
