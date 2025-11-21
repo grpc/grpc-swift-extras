@@ -55,7 +55,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/apple/swift-distributed-tracing.git",
-    from: "1.1.2"
+    from: "1.3.0"
   ),
   .package(
     url: "https://github.com/swift-server/swift-service-lifecycle.git",
