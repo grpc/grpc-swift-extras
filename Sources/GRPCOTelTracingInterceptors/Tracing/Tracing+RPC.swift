@@ -68,7 +68,7 @@ extension SpanEvent {
 }
 
 @available(gRPCSwiftExtras 2.0, *)
-final class TracedMessageWriter<Element>: RPCWriterProtocol {
+final class TracedMessageWriter<Element>: RPCWriterProtocol where Element: Sendable {
   private let writer: any RPCWriterProtocol<Element>
   private let span: any Span
   private let messageID: Atomic<Int>
