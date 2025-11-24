@@ -145,6 +145,7 @@ let targets: [Target] = [
     dependencies: [
       .target(name: "GRPCOTelTracingInterceptors"),
       .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
     ],
     swiftSettings: defaultSwiftSettings
