@@ -1201,7 +1201,7 @@ struct OTelTracingServerInterceptorTests {
   private func getTestValues(
     addressType: OTelTracingInterceptorTestAddressType,
     methodDescriptor: MethodDescriptor,
-    statusCode: Int = 0,
+    statusCode: Int = 0
   ) -> OTelTracingInterceptorTestCaseValues {
     switch addressType {
     case .ipv4:
