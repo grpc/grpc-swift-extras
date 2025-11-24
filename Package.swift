@@ -55,7 +55,7 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/apple/swift-distributed-tracing.git",
-    from: "1.1.2"
+    from: "1.3.0"
   ),
   .package(
     url: "https://github.com/swift-server/swift-service-lifecycle.git",
@@ -145,8 +145,10 @@ let targets: [Target] = [
     dependencies: [
       .target(name: "GRPCOTelTracingInterceptors"),
       .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "GRPCInProcessTransport", package: "grpc-swift-2"),
       .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
+      .product(name: "InMemoryTracing", package: "swift-distributed-tracing"),
     ],
     swiftSettings: defaultSwiftSettings
   ),

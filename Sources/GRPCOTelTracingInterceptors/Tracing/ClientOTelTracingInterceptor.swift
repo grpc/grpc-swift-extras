@@ -38,6 +38,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   private let traceEachMessage: Bool
   private var includeRequestMetadata: Bool
   private var includeResponseMetadata: Bool
+  private let tracerOverride: (any Tracer)?
 
   /// Create a new instance of a ``ClientOTelTracingInterceptor``.
   ///
@@ -81,12 +82,31 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
     includeRequestMetadata: Bool = false,
     includeResponseMetadata: Bool = false
   ) {
+    self.init(
+      serverHostname: serverHostname,
+      networkTransportMethod: networkTransportMethod,
+      traceEachMessage: traceEachMessage,
+      includeRequestMetadata: includeRequestMetadata,
+      includeResponseMetadata: includeResponseMetadata,
+      tracerOverride: nil
+    )
+  }
+
+  package init(
+    serverHostname: String,
+    networkTransportMethod: String,
+    traceEachMessage: Bool,
+    includeRequestMetadata: Bool,
+    includeResponseMetadata: Bool,
+    tracerOverride: (any Tracer)?
+  ) {
     self.injector = ClientRequestInjector()
     self.serverHostname = serverHostname
     self.networkTransportMethod = networkTransportMethod
     self.traceEachMessage = traceEachMessage
     self.includeRequestMetadata = includeRequestMetadata
     self.includeResponseMetadata = includeResponseMetadata
+    self.tracerOverride = tracerOverride
   }
 
   /// This interceptor will inject as the request's metadata whatever `ServiceContext` key-value pairs
@@ -108,7 +128,7 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
     ) async throws -> StreamingClientResponse<Output>
   ) async throws -> StreamingClientResponse<Output> where Input: Sendable, Output: Sendable {
     try await self.intercept(
-      tracer: InstrumentationSystem.tracer,
+      tracer: self.tracerOverride ?? InstrumentationSystem.tracer,
       request: request,
       context: context,
       next: next
