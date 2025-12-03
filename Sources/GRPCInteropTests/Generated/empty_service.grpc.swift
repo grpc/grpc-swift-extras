@@ -29,11 +29,11 @@ internal import GRPCProtobuf
 
 /// Namespace containing generated types for the "grpc.testing.EmptyService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public enum Grpc_Testing_EmptyService {
+public enum Grpc_Testing_EmptyService: Sendable {
     /// Service descriptor for the "grpc.testing.EmptyService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.EmptyService")
     /// Namespace for method metadata.
-    public enum Method {
+    public enum Method: Sendable {
         /// Descriptors for all methods in the "grpc.testing.EmptyService" service.
         public static let descriptors: [GRPCCore.MethodDescriptor] = []
     }
