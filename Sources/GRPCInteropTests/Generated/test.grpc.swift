@@ -32,13 +32,13 @@ internal import GRPCProtobuf
 
 /// Namespace containing generated types for the "grpc.testing.TestService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public enum Grpc_Testing_TestService {
+public enum Grpc_Testing_TestService: Sendable {
     /// Service descriptor for the "grpc.testing.TestService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService")
     /// Namespace for method metadata.
-    public enum Method {
+    public enum Method: Sendable {
         /// Namespace for "EmptyCall" metadata.
-        public enum EmptyCall {
+        public enum EmptyCall: Sendable {
             /// Request type for "EmptyCall".
             public typealias Input = Grpc_Testing_Empty
             /// Response type for "EmptyCall".
@@ -50,7 +50,7 @@ public enum Grpc_Testing_TestService {
             )
         }
         /// Namespace for "UnaryCall" metadata.
-        public enum UnaryCall {
+        public enum UnaryCall: Sendable {
             /// Request type for "UnaryCall".
             public typealias Input = Grpc_Testing_SimpleRequest
             /// Response type for "UnaryCall".
@@ -62,7 +62,7 @@ public enum Grpc_Testing_TestService {
             )
         }
         /// Namespace for "CacheableUnaryCall" metadata.
-        public enum CacheableUnaryCall {
+        public enum CacheableUnaryCall: Sendable {
             /// Request type for "CacheableUnaryCall".
             public typealias Input = Grpc_Testing_SimpleRequest
             /// Response type for "CacheableUnaryCall".
@@ -74,7 +74,7 @@ public enum Grpc_Testing_TestService {
             )
         }
         /// Namespace for "StreamingOutputCall" metadata.
-        public enum StreamingOutputCall {
+        public enum StreamingOutputCall: Sendable {
             /// Request type for "StreamingOutputCall".
             public typealias Input = Grpc_Testing_StreamingOutputCallRequest
             /// Response type for "StreamingOutputCall".
@@ -86,7 +86,7 @@ public enum Grpc_Testing_TestService {
             )
         }
         /// Namespace for "StreamingInputCall" metadata.
-        public enum StreamingInputCall {
+        public enum StreamingInputCall: Sendable {
             /// Request type for "StreamingInputCall".
             public typealias Input = Grpc_Testing_StreamingInputCallRequest
             /// Response type for "StreamingInputCall".
@@ -98,7 +98,7 @@ public enum Grpc_Testing_TestService {
             )
         }
         /// Namespace for "FullDuplexCall" metadata.
-        public enum FullDuplexCall {
+        public enum FullDuplexCall: Sendable {
             /// Request type for "FullDuplexCall".
             public typealias Input = Grpc_Testing_StreamingOutputCallRequest
             /// Response type for "FullDuplexCall".
@@ -110,7 +110,7 @@ public enum Grpc_Testing_TestService {
             )
         }
         /// Namespace for "HalfDuplexCall" metadata.
-        public enum HalfDuplexCall {
+        public enum HalfDuplexCall: Sendable {
             /// Request type for "HalfDuplexCall".
             public typealias Input = Grpc_Testing_StreamingOutputCallRequest
             /// Response type for "HalfDuplexCall".
@@ -122,7 +122,7 @@ public enum Grpc_Testing_TestService {
             )
         }
         /// Namespace for "UnimplementedCall" metadata.
-        public enum UnimplementedCall {
+        public enum UnimplementedCall: Sendable {
             /// Request type for "UnimplementedCall".
             public typealias Input = Grpc_Testing_Empty
             /// Response type for "UnimplementedCall".
@@ -1978,13 +1978,13 @@ extension Grpc_Testing_TestService.ClientProtocol {
 
 /// Namespace containing generated types for the "grpc.testing.UnimplementedService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public enum Grpc_Testing_UnimplementedService {
+public enum Grpc_Testing_UnimplementedService: Sendable {
     /// Service descriptor for the "grpc.testing.UnimplementedService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.UnimplementedService")
     /// Namespace for method metadata.
-    public enum Method {
+    public enum Method: Sendable {
         /// Namespace for "UnimplementedCall" metadata.
-        public enum UnimplementedCall {
+        public enum UnimplementedCall: Sendable {
             /// Request type for "UnimplementedCall".
             public typealias Input = Grpc_Testing_Empty
             /// Response type for "UnimplementedCall".
@@ -2329,13 +2329,13 @@ extension Grpc_Testing_UnimplementedService.ClientProtocol {
 
 /// Namespace containing generated types for the "grpc.testing.ReconnectService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-public enum Grpc_Testing_ReconnectService {
+public enum Grpc_Testing_ReconnectService: Sendable {
     /// Service descriptor for the "grpc.testing.ReconnectService" service.
     public static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService")
     /// Namespace for method metadata.
-    public enum Method {
+    public enum Method: Sendable {
         /// Namespace for "Start" metadata.
-        public enum Start {
+        public enum Start: Sendable {
             /// Request type for "Start".
             public typealias Input = Grpc_Testing_ReconnectParams
             /// Response type for "Start".
@@ -2347,7 +2347,7 @@ public enum Grpc_Testing_ReconnectService {
             )
         }
         /// Namespace for "Stop" metadata.
-        public enum Stop {
+        public enum Stop: Sendable {
             /// Request type for "Stop".
             public typealias Input = Grpc_Testing_Empty
             /// Response type for "Stop".

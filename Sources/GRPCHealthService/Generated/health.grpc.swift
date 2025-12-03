@@ -32,13 +32,13 @@ internal import GRPCProtobuf
 
 /// Namespace containing generated types for the "grpc.health.v1.Health" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-package enum Grpc_Health_V1_Health {
+package enum Grpc_Health_V1_Health: Sendable {
     /// Service descriptor for the "grpc.health.v1.Health" service.
     package static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.health.v1.Health")
     /// Namespace for method metadata.
-    package enum Method {
+    package enum Method: Sendable {
         /// Namespace for "Check" metadata.
-        package enum Check {
+        package enum Check: Sendable {
             /// Request type for "Check".
             package typealias Input = Grpc_Health_V1_HealthCheckRequest
             /// Response type for "Check".
@@ -50,7 +50,7 @@ package enum Grpc_Health_V1_Health {
             )
         }
         /// Namespace for "List" metadata.
-        package enum List {
+        package enum List: Sendable {
             /// Request type for "List".
             package typealias Input = Grpc_Health_V1_HealthListRequest
             /// Response type for "List".
@@ -62,7 +62,7 @@ package enum Grpc_Health_V1_Health {
             )
         }
         /// Namespace for "Watch" metadata.
-        package enum Watch {
+        package enum Watch: Sendable {
             /// Request type for "Watch".
             package typealias Input = Grpc_Health_V1_HealthCheckRequest
             /// Response type for "Watch".

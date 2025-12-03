@@ -36,13 +36,13 @@ internal import GRPCProtobuf
 
 /// Namespace containing generated types for the "grpc.reflection.v1.ServerReflection" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-package enum Grpc_Reflection_V1_ServerReflection {
+package enum Grpc_Reflection_V1_ServerReflection: Sendable {
     /// Service descriptor for the "grpc.reflection.v1.ServerReflection" service.
     package static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.reflection.v1.ServerReflection")
     /// Namespace for method metadata.
-    package enum Method {
+    package enum Method: Sendable {
         /// Namespace for "ServerReflectionInfo" metadata.
-        package enum ServerReflectionInfo {
+        package enum ServerReflectionInfo: Sendable {
             /// Request type for "ServerReflectionInfo".
             package typealias Input = Grpc_Reflection_V1_ServerReflectionRequest
             /// Response type for "ServerReflectionInfo".

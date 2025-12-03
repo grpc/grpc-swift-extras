@@ -29,13 +29,13 @@ internal import GRPCProtobuf
 
 /// Namespace containing generated types for the "echo.Echo" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-internal enum Echo_Echo {
+internal enum Echo_Echo: Sendable {
     /// Service descriptor for the "echo.Echo" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "echo.Echo")
     /// Namespace for method metadata.
-    internal enum Method {
+    internal enum Method: Sendable {
         /// Namespace for "Get" metadata.
-        internal enum Get {
+        internal enum Get: Sendable {
             /// Request type for "Get".
             internal typealias Input = Echo_EchoRequest
             /// Response type for "Get".
@@ -47,7 +47,7 @@ internal enum Echo_Echo {
             )
         }
         /// Namespace for "Expand" metadata.
-        internal enum Expand {
+        internal enum Expand: Sendable {
             /// Request type for "Expand".
             internal typealias Input = Echo_EchoRequest
             /// Response type for "Expand".
@@ -59,7 +59,7 @@ internal enum Echo_Echo {
             )
         }
         /// Namespace for "Collect" metadata.
-        internal enum Collect {
+        internal enum Collect: Sendable {
             /// Request type for "Collect".
             internal typealias Input = Echo_EchoRequest
             /// Response type for "Collect".
@@ -71,7 +71,7 @@ internal enum Echo_Echo {
             )
         }
         /// Namespace for "Update" metadata.
-        internal enum Update {
+        internal enum Update: Sendable {
             /// Request type for "Update".
             internal typealias Input = Echo_EchoRequest
             /// Response type for "Update".
