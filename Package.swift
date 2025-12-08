@@ -131,10 +131,27 @@ let targets: [Target] = [
     swiftSettings: defaultSwiftSettings
   ),
 
+  // gRPC interceptors shared infrastructure.
+  .target(
+    name: "GRPCInterceptorsCore",
+    dependencies: [
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+  .testTarget(
+    name: "GRPCInterceptorsCoreTests",
+    dependencies: [
+      .target(name: "GRPCInterceptorsCore")
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+
   // gRPC OTel tracing interceptors.
   .target(
     name: "GRPCOTelTracingInterceptors",
     dependencies: [
+      .target(name: "GRPCInterceptorsCore"),
       .product(name: "GRPCCore", package: "grpc-swift-2"),
       .product(name: "Tracing", package: "swift-distributed-tracing"),
     ],
