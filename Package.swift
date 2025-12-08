@@ -27,6 +27,10 @@ let products: [Product] = [
     targets: ["GRPCReflectionService"]
   ),
   .library(
+    name: "GRPCOTelMetricsInterceptors",
+    targets: ["GRPCOTelMetricsInterceptors"]
+  ),
+  .library(
     name: "GRPCOTelTracingInterceptors",
     targets: ["GRPCOTelTracingInterceptors"]
   ),
@@ -52,6 +56,10 @@ let dependencies: [Package.Dependency] = [
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
     from: "1.31.0"
+  ),
+  .package(
+    url: "https://github.com/apple/swift-metrics.git",
+    from: "2.7.1"
   ),
   .package(
     url: "https://github.com/apple/swift-distributed-tracing.git",
@@ -143,6 +151,27 @@ let targets: [Target] = [
     name: "GRPCInterceptorsCoreTests",
     dependencies: [
       .target(name: "GRPCInterceptorsCore")
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+
+  // gRPC OTel metrics interceptors.
+  .target(
+    name: "GRPCOTelMetricsInterceptors",
+    dependencies: [
+      .target(name: "GRPCInterceptorsCore"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "Metrics", package: "swift-metrics"),
+    ],
+    swiftSettings: defaultSwiftSettings
+  ),
+  .testTarget(
+    name: "GRPCOTelMetricsInterceptorsTests",
+    dependencies: [
+      .target(name: "GRPCOTelMetricsInterceptors"),
+      .product(name: "GRPCCore", package: "grpc-swift-2"),
+      .product(name: "Metrics", package: "swift-metrics"),
+      .product(name: "MetricsTestKit", package: "swift-metrics"),
     ],
     swiftSettings: defaultSwiftSettings
   ),
