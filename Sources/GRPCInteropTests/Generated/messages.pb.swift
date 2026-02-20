@@ -134,11 +134,11 @@ public struct Grpc_Testing_SimpleRequest: Sendable {
 
   /// Optional input payload sent along with the request.
   public var payload: Grpc_Testing_Payload {
-    get {return _payload ?? Grpc_Testing_Payload()}
+    get {_payload ?? Grpc_Testing_Payload()}
     set {_payload = newValue}
   }
   /// Returns true if `payload` has been explicitly set.
-  public var hasPayload: Bool {return self._payload != nil}
+  public var hasPayload: Bool {self._payload != nil}
   /// Clears the value of `payload`. Subsequent reads from it will return its default value.
   public mutating func clearPayload() {self._payload = nil}
 
@@ -153,31 +153,31 @@ public struct Grpc_Testing_SimpleRequest: Sendable {
   /// implement the full compression tests by introspecting the call to verify
   /// the response's compression status.
   public var responseCompressed: Grpc_Testing_BoolValue {
-    get {return _responseCompressed ?? Grpc_Testing_BoolValue()}
+    get {_responseCompressed ?? Grpc_Testing_BoolValue()}
     set {_responseCompressed = newValue}
   }
   /// Returns true if `responseCompressed` has been explicitly set.
-  public var hasResponseCompressed: Bool {return self._responseCompressed != nil}
+  public var hasResponseCompressed: Bool {self._responseCompressed != nil}
   /// Clears the value of `responseCompressed`. Subsequent reads from it will return its default value.
   public mutating func clearResponseCompressed() {self._responseCompressed = nil}
 
   /// Whether server should return a given status
   public var responseStatus: Grpc_Testing_EchoStatus {
-    get {return _responseStatus ?? Grpc_Testing_EchoStatus()}
+    get {_responseStatus ?? Grpc_Testing_EchoStatus()}
     set {_responseStatus = newValue}
   }
   /// Returns true if `responseStatus` has been explicitly set.
-  public var hasResponseStatus: Bool {return self._responseStatus != nil}
+  public var hasResponseStatus: Bool {self._responseStatus != nil}
   /// Clears the value of `responseStatus`. Subsequent reads from it will return its default value.
   public mutating func clearResponseStatus() {self._responseStatus = nil}
 
   /// Whether the server should expect this request to be compressed.
   public var expectCompressed: Grpc_Testing_BoolValue {
-    get {return _expectCompressed ?? Grpc_Testing_BoolValue()}
+    get {_expectCompressed ?? Grpc_Testing_BoolValue()}
     set {_expectCompressed = newValue}
   }
   /// Returns true if `expectCompressed` has been explicitly set.
-  public var hasExpectCompressed: Bool {return self._expectCompressed != nil}
+  public var hasExpectCompressed: Bool {self._expectCompressed != nil}
   /// Clears the value of `expectCompressed`. Subsequent reads from it will return its default value.
   public mutating func clearExpectCompressed() {self._expectCompressed = nil}
 
@@ -199,11 +199,11 @@ public struct Grpc_Testing_SimpleResponse: Sendable {
 
   /// Payload to increase message size.
   public var payload: Grpc_Testing_Payload {
-    get {return _payload ?? Grpc_Testing_Payload()}
+    get {_payload ?? Grpc_Testing_Payload()}
     set {_payload = newValue}
   }
   /// Returns true if `payload` has been explicitly set.
-  public var hasPayload: Bool {return self._payload != nil}
+  public var hasPayload: Bool {self._payload != nil}
   /// Clears the value of `payload`. Subsequent reads from it will return its default value.
   public mutating func clearPayload() {self._payload = nil}
 
@@ -229,11 +229,11 @@ public struct Grpc_Testing_StreamingInputCallRequest: Sendable {
 
   /// Optional input payload sent along with the request.
   public var payload: Grpc_Testing_Payload {
-    get {return _payload ?? Grpc_Testing_Payload()}
+    get {_payload ?? Grpc_Testing_Payload()}
     set {_payload = newValue}
   }
   /// Returns true if `payload` has been explicitly set.
-  public var hasPayload: Bool {return self._payload != nil}
+  public var hasPayload: Bool {self._payload != nil}
   /// Clears the value of `payload`. Subsequent reads from it will return its default value.
   public mutating func clearPayload() {self._payload = nil}
 
@@ -242,11 +242,11 @@ public struct Grpc_Testing_StreamingInputCallRequest: Sendable {
   /// implement the full compression tests by introspecting the call to verify
   /// the request's compression status.
   public var expectCompressed: Grpc_Testing_BoolValue {
-    get {return _expectCompressed ?? Grpc_Testing_BoolValue()}
+    get {_expectCompressed ?? Grpc_Testing_BoolValue()}
     set {_expectCompressed = newValue}
   }
   /// Returns true if `expectCompressed` has been explicitly set.
-  public var hasExpectCompressed: Bool {return self._expectCompressed != nil}
+  public var hasExpectCompressed: Bool {self._expectCompressed != nil}
   /// Clears the value of `expectCompressed`. Subsequent reads from it will return its default value.
   public mutating func clearExpectCompressed() {self._expectCompressed = nil}
 
@@ -290,11 +290,11 @@ public struct Grpc_Testing_ResponseParameters: Sendable {
   /// implement the full compression tests by introspecting the call to verify
   /// the response's compression status.
   public var compressed: Grpc_Testing_BoolValue {
-    get {return _compressed ?? Grpc_Testing_BoolValue()}
+    get {_compressed ?? Grpc_Testing_BoolValue()}
     set {_compressed = newValue}
   }
   /// Returns true if `compressed` has been explicitly set.
-  public var hasCompressed: Bool {return self._compressed != nil}
+  public var hasCompressed: Bool {self._compressed != nil}
   /// Clears the value of `compressed`. Subsequent reads from it will return its default value.
   public mutating func clearCompressed() {self._compressed = nil}
 
@@ -322,21 +322,21 @@ public struct Grpc_Testing_StreamingOutputCallRequest: Sendable {
 
   /// Optional input payload sent along with the request.
   public var payload: Grpc_Testing_Payload {
-    get {return _payload ?? Grpc_Testing_Payload()}
+    get {_payload ?? Grpc_Testing_Payload()}
     set {_payload = newValue}
   }
   /// Returns true if `payload` has been explicitly set.
-  public var hasPayload: Bool {return self._payload != nil}
+  public var hasPayload: Bool {self._payload != nil}
   /// Clears the value of `payload`. Subsequent reads from it will return its default value.
   public mutating func clearPayload() {self._payload = nil}
 
   /// Whether server should return a given status
   public var responseStatus: Grpc_Testing_EchoStatus {
-    get {return _responseStatus ?? Grpc_Testing_EchoStatus()}
+    get {_responseStatus ?? Grpc_Testing_EchoStatus()}
     set {_responseStatus = newValue}
   }
   /// Returns true if `responseStatus` has been explicitly set.
-  public var hasResponseStatus: Bool {return self._responseStatus != nil}
+  public var hasResponseStatus: Bool {self._responseStatus != nil}
   /// Clears the value of `responseStatus`. Subsequent reads from it will return its default value.
   public mutating func clearResponseStatus() {self._responseStatus = nil}
 
@@ -356,11 +356,11 @@ public struct Grpc_Testing_StreamingOutputCallResponse: Sendable {
 
   /// Payload to increase response size.
   public var payload: Grpc_Testing_Payload {
-    get {return _payload ?? Grpc_Testing_Payload()}
+    get {_payload ?? Grpc_Testing_Payload()}
     set {_payload = newValue}
   }
   /// Returns true if `payload` has been explicitly set.
-  public var hasPayload: Bool {return self._payload != nil}
+  public var hasPayload: Bool {self._payload != nil}
   /// Clears the value of `payload`. Subsequent reads from it will return its default value.
   public mutating func clearPayload() {self._payload = nil}
 
