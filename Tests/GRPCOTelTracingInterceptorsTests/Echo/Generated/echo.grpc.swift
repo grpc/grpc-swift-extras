@@ -43,7 +43,8 @@ internal enum Echo_Echo: Sendable {
             /// Descriptor for "Get".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "echo.Echo"),
-                method: "Get"
+                method: "Get",
+                type: .unary
             )
         }
         /// Namespace for "Expand" metadata.
@@ -55,7 +56,8 @@ internal enum Echo_Echo: Sendable {
             /// Descriptor for "Expand".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "echo.Echo"),
-                method: "Expand"
+                method: "Expand",
+                type: .serverStreaming
             )
         }
         /// Namespace for "Collect" metadata.
@@ -67,7 +69,8 @@ internal enum Echo_Echo: Sendable {
             /// Descriptor for "Collect".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "echo.Echo"),
-                method: "Collect"
+                method: "Collect",
+                type: .clientStreaming
             )
         }
         /// Namespace for "Update" metadata.
@@ -79,7 +82,8 @@ internal enum Echo_Echo: Sendable {
             /// Descriptor for "Update".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "echo.Echo"),
-                method: "Update"
+                method: "Update",
+                type: .bidirectionalStreaming
             )
         }
         /// Descriptors for all methods in the "echo.Echo" service.

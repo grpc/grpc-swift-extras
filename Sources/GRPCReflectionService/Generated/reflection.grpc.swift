@@ -50,7 +50,8 @@ package enum Grpc_Reflection_V1_ServerReflection: Sendable {
             /// Descriptor for "ServerReflectionInfo".
             package static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.reflection.v1.ServerReflection"),
-                method: "ServerReflectionInfo"
+                method: "ServerReflectionInfo",
+                type: .bidirectionalStreaming
             )
         }
         /// Descriptors for all methods in the "grpc.reflection.v1.ServerReflection" service.
