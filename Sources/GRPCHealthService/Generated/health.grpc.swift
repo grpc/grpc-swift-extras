@@ -46,7 +46,8 @@ package enum Grpc_Health_V1_Health: Sendable {
             /// Descriptor for "Check".
             package static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.health.v1.Health"),
-                method: "Check"
+                method: "Check",
+                type: .unary
             )
         }
         /// Namespace for "List" metadata.
@@ -58,7 +59,8 @@ package enum Grpc_Health_V1_Health: Sendable {
             /// Descriptor for "List".
             package static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.health.v1.Health"),
-                method: "List"
+                method: "List",
+                type: .unary
             )
         }
         /// Namespace for "Watch" metadata.
@@ -70,7 +72,8 @@ package enum Grpc_Health_V1_Health: Sendable {
             /// Descriptor for "Watch".
             package static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.health.v1.Health"),
-                method: "Watch"
+                method: "Watch",
+                type: .serverStreaming
             )
         }
         /// Descriptors for all methods in the "grpc.health.v1.Health" service.
