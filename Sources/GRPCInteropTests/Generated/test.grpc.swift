@@ -46,7 +46,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "EmptyCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "EmptyCall"
+                method: "EmptyCall",
+                type: .unary
             )
         }
         /// Namespace for "UnaryCall" metadata.
@@ -58,7 +59,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "UnaryCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "UnaryCall"
+                method: "UnaryCall",
+                type: .unary
             )
         }
         /// Namespace for "CacheableUnaryCall" metadata.
@@ -70,7 +72,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "CacheableUnaryCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "CacheableUnaryCall"
+                method: "CacheableUnaryCall",
+                type: .unary
             )
         }
         /// Namespace for "StreamingOutputCall" metadata.
@@ -82,7 +85,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "StreamingOutputCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "StreamingOutputCall"
+                method: "StreamingOutputCall",
+                type: .serverStreaming
             )
         }
         /// Namespace for "StreamingInputCall" metadata.
@@ -94,7 +98,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "StreamingInputCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "StreamingInputCall"
+                method: "StreamingInputCall",
+                type: .clientStreaming
             )
         }
         /// Namespace for "FullDuplexCall" metadata.
@@ -106,7 +111,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "FullDuplexCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "FullDuplexCall"
+                method: "FullDuplexCall",
+                type: .bidirectionalStreaming
             )
         }
         /// Namespace for "HalfDuplexCall" metadata.
@@ -118,7 +124,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "HalfDuplexCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "HalfDuplexCall"
+                method: "HalfDuplexCall",
+                type: .bidirectionalStreaming
             )
         }
         /// Namespace for "UnimplementedCall" metadata.
@@ -130,7 +137,8 @@ public enum Grpc_Testing_TestService: Sendable {
             /// Descriptor for "UnimplementedCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.TestService"),
-                method: "UnimplementedCall"
+                method: "UnimplementedCall",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "grpc.testing.TestService" service.
@@ -1992,7 +2000,8 @@ public enum Grpc_Testing_UnimplementedService: Sendable {
             /// Descriptor for "UnimplementedCall".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.UnimplementedService"),
-                method: "UnimplementedCall"
+                method: "UnimplementedCall",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "grpc.testing.UnimplementedService" service.
@@ -2343,7 +2352,8 @@ public enum Grpc_Testing_ReconnectService: Sendable {
             /// Descriptor for "Start".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService"),
-                method: "Start"
+                method: "Start",
+                type: .unary
             )
         }
         /// Namespace for "Stop" metadata.
@@ -2355,7 +2365,8 @@ public enum Grpc_Testing_ReconnectService: Sendable {
             /// Descriptor for "Stop".
             public static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "grpc.testing.ReconnectService"),
-                method: "Stop"
+                method: "Stop",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "grpc.testing.ReconnectService" service.
