@@ -15,30 +15,8 @@
  */
 
 internal import GRPCCore
+internal import GRPCInterceptorsCore
 internal import Tracing
-
-enum GRPCTracingKeys {
-  static let rpcSystem = "rpc.system"
-  static let rpcMethod = "rpc.method"
-  static let rpcService = "rpc.service"
-  static let rpcMessageID = "rpc.message.id"
-  static let rpcMessageType = "rpc.message.type"
-  static let grpcStatusCode = "rpc.grpc.status_code"
-
-  static let serverAddress = "server.address"
-  static let serverPort = "server.port"
-
-  static let clientAddress = "client.address"
-  static let clientPort = "client.port"
-
-  static let networkTransport = "network.transport"
-  static let networkType = "network.type"
-  static let networkPeerAddress = "network.peer.address"
-  static let networkPeerPort = "network.peer.port"
-
-  fileprivate static let requestMetadataPrefix = "rpc.grpc.request.metadata."
-  fileprivate static let responseMetadataPrefix = "rpc.grpc.response.metadata."
-}
 
 @available(gRPCSwiftExtras 2.0, *)
 extension Span {
@@ -48,28 +26,28 @@ extension Span {
     serverHostname: String,
     networkTransportMethod: String
   ) {
-    self.attributes[GRPCTracingKeys.rpcSystem] = "grpc"
-    self.attributes[GRPCTracingKeys.serverAddress] = serverHostname
-    self.attributes[GRPCTracingKeys.networkTransport] = networkTransportMethod
-    self.attributes[GRPCTracingKeys.rpcService] = context.descriptor.service.fullyQualifiedService
-    self.attributes[GRPCTracingKeys.rpcMethod] = context.descriptor.method
+    self.attributes[GRPCOTelAttributeKeys.rpcSystem] = "grpc"
+    self.attributes[GRPCOTelAttributeKeys.serverAddress] = serverHostname
+    self.attributes[GRPCOTelAttributeKeys.networkTransport] = networkTransportMethod
+    self.attributes[GRPCOTelAttributeKeys.rpcService] = context.descriptor.service.fullyQualifiedService
+    self.attributes[GRPCOTelAttributeKeys.rpcMethod] = context.descriptor.method
 
     // Set server address information
     switch PeerAddress(context.remotePeer) {
     case .ipv4(let address, let port):
-      self.attributes[GRPCTracingKeys.networkType] = "ipv4"
-      self.attributes[GRPCTracingKeys.networkPeerAddress] = address
-      self.attributes[GRPCTracingKeys.networkPeerPort] = port
-      self.attributes[GRPCTracingKeys.serverPort] = port
+      self.attributes[GRPCOTelAttributeKeys.networkType] = "ipv4"
+      self.attributes[GRPCOTelAttributeKeys.networkPeerAddress] = address
+      self.attributes[GRPCOTelAttributeKeys.networkPeerPort] = port
+      self.attributes[GRPCOTelAttributeKeys.serverPort] = port
 
     case .ipv6(let address, let port):
-      self.attributes[GRPCTracingKeys.networkType] = "ipv6"
-      self.attributes[GRPCTracingKeys.networkPeerAddress] = address
-      self.attributes[GRPCTracingKeys.networkPeerPort] = port
-      self.attributes[GRPCTracingKeys.serverPort] = port
+      self.attributes[GRPCOTelAttributeKeys.networkType] = "ipv6"
+      self.attributes[GRPCOTelAttributeKeys.networkPeerAddress] = address
+      self.attributes[GRPCOTelAttributeKeys.networkPeerPort] = port
+      self.attributes[GRPCOTelAttributeKeys.serverPort] = port
 
     case .unixDomainSocket(let path):
-      self.attributes[GRPCTracingKeys.networkPeerAddress] = path
+      self.attributes[GRPCOTelAttributeKeys.networkPeerAddress] = path
 
     case .none:
       // We don't recognise this address format, so don't populate any fields.
@@ -82,28 +60,28 @@ extension Span {
     serverHostname: String,
     networkTransportMethod: String
   ) {
-    self.attributes[GRPCTracingKeys.rpcSystem] = "grpc"
-    self.attributes[GRPCTracingKeys.serverAddress] = serverHostname
-    self.attributes[GRPCTracingKeys.networkTransport] = networkTransportMethod
-    self.attributes[GRPCTracingKeys.rpcService] = context.descriptor.service.fullyQualifiedService
-    self.attributes[GRPCTracingKeys.rpcMethod] = context.descriptor.method
+    self.attributes[GRPCOTelAttributeKeys.rpcSystem] = "grpc"
+    self.attributes[GRPCOTelAttributeKeys.serverAddress] = serverHostname
+    self.attributes[GRPCOTelAttributeKeys.networkTransport] = networkTransportMethod
+    self.attributes[GRPCOTelAttributeKeys.rpcService] = context.descriptor.service.fullyQualifiedService
+    self.attributes[GRPCOTelAttributeKeys.rpcMethod] = context.descriptor.method
 
     // Set server address information
     switch PeerAddress(context.localPeer) {
     case .ipv4(let address, let port):
-      self.attributes[GRPCTracingKeys.networkType] = "ipv4"
-      self.attributes[GRPCTracingKeys.networkPeerAddress] = address
-      self.attributes[GRPCTracingKeys.networkPeerPort] = port
-      self.attributes[GRPCTracingKeys.serverPort] = port
+      self.attributes[GRPCOTelAttributeKeys.networkType] = "ipv4"
+      self.attributes[GRPCOTelAttributeKeys.networkPeerAddress] = address
+      self.attributes[GRPCOTelAttributeKeys.networkPeerPort] = port
+      self.attributes[GRPCOTelAttributeKeys.serverPort] = port
 
     case .ipv6(let address, let port):
-      self.attributes[GRPCTracingKeys.networkType] = "ipv6"
-      self.attributes[GRPCTracingKeys.networkPeerAddress] = address
-      self.attributes[GRPCTracingKeys.networkPeerPort] = port
-      self.attributes[GRPCTracingKeys.serverPort] = port
+      self.attributes[GRPCOTelAttributeKeys.networkType] = "ipv6"
+      self.attributes[GRPCOTelAttributeKeys.networkPeerAddress] = address
+      self.attributes[GRPCOTelAttributeKeys.networkPeerPort] = port
+      self.attributes[GRPCOTelAttributeKeys.serverPort] = port
 
     case .unixDomainSocket(let path):
-      self.attributes[GRPCTracingKeys.networkPeerAddress] = path
+      self.attributes[GRPCOTelAttributeKeys.networkPeerAddress] = path
 
     case .none:
       // We don't recognise this address format, so don't populate any fields.
@@ -113,15 +91,15 @@ extension Span {
     // Set client address information
     switch PeerAddress(context.remotePeer) {
     case .ipv4(let address, let port):
-      self.attributes[GRPCTracingKeys.clientAddress] = address
-      self.attributes[GRPCTracingKeys.clientPort] = port
+      self.attributes[GRPCOTelAttributeKeys.clientAddress] = address
+      self.attributes[GRPCOTelAttributeKeys.clientPort] = port
 
     case .ipv6(let address, let port):
-      self.attributes[GRPCTracingKeys.clientAddress] = address
-      self.attributes[GRPCTracingKeys.clientPort] = port
+      self.attributes[GRPCOTelAttributeKeys.clientAddress] = address
+      self.attributes[GRPCOTelAttributeKeys.clientPort] = port
 
     case .unixDomainSocket(let path):
-      self.attributes[GRPCTracingKeys.clientAddress] = path
+      self.attributes[GRPCOTelAttributeKeys.clientAddress] = path
 
     case .none:
       // We don't recognise this address format, so don't populate any fields.
@@ -132,14 +110,14 @@ extension Span {
   func setMetadataStringAttributesAsRequestSpanAttributes(_ metadata: Metadata) {
     self.setMetadataStringAttributesAsSpanAttributes(
       metadata,
-      prefix: GRPCTracingKeys.requestMetadataPrefix
+      prefix: GRPCOTelAttributeKeys.requestMetadataPrefix
     )
   }
 
   func setMetadataStringAttributesAsResponseSpanAttributes(_ metadata: Metadata) {
     self.setMetadataStringAttributesAsSpanAttributes(
       metadata,
-      prefix: GRPCTracingKeys.responseMetadataPrefix
+      prefix: GRPCOTelAttributeKeys.responseMetadataPrefix
     )
   }
 

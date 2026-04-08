@@ -15,6 +15,7 @@
  */
 
 internal import GRPCCore
+internal import GRPCInterceptorsCore
 internal import Synchronization
 internal import Tracing
 
@@ -22,14 +23,14 @@ extension Span {
   @available(gRPCSwiftExtras 2.0, *)
   func endRPC() {
     // No error, status code zero.
-    self.attributes[GRPCTracingKeys.grpcStatusCode] = 0
+    self.attributes[GRPCOTelAttributeKeys.grpcStatusCode] = 0
     self.setStatus(SpanStatus(code: .ok))
     self.end()
   }
 
   @available(gRPCSwiftExtras 2.0, *)
   func endRPC(withError error: RPCError) {
-    self.attributes[GRPCTracingKeys.grpcStatusCode] = error.code.rawValue
+    self.attributes[GRPCOTelAttributeKeys.grpcStatusCode] = error.code.rawValue
     self.setStatus(SpanStatus(code: .error))
     self.recordError(error)
     self.end()
@@ -42,7 +43,7 @@ extension Span {
     } else if let convertible = error as? any RPCErrorConvertible {
       self.endRPC(withError: RPCError(convertible))
     } else {
-      self.attributes[GRPCTracingKeys.grpcStatusCode] = RPCError.Code.unknown.rawValue
+      self.attributes[GRPCOTelAttributeKeys.grpcStatusCode] = RPCError.Code.unknown.rawValue
       self.setStatus(SpanStatus(code: .error))
       self.recordError(error)
       self.end()
@@ -53,8 +54,8 @@ extension Span {
 extension SpanEvent {
   private static func rpcMessage(type: String, id: Int) -> Self {
     var event = SpanEvent(name: "rpc.message")
-    event.attributes[GRPCTracingKeys.rpcMessageType] = type
-    event.attributes[GRPCTracingKeys.rpcMessageID] = id
+    event.attributes[GRPCOTelAttributeKeys.rpcMessageType] = type
+    event.attributes[GRPCOTelAttributeKeys.rpcMessageID] = id
     return event
   }
 
