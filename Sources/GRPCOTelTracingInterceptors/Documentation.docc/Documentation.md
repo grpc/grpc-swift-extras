@@ -52,5 +52,5 @@ try await server.serve()
 For more information, look at the documentation for:
 - ``GRPCOTelTracingInterceptors/ClientOTelTracingInterceptor``,
 - ``GRPCOTelTracingInterceptors/ServerOTelTracingInterceptor``,
-- [Client Interceptors](https://swiftpackageindex.com/grpc/grpc-swift/documentation/grpccore/clientinterceptor), 
-- [Server Interceptors](https://swiftpackageindex.com/grpc/grpc-swift/documentation/grpccore/serverinterceptor)
+- [Client Interceptors](https://swiftpackageindex.com/grpc/grpc-swift-2/documentation/grpccore/clientinterceptor),
+- [Server Interceptors](https://swiftpackageindex.com/grpc/grpc-swift-2/documentation/grpccore/serverinterceptor)
