@@ -17,14 +17,15 @@ set -eu
 
 here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 root="$here/../.."
-protoc=$(which protoc)
 
 # Build the protoc plugins.
+swift build -c release --product protoc
 swift build -c release --product protoc-gen-swift
 swift build -c release --product protoc-gen-grpc-swift-2
 
 # Grab the plugin paths.
 bin_path=$(swift build -c release --show-bin-path)
+protoc="$bin_path/protoc"
 protoc_gen_swift="$bin_path/protoc-gen-swift"
 protoc_generate_grpc_swift="$bin_path/protoc-gen-grpc-swift-2"
 
