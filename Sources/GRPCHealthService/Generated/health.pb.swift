@@ -32,12 +32,12 @@ package import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
-package struct Grpc_Health_V1_HealthCheckRequest: Sendable {
+package nonisolated struct Grpc_Health_V1_HealthCheckRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -49,7 +49,7 @@ package struct Grpc_Health_V1_HealthCheckRequest: Sendable {
   package init() {}
 }
 
-package struct Grpc_Health_V1_HealthCheckResponse: Sendable {
+package nonisolated struct Grpc_Health_V1_HealthCheckResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -58,7 +58,7 @@ package struct Grpc_Health_V1_HealthCheckResponse: Sendable {
 
   package var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  package enum ServingStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
+  package nonisolated enum ServingStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
     package typealias RawValue = Int
     case unknown // = 0
     case serving // = 1
@@ -105,7 +105,7 @@ package struct Grpc_Health_V1_HealthCheckResponse: Sendable {
   package init() {}
 }
 
-package struct Grpc_Health_V1_HealthListRequest: Sendable {
+package nonisolated struct Grpc_Health_V1_HealthListRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -115,7 +115,7 @@ package struct Grpc_Health_V1_HealthListRequest: Sendable {
   package init() {}
 }
 
-package struct Grpc_Health_V1_HealthListResponse: Sendable {
+package nonisolated struct Grpc_Health_V1_HealthListResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -130,9 +130,9 @@ package struct Grpc_Health_V1_HealthListResponse: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "grpc.health.v1"
+fileprivate nonisolated let _protobuf_package = "grpc.health.v1"
 
-extension Grpc_Health_V1_HealthCheckRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Grpc_Health_V1_HealthCheckRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   package static let protoMessageName: String = _protobuf_package + ".HealthCheckRequest"
   package static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}service\0")
 
@@ -162,7 +162,7 @@ extension Grpc_Health_V1_HealthCheckRequest: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Grpc_Health_V1_HealthCheckResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Grpc_Health_V1_HealthCheckResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   package static let protoMessageName: String = _protobuf_package + ".HealthCheckResponse"
   package static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}status\0")
 
@@ -192,11 +192,11 @@ extension Grpc_Health_V1_HealthCheckResponse: SwiftProtobuf.Message, SwiftProtob
   }
 }
 
-extension Grpc_Health_V1_HealthCheckResponse.ServingStatus: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Grpc_Health_V1_HealthCheckResponse.ServingStatus: SwiftProtobuf._ProtoNameProviding {
   package static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0UNKNOWN\0\u{1}SERVING\0\u{1}NOT_SERVING\0\u{1}SERVICE_UNKNOWN\0")
 }
 
-extension Grpc_Health_V1_HealthListRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Grpc_Health_V1_HealthListRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   package static let protoMessageName: String = _protobuf_package + ".HealthListRequest"
   package static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -215,7 +215,7 @@ extension Grpc_Health_V1_HealthListRequest: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
-extension Grpc_Health_V1_HealthListResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Grpc_Health_V1_HealthListResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   package static let protoMessageName: String = _protobuf_package + ".HealthListResponse"
   package static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}statuses\0")
 
