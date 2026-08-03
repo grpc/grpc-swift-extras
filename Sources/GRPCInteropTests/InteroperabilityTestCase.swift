@@ -15,25 +15,27 @@
  */
 public import GRPCCore
 
+/// A single gRPC interoperability test case that can run against a client.
 @available(gRPCSwiftExtras 2.0, *)
 public protocol InteroperabilityTest {
-  /// Run a test case using the given connection.
+  /// Runs a test case using the given client.
   ///
-  /// The test case is considered unsuccessful if any exception is thrown, conversely if no
-  /// exceptions are thrown it is successful.
+  /// The test case is unsuccessful if it throws an error, and successful otherwise.
   ///
   /// - Parameter client: The client to use for the test.
-  /// - Throws: Any exception may be thrown to indicate an unsuccessful test.
+  /// - Throws: An error to indicate that the test case failed.
   func run<Transport: ClientTransport>(client: GRPCClient<Transport>) async throws
 }
 
-/// Test cases as listed by the [gRPC interoperability test description specification]
-/// (https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/interop-test-descriptions.md).
+/// The gRPC interoperability test cases this module implements.
 ///
-/// This is not a complete list, the following tests have not been implemented:
+/// These test cases are listed by the
+/// [gRPC interoperability test description specification](https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/interop-test-descriptions.md).
+///
+/// This is not a complete list. The following tests have not been implemented:
 /// - cacheable_unary (caching not supported)
 /// - cancel_after_begin (if the client cancels the task running the request, there's no response to be
-/// received, so we can't check we got back a Cancelled status code)
+/// received, so we can't check that we got back a Cancelled status code)
 /// - cancel_after_first_response (same reason as above)
 /// - client_compressed_streaming (we don't support per-message compression, so we can't implement this)
 /// - compute_engine_creds
@@ -45,26 +47,53 @@ public protocol InteroperabilityTest {
 /// - timeout_on_sleeping_server (timeouts end up being surfaced as `CancellationError`s, so we
 /// can't really implement this test)
 ///
-/// Note: Tests for compression have not been implemented yet as compression is
-/// not supported. Once the API which allows for compression will be implemented
-/// these tests should be added.
+/// Note: Tests for compression haven't been implemented yet because compression isn't supported.
+/// Once the API that allows for compression is implemented, these tests should be added.
 @available(gRPCSwiftExtras 2.0, *)
 public enum InteroperabilityTestCase: String, CaseIterable, Sendable {
+  /// Verifies that implementations support zero-size messages.
   case emptyUnary = "empty_unary"
+
+  /// Verifies that unary calls succeed in sending large messages.
   case largeUnary = "large_unary"
+
+  /// Verifies that the client can compress unary messages.
   case clientCompressedUnary = "client_compressed_unary"
+
+  /// Verifies that the server can compress unary messages.
   case serverCompressedUnary = "server_compressed_unary"
+
+  /// Verifies that client-only streaming succeeds.
   case clientStreaming = "client_streaming"
+
+  /// Verifies that server-only streaming succeeds.
   case serverStreaming = "server_streaming"
+
+  /// Verifies that the server can compress streaming messages.
   case serverCompressedStreaming = "server_compressed_streaming"
+
+  /// Verifies that full-duplex streaming is supported.
   case pingPong = "ping_pong"
+
+  /// Verifies that streams support having zero messages in both directions.
   case emptyStream = "empty_stream"
+
+  /// Verifies that custom metadata can be sent as initial and trailing metadata.
   case customMetadata = "custom_metadata"
+
+  /// Verifies that a server-specified status code and message are propagated to the client.
   case statusCodeAndMessage = "status_code_and_message"
+
+  /// Verifies that Unicode and whitespace are processed correctly in a status message.
   case specialStatusMessage = "special_status_message"
+
+  /// Verifies that calling an unimplemented RPC method returns the unimplemented status code.
   case unimplementedMethod = "unimplemented_method"
+
+  /// Verifies that calling an unimplemented service returns the unimplemented status code.
   case unimplementedService = "unimplemented_service"
 
+  /// The test case's name, as used by the gRPC interoperability test suite.
   public var name: String {
     return self.rawValue
   }
@@ -72,7 +101,7 @@ public enum InteroperabilityTestCase: String, CaseIterable, Sendable {
 
 @available(gRPCSwiftExtras 2.0, *)
 extension InteroperabilityTestCase {
-  /// Return a new instance of the test case.
+  /// Returns a new instance of the test case.
   public func makeTest() -> any InteroperabilityTest {
     switch self {
     case .emptyUnary:

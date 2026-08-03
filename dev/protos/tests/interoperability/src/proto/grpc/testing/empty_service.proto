@@ -18,6 +18,7 @@ syntax = "proto3";
 package grpc.testing;
 
 // A service that has zero methods.
-// See https://github.com/grpc/grpc/issues/15574
+//
+// See [issue #15574](https://github.com/grpc/grpc/issues/15574) for why.
 service EmptyService {
 }

@@ -21,6 +21,11 @@ public import ServiceLifecycle
 // `GRPCCore`, and thus, the owners of `GRPCClient`. A conflicting conformance won't be added.
 @available(gRPCSwiftExtras 2.0, *)
 extension GRPCClient: @retroactive Service {
+  /// Runs the client's connections, returning only after they close.
+  ///
+  /// This conformance lets `GRPCClient` run as part of a `ServiceLifecycle` `ServiceGroup`.
+  /// When the group begins graceful shutdown, this method calls `beginGracefulShutdown()` on
+  /// the client so in-flight RPCs can finish before its connections close.
   public func run() async throws {
     try await withGracefulShutdownHandler {
       try await self.runConnections()

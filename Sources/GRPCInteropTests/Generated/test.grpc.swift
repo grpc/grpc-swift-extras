@@ -178,8 +178,7 @@ extension Grpc_Testing_TestService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service to test the various types of RPCs and experiment with
-    /// > performance with various types of payload.
+    /// > A service for testing the different types of RPCs and experimenting with payload performance.
     public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
         /// Handle the "EmptyCall" method.
         ///
@@ -346,8 +345,7 @@ extension Grpc_Testing_TestService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service to test the various types of RPCs and experiment with
-    /// > performance with various types of payload.
+    /// > A service for testing the different types of RPCs and experimenting with payload performance.
     public protocol ServiceProtocol: Grpc_Testing_TestService.StreamingServiceProtocol {
         /// Handle the "EmptyCall" method.
         ///
@@ -512,8 +510,7 @@ extension Grpc_Testing_TestService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service to test the various types of RPCs and experiment with
-    /// > performance with various types of payload.
+    /// > A service for testing the different types of RPCs and experimenting with payload performance.
     public protocol SimpleServiceProtocol: Grpc_Testing_TestService.ServiceProtocol {
         /// Handle the "EmptyCall" method.
         ///
@@ -970,8 +967,7 @@ extension Grpc_Testing_TestService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service to test the various types of RPCs and experiment with
-    /// > performance with various types of payload.
+    /// > A service for testing the different types of RPCs and experimenting with payload performance.
     public protocol ClientProtocol: Sendable {
         /// Call the "EmptyCall" method.
         ///
@@ -1176,8 +1172,7 @@ extension Grpc_Testing_TestService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service to test the various types of RPCs and experiment with
-    /// > performance with various types of payload.
+    /// > A service for testing the different types of RPCs and experimenting with payload performance.
     public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
         private let client: GRPCCore.GRPCClient<Transport>
 
@@ -2034,8 +2029,7 @@ extension Grpc_Testing_UnimplementedService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service NOT implemented at servers so clients can test for
-    /// > that case.
+    /// > A service that servers intentionally don't implement, so clients can test that case.
     public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
         /// Handle the "UnimplementedCall" method.
         ///
@@ -2066,8 +2060,7 @@ extension Grpc_Testing_UnimplementedService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service NOT implemented at servers so clients can test for
-    /// > that case.
+    /// > A service that servers intentionally don't implement, so clients can test that case.
     public protocol ServiceProtocol: Grpc_Testing_UnimplementedService.StreamingServiceProtocol {
         /// Handle the "UnimplementedCall" method.
         ///
@@ -2096,8 +2089,7 @@ extension Grpc_Testing_UnimplementedService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service NOT implemented at servers so clients can test for
-    /// > that case.
+    /// > A service that servers intentionally don't implement, so clients can test that case.
     public protocol SimpleServiceProtocol: Grpc_Testing_UnimplementedService.ServiceProtocol {
         /// Handle the "UnimplementedCall" method.
         ///
@@ -2180,8 +2172,7 @@ extension Grpc_Testing_UnimplementedService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service NOT implemented at servers so clients can test for
-    /// > that case.
+    /// > A service that servers intentionally don't implement, so clients can test that case.
     public protocol ClientProtocol: Sendable {
         /// Call the "UnimplementedCall" method.
         ///
@@ -2215,8 +2206,7 @@ extension Grpc_Testing_UnimplementedService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A simple service NOT implemented at servers so clients can test for
-    /// > that case.
+    /// > A service that servers intentionally don't implement, so clients can test that case.
     public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
         private let client: GRPCCore.GRPCClient<Transport>
 
@@ -2400,7 +2390,7 @@ extension Grpc_Testing_ReconnectService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A service used to control reconnect server.
+    /// > A service that controls a server for the reconnect interop test.
     public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {
         /// Handle the "Start" method.
         ///
@@ -2441,7 +2431,7 @@ extension Grpc_Testing_ReconnectService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A service used to control reconnect server.
+    /// > A service that controls a server for the reconnect interop test.
     public protocol ServiceProtocol: Grpc_Testing_ReconnectService.StreamingServiceProtocol {
         /// Handle the "Start" method.
         ///
@@ -2480,7 +2470,7 @@ extension Grpc_Testing_ReconnectService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A service used to control reconnect server.
+    /// > A service that controls a server for the reconnect interop test.
     public protocol SimpleServiceProtocol: Grpc_Testing_ReconnectService.ServiceProtocol {
         /// Handle the "Start" method.
         ///
@@ -2608,7 +2598,7 @@ extension Grpc_Testing_ReconnectService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A service used to control reconnect server.
+    /// > A service that controls a server for the reconnect interop test.
     public protocol ClientProtocol: Sendable {
         /// Call the "Start" method.
         ///
@@ -2657,7 +2647,7 @@ extension Grpc_Testing_ReconnectService {
     ///
     /// > Source IDL Documentation:
     /// >
-    /// > A service used to control reconnect server.
+    /// > A service that controls a server for the reconnect interop test.
     public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
         private let client: GRPCCore.GRPCClient<Transport>
 

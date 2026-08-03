@@ -20,13 +20,13 @@ package import Tracing
 
 /// A client interceptor that injects tracing information into the request.
 ///
-/// The tracing information is taken from the current `ServiceContext`, and injected into the request's
-/// metadata. It will then be picked up by the server-side ``ServerOTelTracingInterceptor``.
+/// The tracing information is taken from the current `ServiceContext` and injected into the
+/// request's metadata. The server-side ``ServerOTelTracingInterceptor`` then picks it up.
 ///
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
 ///
-/// This interceptor will also inject all required and recommended span and event attributes, and set span status, as defined by
-/// OpenTelemetry's documentation on:
+/// This interceptor also injects all required and recommended span and event attributes, and
+/// sets span status, as defined by OpenTelemetry's documentation on:
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
 @available(gRPCSwiftExtras 2.0, *)
@@ -40,17 +40,15 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
   private var includeResponseMetadata: Bool
   private let tracerOverride: (any Tracer)?
 
-  /// Create a new instance of a ``ClientOTelTracingInterceptor``.
+  /// Creates a client interceptor that injects tracing information for the given server
+  /// hostname and network transport method.
   ///
   /// - Parameters:
-  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
-  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
+  ///  - serverHostname: The hostname of the RPC server. This is the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This is the value for the
   ///  `network.transport` attribute in spans.
-  ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
+  ///  - traceEachMessage: If `true`, each request part sent and response part received is recorded as a separate
   ///  event in a tracing span.
-  ///
-  /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
-  /// as including all request/response metadata can be a security risk.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
@@ -65,16 +63,20 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
     )
   }
 
-  /// Create a new instance of a ``ClientOTelTracingInterceptor``.
+  /// Creates a client interceptor that injects tracing information and, when enabled, captures
+  /// request and response metadata as span attributes.
   ///
   /// - Parameters:
-  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
-  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
+  ///  - serverHostname: The hostname of the RPC server. This is the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This is the value for the
   ///  `network.transport` attribute in spans.
-  ///  - traceEachMessage: If `true`, each request part sent and response part received will be recorded as a separate
+  ///  - traceEachMessage: If `true`, each request part sent and response part received is recorded as a separate
   ///  event in a tracing span.
-  ///  - includeRequestMetadata: if `true`, **all** metadata keys with string values included in the request will be added to the span as attributes.
-  ///  - includeResponseMetadata: if `true`, **all** metadata keys with string values included in the response will be added to the span as attributes.
+  ///  - includeRequestMetadata: If `true`, **all** metadata keys with string values included in the request are added to the span as attributes.
+  ///  - includeResponseMetadata: If `true`, **all** metadata keys with string values included in the response are added to the span as attributes.
+  ///
+  /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
+  /// as including all request/response metadata can be a security risk.
   public init(
     serverHostname: String,
     networkTransportMethod: String,
@@ -109,16 +111,16 @@ public struct ClientOTelTracingInterceptor: ClientInterceptor {
     self.tracerOverride = tracerOverride
   }
 
-  /// This interceptor will inject as the request's metadata whatever `ServiceContext` key-value pairs
-  /// have been made available by the tracing implementation bootstrapped in your application.
+  /// This interceptor adds whatever tracing key-value pairs your application's tracing
+  /// implementation makes available to the request's metadata.
   ///
-  /// Which key-value pairs are injected will depend on the specific tracing implementation
-  /// that has been configured when bootstrapping `swift-distributed-tracing` in your application.
+  /// The specific tracing implementation you configure when bootstrapping
+  /// `swift-distributed-tracing` in your application determines which key-value pairs are injected.
   ///
-  /// It will also inject all required and recommended span and event attributes, and set span status, as defined by OpenTelemetry's
-  /// documentation on:
-  /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
-  /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
+  /// It also injects all required and recommended span and event attributes, and sets span status,
+  /// as defined by OpenTelemetry's documentation on:
+  /// - [RPC spans](https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans)
+  /// - [gRPC conventions](https://opentelemetry.io/docs/specs/semconv/rpc/grpc)
   public func intercept<Input, Output>(
     request: StreamingClientRequest<Input>,
     context: ClientContext,

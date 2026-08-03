@@ -28,16 +28,16 @@ public import struct Foundation.Data
 
 /// Implements the gRPC Reflection service (v1).
 ///
-/// The reflection service is a regular gRPC service providing information about other
+/// The reflection service is a regular gRPC service that provides information about other
 /// services.
 ///
-/// The service will offer information to clients about any registered services. You can register
+/// The service offers information to clients about any registered services. You can register
 /// a service by providing its descriptor set to the service.
 @available(gRPCSwiftExtras 2.0, *)
 public struct ReflectionService: Sendable {
   private let service: ReflectionService.V1
 
-  /// Create a new instance of the reflection service from a list of descriptor set file URLs.
+  /// Creates a reflection service from a list of descriptor set file URLs.
   ///
   /// - Parameter fileURLs: A list of file URLs containing serialized descriptor sets.
   public init(
@@ -47,7 +47,7 @@ public struct ReflectionService: Sendable {
     try self.init(fileDescriptors: fileDescriptorProtos)
   }
 
-  /// Create a new instance of the reflection service from a list of descriptor set file paths.
+  /// Creates a reflection service from a list of descriptor set file paths.
   ///
   /// - Parameter filePaths: A list of file paths containing serialized descriptor sets.
   public init(
@@ -57,7 +57,7 @@ public struct ReflectionService: Sendable {
     try self.init(fileDescriptors: fileDescriptorProtos)
   }
 
-  /// Create a new instance of the reflection service from a list of file descriptor messages.
+  /// Creates a reflection service from a list of file descriptor messages.
   ///
   /// - Parameter fileDescriptors: A list of file descriptors of the services to register.
   public init(
@@ -70,6 +70,9 @@ public struct ReflectionService: Sendable {
 
 @available(gRPCSwiftExtras 2.0, *)
 extension ReflectionService: RegistrableRPCService {
+  /// Registers the service's methods with the given router.
+  ///
+  /// - Parameter router: The router to register the service's methods with.
   public func registerMethods<Transport>(
     with router: inout RPCRouter<Transport>
   ) where Transport: ServerTransport {

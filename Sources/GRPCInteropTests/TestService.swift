@@ -23,10 +23,15 @@ private import struct FoundationEssentials.Data
 private import struct Foundation.Data
 #endif
 
+/// An implementation of the gRPC testing service used by the interoperability test suite.
 @available(gRPCSwiftExtras 2.0, *)
 public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
+  /// Creates a test service.
   public init() {}
 
+  /// Always throws an error indicating the method isn't implemented.
+  ///
+  /// This method exists so tests can verify that clients handle unimplemented methods correctly.
   public func unimplementedCall(
     request: ServerRequest<Grpc_Testing_Empty>,
     context: ServerContext
@@ -34,7 +39,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     throw RPCError(code: .unimplemented, message: "The RPC is not implemented.")
   }
 
-  /// Server implements `emptyCall` which immediately returns the empty message.
+  /// Immediately returns an empty response message.
   public func emptyCall(
     request: ServerRequest<Grpc_Testing_Empty>,
     context: ServerContext
@@ -48,9 +53,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     )
   }
 
-  /// Server implements `unaryCall` which immediately returns a `SimpleResponse` with a payload
-  /// body of size `SimpleRequest.responseSize` bytes and type as appropriate for the
-  /// `SimpleRequest.responseType`.
+  /// Immediately returns a response with a payload of the requested size and type.
   ///
   /// If the server does not support the `responseType`, then it should fail the RPC with
   /// `INVALID_ARGUMENT`.
@@ -107,13 +110,14 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     )
   }
 
-  /// Server gets the default `SimpleRequest` proto as the request. The content of the request is
-  /// ignored. It returns the `SimpleResponse` proto with the payload set to current timestamp.
-  /// The timestamp is an integer representing current time with nanosecond resolution. This
-  /// integer is formated as ASCII decimal in the response. The format is not really important as
-  /// long as the response payload is different for each request. In addition it adds cache control
-  /// headers such that the response can be cached by proxies in the response path. Server should
-  /// be behind a caching proxy for this test to pass. Currently we set the max-age to 60 seconds.
+  /// Always throws an error indicating the method isn't implemented, because response caching
+  /// isn't supported.
+  ///
+  /// Per the interoperability test specification, this method should get the default
+  /// `SimpleRequest` proto as the request, ignore its content, and return a `SimpleResponse`
+  /// proto with the payload set to the current timestamp represented as an integer with
+  /// nanosecond resolution, formatted as ASCII decimal. It should also add cache control headers
+  /// so the response can be cached by proxies in the response path, with a max-age of 60 seconds.
   public func cacheableUnaryCall(
     request: ServerRequest<Grpc_Testing_SimpleRequest>,
     context: ServerContext
@@ -121,11 +125,14 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     throw RPCError(code: .unimplemented, message: "The RPC is not implemented.")
   }
 
+  /// Replies with one streamed response for each requested response size, then closes
+  /// successfully.
+  ///
   /// Server implements `streamingOutputCall` by replying, in order, with one
   /// `StreamingOutputCallResponse` for each `ResponseParameter`s in `StreamingOutputCallRequest`.
   /// Each `StreamingOutputCallResponse` should have a payload body of size `ResponseParameter.size`
   /// bytes, as specified by its respective `ResponseParameter`. After sending all responses, it
-  /// closes with OK.
+  /// closes with `OK`.
   public func streamingOutputCall(
     request: ServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
     context: ServerContext
@@ -146,9 +153,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     }
   }
 
-  /// Server implements `streamingInputCall` which upon half close immediately returns a
-  /// `StreamingInputCallResponse` where `aggregatedPayloadSize` is the sum of all request payload
-  /// bodies received.
+  /// Returns the sum of all received request payload sizes once the client half-closes.
   public func streamingInputCall(
     request: StreamingServerRequest<Grpc_Testing_StreamingInputCallRequest>,
     context: ServerContext
@@ -183,11 +188,14 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     )
   }
 
+  /// Replies with one streamed response for each request received, then closes successfully
+  /// after the client half-closes.
+  ///
   /// Server implements `fullDuplexCall` by replying, in order, with one
   /// `StreamingOutputCallResponse` for each `ResponseParameter`s in each
   /// `StreamingOutputCallRequest`. Each `StreamingOutputCallResponse` should have a payload body
   /// of size `ResponseParameter.size` bytes, as specified by its respective `ResponseParameter`s.
-  /// After receiving half close and sending all responses, it closes with OK.
+  /// After receiving half close and sending all responses, it closes with `OK`.
   public func fullDuplexCall(
     request: StreamingServerRequest<Grpc_Testing_StreamingOutputCallRequest>,
     context: ServerContext
@@ -223,7 +231,7 @@ public struct TestService: Grpc_Testing_TestService.ServiceProtocol {
     }
   }
 
-  /// This is not implemented as it is not described in the specification.
+  /// This isn't implemented because it isn't described in the specification.
   ///
   /// See: https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/interop-test-descriptions.md
   public func halfDuplexCall(
