@@ -1,6 +1,6 @@
 # ``GRPCInteropTests``
 
-This module contains implementations for gRPC interoperability tests.
+Implementations for gRPC interoperability tests.
 
 ## Overview
 

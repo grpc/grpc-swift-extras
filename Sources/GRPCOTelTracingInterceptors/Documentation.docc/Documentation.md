@@ -1,7 +1,6 @@
 # ``GRPCOTelTracingInterceptors``
 
-This module contains client and server interceptors that follow OpenTelemetry's
-recommendations on tracing.
+Client and server interceptors that follow OpenTelemetry's recommendations on tracing.
 
 ## Overview
 

@@ -15,7 +15,7 @@ The reconnect messages and service aren't currently exercised by any implemented
 
 ## Topics
 
-### Unary call messages
+### Constructing unary call messages
 
 - ``Grpc_Testing_Empty``
 - ``Grpc_Testing_SimpleRequest``
@@ -25,7 +25,7 @@ The reconnect messages and service aren't currently exercised by any implemented
 - ``Grpc_Testing_Payload``
 - ``Grpc_Testing_PayloadType``
 
-### Streaming call messages
+### Constructing streaming call messages
 
 - ``Grpc_Testing_StreamingInputCallRequest``
 - ``Grpc_Testing_StreamingInputCallResponse``
@@ -33,12 +33,12 @@ The reconnect messages and service aren't currently exercised by any implemented
 - ``Grpc_Testing_StreamingOutputCallResponse``
 - ``Grpc_Testing_ResponseParameters``
 
-### Reconnect messages
+### Constructing reconnect messages
 
 - ``Grpc_Testing_ReconnectParams``
 - ``Grpc_Testing_ReconnectInfo``
 
-### Service definitions
+### Defining services
 
 - ``Grpc_Testing_EmptyService``
 - ``Grpc_Testing_TestService``

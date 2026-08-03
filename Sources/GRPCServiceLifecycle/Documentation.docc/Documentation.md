@@ -1,7 +1,7 @@
 # ``GRPCServiceLifecycle``
 
-This module conforms `GRPCClient` and `GRPCServer` to the `Service` protocol from
-Swift Service Lifecycle, enabling easy composition.
+Conformances that let a gRPC client or server run under Swift Service Lifecycle, enabling
+easy composition.
 
 ## Overview
 
@@ -15,3 +15,10 @@ its graceful-shutdown handler runs twice, which can break shutdown behavior.
 
 For more information on Swift Service Lifecycle, see its
 [documentation](https://swiftpackageindex.com/swift-server/swift-service-lifecycle/documentation/servicelifecycle).
+
+## Topics
+
+### Service conformances
+
+- ``GRPCCore/GRPCClient``
+- ``GRPCCore/GRPCServer``

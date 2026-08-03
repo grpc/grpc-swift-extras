@@ -2,14 +2,14 @@
 
 ## Topics
 
-### Unary call tests
+### Testing unary calls
 
 - ``InteroperabilityTestCase/emptyUnary``
 - ``InteroperabilityTestCase/largeUnary``
 - ``InteroperabilityTestCase/clientCompressedUnary``
 - ``InteroperabilityTestCase/serverCompressedUnary``
 
-### Streaming call tests
+### Testing streaming calls
 
 - ``InteroperabilityTestCase/clientStreaming``
 - ``InteroperabilityTestCase/serverStreaming``
@@ -17,13 +17,13 @@
 - ``InteroperabilityTestCase/pingPong``
 - ``InteroperabilityTestCase/emptyStream``
 
-### Metadata and status tests
+### Testing metadata and status
 
 - ``InteroperabilityTestCase/customMetadata``
 - ``InteroperabilityTestCase/statusCodeAndMessage``
 - ``InteroperabilityTestCase/specialStatusMessage``
 
-### Error handling tests
+### Testing error handling
 
 - ``InteroperabilityTestCase/unimplementedMethod``
 - ``InteroperabilityTestCase/unimplementedService``
