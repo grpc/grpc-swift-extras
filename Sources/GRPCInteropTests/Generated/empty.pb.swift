@@ -34,10 +34,9 @@ fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobu
   typealias Version = _2
 }
 
-/// An empty message you can reuse to avoid defining duplicate empty messages in your project.
-///
-/// A typical example is to use it as the argument or return value of a service API. For
-/// instance:
+/// An empty message that you can re-use to avoid defining duplicated empty
+/// messages in your project. A typical example is to use it as argument or the
+/// return value of a service API. For instance:
 ///
 ///   service Foo {
 ///     rpc Bar (grpc.testing.Empty) returns (grpc.testing.Empty) { };

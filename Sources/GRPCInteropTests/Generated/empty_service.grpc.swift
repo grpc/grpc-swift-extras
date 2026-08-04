@@ -63,8 +63,7 @@ extension Grpc_Testing_EmptyService {
     /// > Source IDL Documentation:
     /// >
     /// > A service that has zero methods.
-    /// > 
-    /// > See [issue #15574](https://github.com/grpc/grpc/issues/15574) for why.
+    /// > See https://github.com/grpc/grpc/issues/15574
     public protocol StreamingServiceProtocol: GRPCCore.RegistrableRPCService {}
 
     /// Service protocol for the "grpc.testing.EmptyService" service.
@@ -78,8 +77,7 @@ extension Grpc_Testing_EmptyService {
     /// > Source IDL Documentation:
     /// >
     /// > A service that has zero methods.
-    /// > 
-    /// > See [issue #15574](https://github.com/grpc/grpc/issues/15574) for why.
+    /// > See https://github.com/grpc/grpc/issues/15574
     public protocol ServiceProtocol: Grpc_Testing_EmptyService.StreamingServiceProtocol {}
 
     /// Simple service protocol for the "grpc.testing.EmptyService" service.
@@ -91,8 +89,7 @@ extension Grpc_Testing_EmptyService {
     /// > Source IDL Documentation:
     /// >
     /// > A service that has zero methods.
-    /// > 
-    /// > See [issue #15574](https://github.com/grpc/grpc/issues/15574) for why.
+    /// > See https://github.com/grpc/grpc/issues/15574
     public protocol SimpleServiceProtocol: Grpc_Testing_EmptyService.ServiceProtocol {}
 }
 
@@ -124,8 +121,7 @@ extension Grpc_Testing_EmptyService {
     /// > Source IDL Documentation:
     /// >
     /// > A service that has zero methods.
-    /// > 
-    /// > See [issue #15574](https://github.com/grpc/grpc/issues/15574) for why.
+    /// > See https://github.com/grpc/grpc/issues/15574
     public protocol ClientProtocol: Sendable {}
 
     /// Generated client for the "grpc.testing.EmptyService" service.
@@ -137,8 +133,7 @@ extension Grpc_Testing_EmptyService {
     /// > Source IDL Documentation:
     /// >
     /// > A service that has zero methods.
-    /// > 
-    /// > See [issue #15574](https://github.com/grpc/grpc/issues/15574) for why.
+    /// > See https://github.com/grpc/grpc/issues/15574
     public struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
         private let client: GRPCCore.GRPCClient<Transport>
 

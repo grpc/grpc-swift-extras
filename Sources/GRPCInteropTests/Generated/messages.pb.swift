@@ -74,7 +74,9 @@ public nonisolated enum Grpc_Testing_PayloadType: SwiftProtobuf.Enum, Swift.Case
 
 }
 
-/// A wrapper that makes a boolean value optional.
+/// TODO(dgq): Go back to using well-known types once
+/// https://github.com/grpc/grpc/issues/6980 has been fixed.
+/// import "google/protobuf/wrappers.proto";
 public nonisolated struct Grpc_Testing_BoolValue: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -88,7 +90,7 @@ public nonisolated struct Grpc_Testing_BoolValue: Sendable {
   public init() {}
 }
 
-/// A block of data used to increase gRPC message size.
+/// A block of data, to simply increase gRPC message size.
 public nonisolated struct Grpc_Testing_Payload: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -105,9 +107,8 @@ public nonisolated struct Grpc_Testing_Payload: Sendable {
   public init() {}
 }
 
-/// A representation of a gRPC status.
-///
-/// Test clients use it to specify the status a server should attempt to return.
+/// A protobuf representation for grpc status. This is used by test
+/// clients to specify a status that the server should attempt to return.
 public nonisolated struct Grpc_Testing_EchoStatus: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -374,9 +375,8 @@ public nonisolated struct Grpc_Testing_StreamingOutputCallResponse: Sendable {
   fileprivate var _payload: Grpc_Testing_Payload? = nil
 }
 
+/// For reconnect interop test only.
 /// Client tells server what reconnection parameters it used.
-///
-/// For the reconnect interop test only.
 public nonisolated struct Grpc_Testing_ReconnectParams: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -389,9 +389,9 @@ public nonisolated struct Grpc_Testing_ReconnectParams: Sendable {
   public init() {}
 }
 
-/// Server tells client whether its reconnects followed the spec, and reports the backoffs it saw.
-///
-/// For the reconnect interop test only.
+/// For reconnect interop test only.
+/// Server tells client whether its reconnects are following the spec and the
+/// reconnect backoffs it saw.
 public nonisolated struct Grpc_Testing_ReconnectInfo: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for

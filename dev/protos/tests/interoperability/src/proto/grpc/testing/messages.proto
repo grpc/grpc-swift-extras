@@ -22,8 +22,6 @@ package grpc.testing;
 // TODO(dgq): Go back to using well-known types once
 // https://github.com/grpc/grpc/issues/6980 has been fixed.
 // import "google/protobuf/wrappers.proto";
-
-// A wrapper that makes a boolean value optional.
 message BoolValue {
   // The bool value.
   bool value = 1;
@@ -35,7 +33,7 @@ enum PayloadType {
   COMPRESSABLE = 0;
 }
 
-// A block of data used to increase gRPC message size.
+// A block of data, to simply increase gRPC message size.
 message Payload {
   // The type of data in body.
   PayloadType type = 1;
@@ -43,9 +41,8 @@ message Payload {
   bytes body = 2;
 }
 
-// A representation of a gRPC status.
-//
-// Test clients use it to specify the status a server should attempt to return.
+// A protobuf representation for grpc status. This is used by test
+// clients to specify a status that the server should attempt to return.
 message EchoStatus {
   int32 code = 1;
   string message = 2;
@@ -153,16 +150,15 @@ message StreamingOutputCallResponse {
   Payload payload = 1;
 }
 
+// For reconnect interop test only.
 // Client tells server what reconnection parameters it used.
-//
-// For the reconnect interop test only.
 message ReconnectParams {
   int32 max_reconnect_backoff_ms = 1;
 }
 
-// Server tells client whether its reconnects followed the spec, and reports the backoffs it saw.
-//
-// For the reconnect interop test only.
+// For reconnect interop test only.
+// Server tells client whether its reconnects are following the spec and the
+// reconnect backoffs it saw.
 message ReconnectInfo {
   bool passed = 1;
   repeated int32 backoff_ms = 2;
