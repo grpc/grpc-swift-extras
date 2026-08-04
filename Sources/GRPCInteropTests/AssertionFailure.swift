@@ -19,10 +19,21 @@
 /// This is required because the tests must be able to run without XCTest.
 @available(gRPCSwiftExtras 2.0, *)
 public struct AssertionFailure: Error {
+  /// A message describing why the assertion failed.
   public var message: String
+
+  /// The file in which the assertion failed.
   public var file: String
+
+  /// The line in the file at which the assertion failed.
   public var line: Int
 
+  /// Creates an assertion failure with the given message, file, and line.
+  ///
+  /// - Parameters:
+  ///   - message: A message describing why the assertion failed.
+  ///   - file: The file in which the assertion failed.
+  ///   - line: The line in the file at which the assertion failed.
   public init(message: String, file: String = #fileID, line: Int = #line) {
     self.message = message
     self.file = file
@@ -30,7 +41,7 @@ public struct AssertionFailure: Error {
   }
 }
 
-/// Asserts that the value of an expression is `true`.
+/// Asserts that the value of an expression is true.
 @available(gRPCSwiftExtras 2.0, *)
 public func assertTrue(
   _ expression: @autoclosure () throws -> Bool,

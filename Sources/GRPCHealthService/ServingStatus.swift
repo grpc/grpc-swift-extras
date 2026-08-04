@@ -25,10 +25,10 @@ public struct ServingStatus: Sendable, Hashable {
     case notServing
   }
 
-  /// A status indicating that a service is healthy.
+  /// A status that indicates a service is healthy.
   public static let serving = ServingStatus(.serving)
 
-  /// A status indicating that a service unhealthy.
+  /// A status that indicates a service is unhealthy.
   public static let notServing = ServingStatus(.notServing)
 
   internal var value: Value

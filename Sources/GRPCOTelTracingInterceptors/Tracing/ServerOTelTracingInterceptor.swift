@@ -24,8 +24,8 @@ package import Tracing
 ///
 /// For more information, refer to the documentation for `swift-distributed-tracing`.
 ///
-/// This interceptor will also inject all required and recommended span and event attributes, and set span status, as defined by
-/// OpenTelemetry's documentation on:
+/// This interceptor also injects all required and recommended span and event attributes, and
+/// sets span status, as defined by OpenTelemetry's documentation on:
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
 /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
 @available(gRPCSwiftExtras 2.0, *)
@@ -40,13 +40,14 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
 
   private var tracerOverride: (any Tracer)?
 
-  /// Create a new instance of a ``ServerOTelTracingInterceptor``.
+  /// Creates a server interceptor that extracts tracing information for the given server
+  /// hostname and network transport method.
   ///
   /// - Parameters:
-  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
-  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
+  ///  - serverHostname: The hostname of the RPC server. This is the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This is the value for the
   ///  `network.transport` attribute in spans.
-  ///  - traceEachMessage: If `true`, each response part sent and request part received will be recorded as a separate
+  ///  - traceEachMessage: If `true`, each response part sent and request part received is recorded as a separate
   ///  event in a tracing span.
   public init(
     serverHostname: String,
@@ -62,16 +63,17 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
     )
   }
 
-  /// Create a new instance of a ``ServerOTelTracingInterceptor``.
+  /// Creates a server interceptor that extracts tracing information and, when enabled, captures
+  /// request and response metadata as span attributes.
   ///
   /// - Parameters:
-  ///  - severHostname: The hostname of the RPC server. This will be the value for the `server.address` attribute in spans.
-  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This will be the value for the
+  ///  - serverHostname: The hostname of the RPC server. This is the value for the `server.address` attribute in spans.
+  ///  - networkTransportMethod: The transport in use (e.g. "tcp", "unix"). This is the value for the
   ///  `network.transport` attribute in spans.
-  ///  - traceEachMessage: If `true`, each response part sent and request part received will be recorded as a separate
+  ///  - traceEachMessage: If `true`, each response part sent and request part received is recorded as a separate
   ///  event in a tracing span.
-  ///  - includeRequestMetadata: if `true`, **all** metadata keys with string values included in the request will be added to the span as attributes.
-  ///  - includeResponseMetadata: if `true`, **all** metadata keys with string values included in the response will be added to the span as attributes.
+  ///  - includeRequestMetadata: If `true`, **all** metadata keys with string values included in the request are added to the span as attributes.
+  ///  - includeResponseMetadata: If `true`, **all** metadata keys with string values included in the response are added to the span as attributes.
   ///
   /// - Important: Be careful when setting `includeRequestMetadata` or `includeResponseMetadata` to `true`,
   /// as including all request/response metadata can be a security risk.
@@ -109,17 +111,17 @@ public struct ServerOTelTracingInterceptor: ServerInterceptor {
     self.tracerOverride = tracerOverride
   }
 
-  /// This interceptor will extract whatever `ServiceContext` key-value pairs have been inserted into the
-  /// request's metadata, and will make them available to user code via the `ServiceContext/current`
-  /// context.
+  /// This interceptor extracts whatever tracing key-value pairs were inserted into the request's
+  /// metadata, and makes them available to your application's tracing implementation.
   ///
-  /// Which key-value pairs are extracted and made available will depend on the specific tracing implementation
-  /// that has been configured when bootstrapping `swift-distributed-tracing` in your application.
+  /// The specific tracing implementation you configure when bootstrapping
+  /// `swift-distributed-tracing` in your application determines which key-value pairs are
+  /// extracted and made available.
   ///
-  /// It will also inject all required and recommended span and event attributes, and set span status, as defined by OpenTelemetry's
-  /// documentation on:
-  /// - https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans
-  /// - https://opentelemetry.io/docs/specs/semconv/rpc/grpc/
+  /// It also injects all required and recommended span and event attributes, and sets span status,
+  /// as defined by OpenTelemetry's documentation on:
+  /// - [RPC spans](https://opentelemetry.io/docs/specs/semconv/rpc/rpc-spans)
+  /// - [gRPC conventions](https://opentelemetry.io/docs/specs/semconv/rpc/grpc)
   public func intercept<Input, Output>(
     request: StreamingServerRequest<Input>,
     context: ServerContext,

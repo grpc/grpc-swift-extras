@@ -16,17 +16,18 @@
 
 public import GRPCCore
 
-/// ``HealthService`` is gRPC's mechanism for checking whether a server is able to handle RPCs.
-/// Its semantics are documented in the [gRPC repository]( https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/health-checking.md).
+/// A gRPC service that reports whether a server can handle RPCs.
+///
+/// Its semantics are documented in the [gRPC repository](https://github.com/grpc/grpc/blob/5011420f160b91129a7baebe21df9444a07896a6/doc/health-checking.md).
 ///
 /// `HealthService` implements the `grpc.health.v1` service and can be registered with a server
-/// like any other service. It holds a ``HealthService/Provider-swift.struct`` which provides
+/// like any other service. It holds a ``HealthService/Provider-swift.struct`` that provides
 /// status updates to the service. The service doesn't know about the other services running on the
-/// server so it must be provided with status updates via the ``Provider-swift.struct``. To make
-/// specifying the service being updated easier, the generated code for services includes an
+/// server, so it must be provided with status updates via the ``Provider-swift.struct``. To make it
+/// easier to specify which service is being updated, the generated code for services includes an
 /// extension to `ServiceDescriptor`.
 ///
-/// The following shows an example of initializing a Health service and updating the status of
+/// The following shows an example of initializing a health service and updating the status of
 /// the `Foo` service in the `bar` package.
 ///
 /// ```swift
@@ -49,13 +50,16 @@ public struct HealthService: Sendable, RegistrableRPCService {
   /// Provides status updates to the Health service.
   public let provider: HealthService.Provider
 
-  /// Constructs a new ``HealthService``.
+  /// Creates a health service with no recorded service statuses.
   public init() {
     let healthService = Service()
     self.service = healthService
     self.provider = HealthService.Provider(healthService: healthService)
   }
 
+  /// Registers the service's methods with the given router.
+  ///
+  /// - Parameter router: The router to register the service's methods with.
   public func registerMethods<Transport>(
     with router: inout RPCRouter<Transport>
   ) where Transport: ServerTransport {
@@ -65,11 +69,11 @@ public struct HealthService: Sendable, RegistrableRPCService {
 
 @available(gRPCSwiftExtras 2.0, *)
 extension HealthService {
-  /// Provides status updates to ``HealthService``.
+  /// Provides status updates to the health service.
   public struct Provider: Sendable {
     private let healthService: Service
 
-    /// Updates the status of a service.
+    /// Updates the status of a service identified by its service descriptor.
     ///
     /// - Parameters:
     ///   - status: The status of the service.
@@ -84,7 +88,7 @@ extension HealthService {
       )
     }
 
-    /// Updates the status of a service.
+    /// Updates the status of a service identified by its fully qualified name.
     ///
     /// - Parameters:
     ///   - status: The status of the service.
