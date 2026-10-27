@@ -51,7 +51,6 @@ let dependencies: [Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/apple/swift-protobuf.git",
-    // Traits were introduced in 1.36.0; 1.39.0 is the latest minor.
     from: "1.39.0",
     // Opt-out of default traits to avoid pulling in full Foundation from `BinaryDelimitedStreams`
     traits: []
