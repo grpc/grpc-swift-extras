@@ -20,7 +20,7 @@
 // Source: src/proto/grpc/testing/empty_service.proto
 //
 // For information on using the generated types, please see the documentation:
-//   https://github.com/grpc/grpc-swift
+//   https://github.com/grpc/grpc-swift-2
 
 public import GRPCCore
 internal import GRPCProtobuf
@@ -54,8 +54,9 @@ extension Grpc_Testing_EmptyService {
     /// This protocol is the lowest-level of the service protocols generated for this service
     /// giving you the most flexibility over the implementation of your service. This comes at
     /// the cost of more verbose and less strict APIs. Each RPC requires you to implement it in
-    /// terms of a request stream and response stream. Where only a single request or response
-    /// message is expected, you are responsible for enforcing this invariant is maintained.
+    /// terms of a request stream and response stream. Where the RPC expects only a single
+    /// request or response message, you are responsible for ensuring your implementation
+    /// maintains this invariant.
     ///
     /// Where possible, prefer using the stricter, less-verbose ``ServiceProtocol``
     /// or ``SimpleServiceProtocol`` instead.

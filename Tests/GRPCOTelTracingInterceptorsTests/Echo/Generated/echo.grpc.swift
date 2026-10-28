@@ -20,7 +20,7 @@
 // Source: echo.proto
 //
 // For information on using the generated types, please see the documentation:
-//   https://github.com/grpc/grpc-swift
+//   https://github.com/grpc/grpc-swift-2
 
 internal import GRPCCore
 internal import GRPCProtobuf
@@ -111,8 +111,9 @@ extension Echo_Echo {
     /// This protocol is the lowest-level of the service protocols generated for this service
     /// giving you the most flexibility over the implementation of your service. This comes at
     /// the cost of more verbose and less strict APIs. Each RPC requires you to implement it in
-    /// terms of a request stream and response stream. Where only a single request or response
-    /// message is expected, you are responsible for enforcing this invariant is maintained.
+    /// terms of a request stream and response stream. Where the RPC expects only a single
+    /// request or response message, you are responsible for ensuring your implementation
+    /// maintains this invariant.
     ///
     /// Where possible, prefer using the stricter, less-verbose ``ServiceProtocol``
     /// or ``SimpleServiceProtocol`` instead.
@@ -525,9 +526,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         func get<Result>(
             request: GRPCCore.ClientRequest<Echo_EchoRequest>,
@@ -548,9 +549,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         func expand<Result>(
             request: GRPCCore.ClientRequest<Echo_EchoRequest>,
@@ -571,9 +572,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         func collect<Result>(
             request: GRPCCore.StreamingClientRequest<Echo_EchoRequest>,
@@ -594,9 +595,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         func update<Result>(
             request: GRPCCore.StreamingClientRequest<Echo_EchoRequest>,
@@ -634,9 +635,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         internal func get<Result>(
             request: GRPCCore.ClientRequest<Echo_EchoRequest>,
@@ -668,9 +669,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         internal func expand<Result>(
             request: GRPCCore.ClientRequest<Echo_EchoRequest>,
@@ -700,9 +701,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         internal func collect<Result>(
             request: GRPCCore.StreamingClientRequest<Echo_EchoRequest>,
@@ -734,9 +735,9 @@ extension Echo_Echo {
         ///   - serializer: A serializer for `Echo_EchoRequest` messages.
         ///   - deserializer: A deserializer for `Echo_EchoResponse` messages.
         ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
+        ///   - handleResponse: A closure which handles the response and returns its result to
+        ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+        ///       already finished.
         /// - Returns: The result of `handleResponse`.
         internal func update<Result>(
             request: GRPCCore.StreamingClientRequest<Echo_EchoRequest>,
@@ -769,9 +770,9 @@ extension Echo_Echo.ClientProtocol {
     /// - Parameters:
     ///   - request: A request containing a single `Echo_EchoRequest` message.
     ///   - options: Options to apply to this RPC.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func get<Result>(
         request: GRPCCore.ClientRequest<Echo_EchoRequest>,
@@ -798,9 +799,9 @@ extension Echo_Echo.ClientProtocol {
     /// - Parameters:
     ///   - request: A request containing a single `Echo_EchoRequest` message.
     ///   - options: Options to apply to this RPC.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func expand<Result>(
         request: GRPCCore.ClientRequest<Echo_EchoRequest>,
@@ -825,9 +826,9 @@ extension Echo_Echo.ClientProtocol {
     /// - Parameters:
     ///   - request: A streaming request producing `Echo_EchoRequest` messages.
     ///   - options: Options to apply to this RPC.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func collect<Result>(
         request: GRPCCore.StreamingClientRequest<Echo_EchoRequest>,
@@ -854,9 +855,9 @@ extension Echo_Echo.ClientProtocol {
     /// - Parameters:
     ///   - request: A streaming request producing `Echo_EchoRequest` messages.
     ///   - options: Options to apply to this RPC.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func update<Result>(
         request: GRPCCore.StreamingClientRequest<Echo_EchoRequest>,
@@ -886,9 +887,9 @@ extension Echo_Echo.ClientProtocol {
     ///   - message: request message to send.
     ///   - metadata: Additional metadata to send, defaults to empty.
     ///   - options: Options to apply to this RPC, defaults to `.defaults`.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func get<Result>(
         _ message: Echo_EchoRequest,
@@ -919,9 +920,9 @@ extension Echo_Echo.ClientProtocol {
     ///   - message: request message to send.
     ///   - metadata: Additional metadata to send, defaults to empty.
     ///   - options: Options to apply to this RPC, defaults to `.defaults`.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func expand<Result>(
         _ message: Echo_EchoRequest,
@@ -949,11 +950,11 @@ extension Echo_Echo.ClientProtocol {
     /// - Parameters:
     ///   - metadata: Additional metadata to send, defaults to empty.
     ///   - options: Options to apply to this RPC, defaults to `.defaults`.
-    ///   - producer: A closure producing request messages to send to the server. The request
-    ///       stream is closed when the closure returns.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - producer: A closure producing request messages to send to the server. Returning
+    ///       from the closure closes the request stream.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func collect<Result>(
         metadata: GRPCCore.Metadata = [:],
@@ -983,11 +984,11 @@ extension Echo_Echo.ClientProtocol {
     /// - Parameters:
     ///   - metadata: Additional metadata to send, defaults to empty.
     ///   - options: Options to apply to this RPC, defaults to `.defaults`.
-    ///   - producer: A closure producing request messages to send to the server. The request
-    ///       stream is closed when the closure returns.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
+    ///   - producer: A closure producing request messages to send to the server. Returning
+    ///       from the closure closes the request stream.
+    ///   - handleResponse: A closure which handles the response and returns its result to
+    ///       the caller. Returning from the closure will cancel the RPC if it hasn't
+    ///       already finished.
     /// - Returns: The result of `handleResponse`.
     internal func update<Result>(
         metadata: GRPCCore.Metadata = [:],
